@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Introduction to Probability</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Sebastian Hoyos-Torres" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction to Probability
+### Sebastian Hoyos-Torres
+
+---
+
+
+
+
+### Outline:
+- In this section, we will cover the following:
+  - Sample Spaces and Events
+  - Properties, Axioms and Interpretations of Probability
+  - Definitions of Probability
+  - Equally likely probability spaces and counting techniques
+  - Conditional Probability
+  - Independence
+---
+
+### The Uncertain World
+- Often, we are faced with questions of uncertainty. For example;
+  - How likely is it that you win the powerball?
+  - If you intend to have children until you have at least one child of each sex then how many children will you have on average?
+  - How many traffic lights will be red on your trip to the store?
+
+---
+
+### Key Terms before diving in
+- **Experiment**: any action or process where the outcome is subject to uncertainty.
+- **Sample Space**: Set of all possible outcomes of an **experiment**.
+  - **Note**: Size of the set is NOT the sample space 
+- **Event**: any subset of a sample space.
+- **Simple Event**: event consisting of a single outcome.
+- **Compound Event**: Consists of more than one outcome.
+- **Probability Function**: gives the probability for each outcome within the sample space.
+---
+
+##Some useful notation to keep in mind in this section
+
+- `\(\Omega\)` : indicates the sample space. Also can be denoted as S or U
+
+- `\(\in\)` :Indicates that an element is a member of a set (e.g `\(a \in \Omega\)`)
+
+- `\(\emptyset\)`: Indicates the empty set in set theory. In probability, it is known as the empty event. Also known as the **impossible event** 
+
+- `\(\cup\)`: Indicates a union between elements. For example `\(A \cup B\)` reads as "A or B"
+
+- `\(\cap\)` Indicates an intersection between elements. For example `\(A \cap B\)` reads as "A and B"
+
+- `\(A^C\)`: Indicates a compement.In this case it would indicate "the elements not in A"
+
+- `\(|\)` : Reads as "Given"
+---
+
+### Examples
+- To understand the definitons better, let's see a few examples
+
+- Tossing a coin. Within a coin flip, there are 2 possible outcomes. The **sample space ** in this example is {H,T}. In this case a *simple event* will be {H}.
+  - This changes when you toss a coin twice. Instead of {H,T}, now you can have {0,1,2} corresponding to the number of heads appearing. Another is {HH,HT,TH,TH} corresponding to the first, second toss. In this sample space, the event of getting one heads can be represented by {HT,TH} 
+
+- Let Y mean you scored in the 85th percentile and N mean you did not. The sample space in this case would be an infinite discrete on with {Y,NY,NNY,...}
+  - However, the even you do not take the GRE more than 3 times would look like {Y,NY,NNY}
+---
+
+### Examples: Cont
+- Consider choosing a random strand of hair from the interval `\(S = (0,100)\)` . What would be some possible events?
+  - In this example, which is infinite and continuous, we could say some possible events are `\(A = {{x|0 \le x \le 1}}\)` which is a **compound event** or `\(B = {10.55}\)` which is a simple event.
+
+- **Important**: Sample Spaces can be finite and discrete, infinite and discrete, or infinite and continuous.
+
+---
+
+### Using some of the language of Set Theory examples
+
+- Assume we have a randomly select a student to see how many shirts they
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

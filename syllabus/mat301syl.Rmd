@@ -1,0 +1,50 @@
+---
+title: "Mat 301 Syllabus Fall 2018"
+author: "Sebastian Hoyos-Torres"
+output: html_document
+theme: journal
+fontsize: 12pt
+geometry: margin = 1in
+header-includes:
+- \usepackage{placeins}
+- \usepackage{setspace}
+- \usepackage{chngcntr}
+- \doublespacing
+number_sections: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Description:
+This course focuses on probability theory needed to understand statistical inference. Within this course, students will undergo an introduction to probability theory, independence and conditional probabilities including Bayes' Theorem. Following this introduction,  Several discrete (binomial, hypergeometric, negative binomial, Poisson) and continuous (Normal, exponential, gamma, uniform) probability distributions will be studied including the concept of a distribution function, probability mass and density functions, expected value, variance, and standard deviation. Joint probability and sampling distributions will then follow. The course will then examine how to apply the probabilities learned to concepts such as a point estimate, confidence interval, hypothesis test, and regressions. This course will also apply many probabilistic concepts to real world applications to demonstrate how many probabilistic concepts are used in the field. Notes for each topic will be found in the blackboard page for this course. Students will also be expected to install R and will be guided on how to use it to address different probability questions. 
+
+# Objectives:
+At the end of the course, students are expected to have a strong grasp on the following:
+
+- Choosing an appropriate probability or statistical model for a problem.
+- Knowing which conditions are required for a particular probability or statistical model and being able to assess whether the required conditions are met
+- Correctly interpret solutions of statistical models.
+- Have a grasp on how to use R in order to solve certain probability problems
+
+# Grading Rubric:
+There will be 3 quizzes, online homework, several R projects, and a final exam. Homeworks will constitute 15% of the grade with the lowest homework grade being dropped. The quizzes and R projects will constitute 30 percent of the final grade or 15 percent each. The final exam will constitute the remaining 20 percent of the grade. Grades in this course will be curved.
+
+# Collaboration:
+Although not graded, I encourage you to work with study partners to solve problems and create a culture of collaboration. If students choose to work with others, they must submit the original solutions and list all collaborators and sources of information consulted. This class will also have a discussion board where students will be able to communicate with one another to solve problems. In these discussions, please refrain from posting answers to assignments. Rather, appropriate collaboration should clarify what's being asked, shed light on a topic, or direct others to the relevant material. 
+
+# Course Schedule:
+Although subject to change, the schedule for this course is as follows.
+```{r,echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
+library(kableExtra)
+
+syllabus <- tibble(Week = c(1,2), 
+                   Topic = c("Crash Course in R, integrals, and descriptive statistics", "Probability - experiments, sample spaces, axioms of probability, proving results from axioms, multiplication principle, permutations, and combinations"),
+                  Text = c("Read `A very (short) introduction to R' from https://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf, sections 3-8 of the Introduction to Integration Part 1: Anti-Differentiation (https://sydney.edu.au/stuserv/documents/maths_learning_centre/integration_part1.pdf) and sections 2-5  Introduction to Integration Part 2:The Definite Integral (https://sydney.edu.au/stuserv/documents/maths_learning_centre/integration_part2.pdf) ", "chapter 2 in Devore"))
+
+
+kable(syllabus) %>% 
+  kable_styling(bootstrap_options = "striped")
+install.packages("xaringan-themes")
+```
