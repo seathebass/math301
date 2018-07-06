@@ -1,5 +1,5 @@
 # Math301: Probability and Statistics
-## Github for Math 301.
+## Github for Math 301 (**Currently Under Construction**).
 This Github Page contains powerpoints and other useful materials to assist students with Probaility and Statistics.  See syllabus for assignents and [**more**](https://seathebass.github.io/math301/syllabus/mat301syl.html)
 
 ## Week 1
