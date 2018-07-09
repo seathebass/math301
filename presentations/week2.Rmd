@@ -78,6 +78,41 @@ options(htmltools.dir.version = FALSE)
 
 ---
 
-### Using some of the language of Set Theory examples
+### Using the language of Set Theory examples
 
-- Assume we have a randomly select a student to see how many shirts they 
+- Assume we randomly select a student to see how many shirts they have. Using the notation we just learned, we'd set up the problem as follows:
+$$\Omega = \{0,1,2,3,...\}$$ 
+.center[**Or**]
+
+$$S = \{0,1,2,3,...\}$$
+
+.center[**The sample space at this point is infinite and continuous**]
+
+.center[
+Let's say we had events C which is the randomly selected student owns no more than 5 shirts $$C = \{1,2,3,4,5\}$$ and D which is that the number of shirts owned is odd so that $$D = \{1,3,5,7, ...\}$$
+]
+
+.center[What would $C \cup D$ equal? $C \cap D$ ? What if $C = \{0\}$ and $D = \{0,2,4,6,...\}$]
+---
+### The R way
+
+- Like most things in this course we can do some of this in R to get the intersection and union results
+
+
+```{r}
+C <-  c(1:5)
+D <- seq(from = 1, to = 100, by = 2)
+union(C,D) # Union
+intersect(C,D) #Intersection
+
+#likewise if we do the second step
+C2 <-  0
+D2 <- seq(from = 1, to = 100, by = 2)
+union(C2,D2)
+intersect(C2,D2) #this will return an empty value because it is an empty set
+```
+---
+
+### The Venn Diagram
+- We can also depict things pictorially through a Venn Diagram.
+<img src=""  width="120" height="120">
