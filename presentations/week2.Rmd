@@ -92,7 +92,9 @@ $$S = \{0,1,2,3,...\}$$
 Let's say we had events C which is the randomly selected student owns no more than 5 shirts $$C = \{1,2,3,4,5\}$$ and D which is that the number of shirts owned is odd so that $$D = \{1,3,5,7, ...\}$$
 ]
 
-.center[What would $C \cup D$ equal? $C \cap D$ ? What if $C = \{0\}$ and $D = \{0,2,4,6,...\}$]
+.center[What would $C \cup D$ equal? 
+$C \cap D$ ?
+What if $C = \{0\}$ and $D = \{0,2,4,6,...\}$]
 ---
 ### The R way
 
@@ -104,7 +106,9 @@ C <-  c(1:5)
 D <- seq(from = 1, to = 100, by = 2)
 union(C,D) # Union
 intersect(C,D) #Intersection
-
+```
+---
+```{r}
 #likewise if we do the second step
 C2 <-  0
 D2 <- seq(from = 1, to = 100, by = 2)
