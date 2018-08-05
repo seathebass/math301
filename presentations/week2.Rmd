@@ -473,4 +473,4 @@ npizza <- 1-lpizza
 #Probability that first likes pizza while second does not is
 lpizza*(npizza)
 ```
----
+
