@@ -121,7 +121,7 @@ sum(result1 %in% E) #This will give you the number of times E occurred
 ```
 
 ```
-## [1] 360
+## [1] 327
 ```
 
 ```r
@@ -131,7 +131,7 @@ table(result1)# see a table of the results. These shouldn't vary too much
 ```
 ## result1
 ##   1   2   3   4   5   6 
-## 160 186 174 170 158 152
+## 180 151 176 156 151 186
 ```
 ---
 ## Chart of the relative frequency approach
@@ -427,6 +427,7 @@ prod(366:(366-1+1))
 ## [1] 9.234463e-06
 ```
 ---
+
 ## Conditional Probability
 
 - Often, we have events that influence the probability of other events. In mathematical terms, we often have event B which influences the probability of event A
@@ -436,8 +437,8 @@ prod(366:(366-1+1))
 - For any two events A and B with P(B) &gt; 0, P(A|B) is defined by :
 
 `$$P(A|B) = \frac{P(A\cap B)}{P(B)}$$`
-
 --- 
+---
 ## Examples
 
 - Roll a die twice, what is the probability that the total we get will be a 3? Given that the first number is 1, what is the probability that the total we get is 3?
@@ -463,7 +464,7 @@ n&lt;- 6*6 #number of total outcomes
 ---
 ## More on conditional probability
 - The multiplication rule: The probability that two events A and B both occur is given by the multiplication rule
-`$$P(A \cap B) = P(A|B) \times P(B)$$`
+`$$P(A \cap B) = P(A|B) \times{P(B)}$$`
 `$$P(A \cap B) = P(B|A) \ times P(A)$$`
 
 ---
@@ -482,7 +483,7 @@ n&lt;- 6*6 #number of total outcomes
 ## [1] 0.4
 ```
 ---
-## Multiplication rule extensio
+## Multiplication rule extension
 - We can extend the multiplication rule to three of more events
 .center[thus:] 
 `$$P(A\cap{B}\cap{C}) = P(C|A\cap{B})\times{P(A\cap{B})}$$`
@@ -500,12 +501,14 @@ n&lt;- 6*6 #number of total outcomes
 ```
 ## [1] 0.0004826546
 ```
---- 
+---
+
 ## Law of total probability
+
 - Suppose `\(A_1,A_2,...,A_n\)` form a partition of sample space S, then for any event B, it is true that 
 $$P(B) = P(A_1\cap{B})+ P(A_2\cap{B})+...+P(A_n\cap{B}) = $$
 `$$P(A_1)\times P(B|A_1)+ P(A_2)\times P(B|A_2) + P(A_n)\times P(B|A_n)$$`
-- This leads us into a deeper understanding of Bayes Theorem
+- This leads us to a deeper understanding of Bayes Theorem
 
 ---
 ## Bayes theorem
