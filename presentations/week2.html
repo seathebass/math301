@@ -121,7 +121,7 @@ sum(result1 %in% E) #This will give you the number of times E occurred
 ```
 
 ```
-## [1] 327
+## [1] 361
 ```
 
 ```r
@@ -131,7 +131,7 @@ table(result1)# see a table of the results. These shouldn't vary too much
 ```
 ## result1
 ##   1   2   3   4   5   6 
-## 180 151 176 156 151 186
+## 150 183 178 156 176 157
 ```
 ---
 ## Chart of the relative frequency approach
@@ -417,14 +417,16 @@ prod(366:(366-1+1))
 ```
 ## [1] 366
 ```
+---
+## More examples: Combinations
  - In a standard deck of 52 cards using 13 face values and 4 different suits to play 5 card poker. If you are dealt 5 cards, what is the probability of getting a full house which contains 3 kings and 2 Aces.
 
 ```r
-(choose(4,3)*choose(4,2))/choose(52,5)
+(choose(13,1)*choose(4,3)*choose(12,1)*choose(4,2))/choose(52,5)
 ```
 
 ```
-## [1] 9.234463e-06
+## [1] 0.001440576
 ```
 ---
 
