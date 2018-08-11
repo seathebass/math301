@@ -1,0 +1,31 @@
+---
+title: "Discrete Distributions"
+author: "Sebastian Hoyos-Torres"
+date: ""
+output:
+  xaringan::moon_reader:
+    css: metropolis
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(xaringanthemer)
+xaringanthemer::solarized_dark()
+```
+## What we will cover in this section
+- Random Variables
+
+- Discrete random variables and distributions
+
+- expected value of discrete random variables
+
+- Binomial probability distribution
+
+- Hypergeometric and negative binomial distributions
+
+- Poisson probability distribution

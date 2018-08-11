@@ -348,9 +348,11 @@ choose(n,r)
 ```{r}
 prod(366:(366-1+1))
 ```
+---
+## More examples: Combinations
  - In a standard deck of 52 cards using 13 face values and 4 different suits to play 5 card poker. If you are dealt 5 cards, what is the probability of getting a full house which contains 3 kings and 2 Aces.
 ```{r}
-(choose(4,3)*choose(4,2))/choose(52,5)
+(choose(13,1)*choose(4,3)*choose(12,1)*choose(4,2))/choose(52,5)
 ```
 ---
 
