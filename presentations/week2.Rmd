@@ -380,8 +380,8 @@ n<- 6*6 #number of total outcomes
 ---
 ## More on conditional probability
 - The multiplication rule: The probability that two events A and B both occur is given by the multiplication rule
-$$P(A \cap B) = P(A|B) \times{P(B)}$$
-$$P(A \cap B) = P(B|A) \ times P(A)$$
+$$P(A \cap B) = P(A|B)\times{P(B)}$$
+$$P(A \cap B) = P(B|A) \times P(A)$$
 
 ---
 ## Example of the multiplication rule
