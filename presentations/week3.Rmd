@@ -14,8 +14,8 @@ output:
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
-library(xaringanthemer)
-xaringanthemer::solarized_dark()
+library(tidyverse)
+studentdata <- read_csv("~/mat301/data/studentmajors.csv")
 ```
 ## What we will cover in this section
 - Random Variables
@@ -29,3 +29,526 @@ xaringanthemer::solarized_dark()
 - Hypergeometric and negative binomial distributions
 
 - Poisson probability distribution
+
+---
+## Random Variables
+- What is a random variable?
+  - (From p.93 Devore) A RV is any rule that associates a number with each outcome is $S$. Mathematically, this is expressed as a function whose domain is the sample space and whose range is the set of real numbers.
+
+.center[This can manifest itself in the following]
+
+- **Bernoulli Experiment**: an experiment with a binary outcome. In this case we define the random variable as success = 1, failure = 0
+
+- **Counts**: outcome is usually the number of times a particular event occurred. This is already a numeric outcome
+
+- **Measurements**: numeric outcomes on a continuous scale.
+
+---
+## Discrete Random Variables:
+- From the prior slide, note that a variable which can only assume **distinct** values is said to be discrete. Typically, they represent counts.
+  
+  - From the prior slide a dicrete random variable could manifest itself as a bernoulli experiment, a binomial, or a geometric variable.
+  
+  - Note, these can either finite or infinite.
+  
+---
+## Continuous Random Variables:
+- Simply put, a continuous random variable can assume any value in a finite or infinite interval is said to be continuous.
+  - In slide 2, these would typically take the form of measurements
+
+---
+## Examples
+- Discrete Variable examples:
+  - A dog is selected at random from a shelter with male {M} and female {F} dogs. The sample space would then be 
+  $$S = \{M,F\}$$ 
+.center[where if X = 0, the dog is male and if X = 1 the dog is female.]
+  
+  - (Devore, p.94) Consider an experiment where a battery is tested until one with an acceptable voltage (S) is obtained. Define an RV by X = the number of outcomes before the experiment terminates. If we do so, X(S) = 1, X(FS) = 2,... X(FFFFS) = 5
+
+- Continuous Random Variables
+  - Time till failure which could take any positive value.
+  - Temperature in Kelvin could take any value.
+
+---
+## Probability Mass Functions (pmf):
+- Note, pmf can be denoted as probability density functions, frequency functions, or probability function **These terms all refer to the same thing**
+- All it refers to is how the total probability of 1 is distributed among the various possible X values. For example, if we have 4 values (1,2,3,4) then,
+.center[p(0) = the probability of the X value 0 = P(X = 0)]
+.center[p(1) = the probability of the X value 1 = P(X= 1)]
+
+- Therefore, the pmf is defined by p(x) = P(X = x) = P(all  $s \in{S}$ : X(S) = x). Although defined for any x, in practice, it is zero except at selected distinct values.
+
+.center[**IN R THE VARIOUS PMF FUNCTIONS START WITH A d**. eg. dpois, dnorm, dbinom, dgeom, dhyper]
+---
+## Pmf cont
+- Further:
+$$p(x)\gt{0}, -\infty\lt{x}\lt{\infty}$$
+$$\Sigma_{x\in{S}}f(x) = 1$$
+$$P(X\in{A}) = \Sigma_{x\in{A}}f(x)$$
+---
+## PMF's in R
+```{r, echo=FALSE}
+examplepmf <- tibble::tibble(lot = 1:6, defective = c(0,2,0,1,2,0))
+```
+lets say we had the following information on components in a lot (Devore, p.97).
+```{r, echo=FALSE}
+glimpse(examplepmf)
+```
+Let X denote the number of defectives in the lot. What is the pmf for each?
+```{r, message=FALSE}
+examplepmf %>% group_by(defective) %>% summarise(probability = n()/6)
+```
+---
+## The Cumulative Distribution Function (cdf):
+- The cumulative distribution function is simply the probability accumulated from the left or
+$$F(x) = P(X\leq{x})$$
+- The cumulative distribution function contains the following properties
+  - It is a nondecreasing function of x for $-\infty\leq{x}\leq{\infty}$
+  - The cdf ranges from 0 to 1 **Therefore, it cannot be below 0 or above 1**
+  - If the maximum value of X is b, then $F(b) = 1$
+  - All probabilities concerning X can be stated in terms of F
+
+---
+## Example of cdf
+- Suppose X is a random variable. Let the pmf of x be 
+$$f(x) = \frac{5-x}{10}, x = 1,2,3,4$$
+- suppose we wanted to find the cdf of X. The cdf is $F(x) = P(X\leq{x})$
+---
+## R and cdfs
+```{r, message=FALSE}
+x <- 1:4 #setting up the vector of possible outcomes
+pmfcdf<- tibble(value = x,pmf = (5-x)/10, #the formula given for pmf
+                cdf = cumsum(5-x)/10) #creating a tibble with the output. cumsum allows you to take the cumulative sum
+###Note, this only works for less than or equal to the selected values
+pmfcdf
+```
+- as long as you are given the pmf, you should be able to find the cdf of a random discrete variable.
+---
+## Visual of the CDF
+```{r, fig.height=5, fig.align="center"}
+ggplot(pmfcdf, aes(value, cdf))+
+  stat_ecdf() + ##note we won't worry too much about the differences between ecdf and cdfs yet. 
+  labs(title = "CDF of the example") 
+```
+
+---
+## CDFs and R
+- Throughout the course, some of the built in r functions to find the cdf of a certain type of distribution are pbinom,pnorm, pgeom, phyper, ppois,etc.
+
+- Some of the arguments involved with these functions can be seen with ?
+
+---
+## Expected Values
+- From an understanding of pmfs and cdfs, we should be able to get an insight into what an expected value is
+
+- **Expected Value**: The average value we expect in the long run (informal)
+
+- Formal Definition (Devore, p.107): Let X be a discrete random variable with set of possible values D and pmf p(x). The expected value or mean value of X, denoted by E(X) or $\mu_{x}$ or just $\mu$, is 
+$$E(X) =  \Sigma_{x \in{D}} x * p(x)$$
+- Also, the expected value of a function h(X) is computed by 
+$$E[h(X)] = \Sigma_{x \in{D}}h(x)*p(x)$$
+- A special case of the expected value is 
+$$E(aX + B) = a *E(X)+B$$
+---
+## Example of expected values
+- what is the average toss for a six sided die?
+  - Step 1: We must identify the pmf. In this case, there are 6 possible outcomes in which you can only receive one, so the pmf of the die is 1/6 for x = 1,2,3,4,5,6
+  -step 2: either look at the formula or use R to do it for you
+```{r, message=FALSE}
+x <- 1:6
+sum(x*1/6) # this gives you the expected value
+```
+---
+background-image: url(https://media.giphy.com/media/GV3aYiEP8qbao/giphy.gif)
+---
+## More expected values
+- Suppose a bookstore purchases ten copies of a book at $6.00 each to sell at 12.00 with the understanding that at the end of a 3- month period any unsold copies can be redeemed for 2.00. If X = the number of books sold, then net revenue h(X) = 12X + 2(10-X) - 60 = 10X- 40. What then is the expected net revenue?
+$$E(Y) = E[h(x)] = \Sigma_{D}y*p(y)$$
+```{r}
+x <- 1:10
+ys <- x %>%
+  tibble(x = x) %>% 
+  group_by(x) %>% 
+  summarise(yvalue = 10*x-40,
+            py = .1) %>%ungroup() 
+
+sum(ys$yvalue*ys$py)
+```
+---
+## Variances
+- Remember, expected values tell you where the probability distribution is centered
+
+- Variances will describe the variability in the distribution of X
+
+$$V(X) = \Sigma_{D}(x-\mu^2)*p(x) = E[(X-\mu)^2]$$
+---
+## Standard Deviation
+- The standard deviation will be 
+$$\sigma_x = \sqrt{\sigma_x^2}$$
+-shortcut
+$$\sigma^2 = [\Sigma_{D}x^2*p(x)] - \mu^2 = E(X^2)-[E(X)]^2$$
+- linear combinations
+$$V(aX + b) = \sigma^2_{aX+B} = a^2 * \sigma^2_x$$
+.center[and]
+$$\sigma^2_{aX+B} = |a|\sigma_X$$
+.center[which imply]
+$$\sigma^2_aX = a^2 * \sigma^2_X, \sigma^2_{X+b} = \sigma^2_x$$
+---
+## Chebychevs inequality
+- If X is any random variable with a mean(expected value) $\mu$ and standard deviation $\sigma$ then 
+$$P(|X-\mu|\geq{k\sigma})\leq{\frac{1}{k^2}}$$
+- Example: the probability that X is more than 2 standard deviations away from its mean is $\leq$ 1/4.
+
+---
+## Wrapping up 
+Suppose x is a discrete random variable with the following probability mass function
+```{r, echo=FALSE}
+tibble(x = 1:10,px = c(.02, .05, .06,.06,.09,.15,.10,.21,.14,.12)) %>% #set up a tibble  
+t()
+```
+Find:
+- The  Cumulative Probability Distribution function, F, of X
+- the probability $4\leq{X}\leq{6}$
+- What is the expected value of X?
+- What is the variance of X?
+- What is the expected value of Y = 3X+2
+- What is the standard deviation of Y = 3X+2
+- What is the probability that X is within 2 standard deviations of its exp value
+
+---
+## Solutions
+```{r}
+#1
+problemsol <- tibble(x = 1:10,
+                     px = c(.02, .05, .06,.06,.09,.15,.10,.21,.14,.12),
+                     cdf = cumsum(px))
+glimpse(problemsol) #solution for 1. could also usecumsum(px once you define px)
+```
+---
+```{r}
+problemsol[6,3] - problemsol[3,3]#using indices this is the solution for 2 F(b)- F(a-1)
+problemsol[4,2]+ problemsol[5,2] + problemsol[6,2] #using the pmf between 4 and 6 alternate solution to 2
+expectval <- sum(problemsol$x*problemsol$px) #expected value for 3
+expectval
+variance1 <- sum((problemsol$x^2)*problemsol$px) - expectval^2  #variance
+variance1
+sdx <- sqrt(variance1) #standard deviation of x
+sdx
+```
+---
+## More solutions
+```{r}
+fction<- 3*problemsol$x + 2
+fction
+expectedval <- sum(fction*problemsol$px) #reason we use px is because py does not change from px in a linear transfromation
+expectedval
+variance<- sum((fction-expectedval)^2*problemsol$px)#variance
+sdy<- sqrt(variance) #standard deviation
+sdy
+```
+---
+```{r}
+### The interval
+expectval - 2*sdx; expectval + 2 * sdx
+problemsol$cdf[10]- problemsol$cdf[1]
+```
+---
+## Studied probability distributions
+- There have been some distributions which have been studied. We mentioned some such as the binomial, hypergeometric, negative binomial and poisson distributions.
+
+- For example,  The same fair die is tossed successively and independently 4 times. For each trial let X be the event that a “6” comes up. (P(X) = 1/6). What is the probability distribution of the number of times X occurs?
+
+- Each of 12 refrigerators of a certain type have been returned to the distributor because of a loud noise. Suppose that 7 of these have a defective compressor and 5 have a broken ice cube tray. The refrigerators will be examined one by one in random order. Let X be the number among the first 6 examined that have a defective compressor. Calculate:
+  - P(X= 5)
+  - $P(X\leq{4})$
+  - the expected value of X
+
+---
+## Studied Probability Distributions cont.
+
+- If there are twelve cars crossing a bridge per minute on average, find the probability of having seventeen or more cars crossing the bridge in a particular minute. 
+
+- Of these questions, number 1 follows a binomial distribution, 2 follows a hypergeometric distribution, and 3 follows a poisson distribution.
+
+- Throughout this section, we will spend time in deciding which problems follow which type of distribution
+
+---
+## Binomial Distribution
+
+- For a binomial distribution, the following conditions must be met:
+  
+  1. A fixed number of n trials where n is fixed ahead of the experiment.
+  2. Each trial can result in one of two outcomes which we can denote as success or failure.
+  3. The trials are independent (recall independence simply means that the occurrence of an event has no influence on the probability of another)
+  4. The probability of success P(S) is constant from trial to trial, also denoted as p (note this means there is a certain number of bernoulli trials occuring)
+
+- If these conditions are met, then the probability follows a binomial distribution and has the following pmf:
+$$P(X = k) = b(k,n,p) = \binom{n}{k}p^k(1-p)^{n-k}$$
+.center[for k = 0,1,...,n]
+---
+background-image: url(https://media2.giphy.com/media/xUPGcz2H1TXdCz4suY/giphy.gif)
+## Binomial Distributions and R
+
+- Thankfully, there is an R function to call it but which is it (I said it on an earlier slide)?
+
+---
+## Binomial distributions and R
+- The functions to calculate the pmf in R is dbinom(k,n,p) [see documentation on necessary arguments]
+
+- Lets try to see the logic behind the binomial distribution formula for the pmf.
+
+---
+## Example 
+- A particular telephone number is used to receive both voice calls and fax messages. Suppose that 20% of the incoming calls involve fax messages, and consider a sample of 20 incoming calls. (Round your answers to three decimal places.) What is the probability that exactly 7 of the calls involve a fax message?
+$p = .2$
+$n = 20$
+$k = 7$
+
+```{r}
+round(choose(20,7)*0.2^7*(1-.2)^(20-7),3) #the manual way with the formula
+
+round(dbinom(7,20,.2),3)# using the built in r function
+```
+---
+## Further qualities of the binomial distribution
+- Note, n and p are called the parameters of the distribution. Given these parameter the following hold for the binomial distribution.
+
+  - Expected value = $n \cdot{p}$
+  - Variance = np(1-p)
+  - sd = $\sqrt{np(1-p)}$
+
+- So for the binomial distribution in the previous question, we have the following:
+  - Expected value = 20* 0.2 = 0.4
+  - Variance = 20*0.2(1-0.2) = 0.4(0.8) = .32
+
+---
+## A look at the binomial distribution R functions
+
+-These are the following binomial distribution related functions in R
+  - dbinom(x, size, prob, log = FALSE) (this calculates the pmf)
+  - pbinom(q, size, prob, lower.tail = TRUE, log.p = FALSE)(calculates the cdf)
+  - qbinom(p, size, prob, lower.tail = TRUE, log.p = FALSE) (calculates the quantils)
+  - rbinom(n, size, prob) (generates a random sample from a binomial distribution)
+
+- to see the specific arguments, use the help function to read more into the arguments
+
+---
+## Hypergeometric distributions
+
+- When faced with a situation where we sample **without replacement**, the properties of a binomial distribution become violated so we need to look to other distributions.
+
+- One distribution which has been studied extensively is the hypergeometric distribution. If a problem follows a hypergeometric distribution, the following assumptions apply
+  
+  1. The population, or set to be sampled consists of N individuals, objects,or elements (which is finite)
+  2. Each individual can be categorized as a success or failure and the are m successes in the population
+  3. A sample of n individuals is selected **without replacement** in such a way that each subset of size n is equally likely to be chosen.
+  
+---
+
+## The hypergeometric distribution continued.
+- One famous application of the hypergeometric distribution is the urn problem where we have N items of which m are 1 type called success and n = N - m are of the type considered failures.
+
+- If k items are randomly selected from the urn then let X represent the number of successes. What is the probability of X = 0,1,...,k?
+
+- the density function for this distribution is the following:
+
+$$P(X = x) = \frac{\binom{m}{x}\binom{n}{k-x}}{\binom{m + n}{k}} = \frac{\binom{m}{x}\binom{N-m}{k-x}}{\binom{N}{k}}, x = 0,...,k$$
+---
+## R and the hypergeometric distribution
+- The density function for the hypergeometric distibution is also provided in R via the following
+
+  - dhyper(x, m, n, k, log = FALSE)
+  - phyper(q, m, n, k, lower.tail = TRUE, log.p = FALSE)
+  - qhyper(p, m, n, k, lower.tail = TRUE, log.p = FALSE)
+  - rhyper(nn, m, n, k)
+
+- To see the specific arguments, look at the manual page via ?
+
+- **Note: M is the number of successes S, n is the number of failures Fs and k is the sample size**
+
+---
+## Variance and Expected Values of the Hypergeometric Distribution
+- Following the text, the expected value of the hypergeometric distribution is 
+$$E(X) = n * \frac{M}{N}$$
+- The variance is defined as follows.
+$$V(X) = \frac{N - n}{N - 1}*n*\frac{M}{N}*(1-\frac{M}{N})$$
+- Considering this, how would we tranlate the formulas to R??
+
+---
+## The Variance and expected value in r for the hypergeometric distribution
+
+```{r}
+expectedvaluehyper <- function(k,m,n){k*(m/(m+n))}
+variancehyper <- function(k,m,n){(m+n-k)/(m+n-1)*k*(m/(m+n))*(1-(m/(m+n)))}
+#where k is the sample size
+```
+---
+## Example of the hypergeometric distribution
+- Draw 6 cards from a deck without replacement. What is the probability of getting two hearts?
+```{r}
+dhyper(2,13,39,6)
+```
+- A wallet contains 3 $100 bills and 5 1 dollar bills. You randomly choose 4 bills. What is the probability that you will choose exactly 2 100 dollar bills?
+```{r}
+dhyper(2,3, 5, 4)
+```
+
+---
+## More Examples
+- Out of 100 students qualifying an exam, 10 were drawn randomly. If 35 out of 100 qualified students are female, then find the probability that 6 out of 10 chosen are females.
+```{r}
+dhyper(6, 35, 65, 10)
+```
+
+- Each of 12 refrigerators of a certain type has been returned to  a  distributor  because  of  an  audible,  high-pitched,  oscillating noise when the refrigerators are running. Suppose that 7 of these refrigerators have a defective compressor and the other  5  have  less  serious  problems.  If  the  refrigerators are examined in random order, let X be the number among  the  first  6  examined  that  have  a  defective compressor. Compute the following:
+$P(X = 5)$
+$P(X\leq{4})$
+The expected value of X
+---
+## Fridge example
+```{r}
+## part 1
+x <- 5
+dhyper(x,7,5,6)
+#part 2
+phyper(4,7,5,6)### these are equivalent
+sum(dhyper(0:4,7,5,6))
+```
+---
+## Fridge example continued
+```{r}
+expectedvaluehyper(6,7,5) # expected value
+variancehyper(m = 7, n = 5, k = 6) #variance
+```
+---
+## The Negative Binomial Distribution
+- Properties of the negative binomial distribution
+  1. The experiment consists of a sequence of independent trials.
+  2. Each trial can result in success or failure.
+  3. the probability of success is constant from trial to trial so P(S on trial i) = p for i = 1,2,3,...
+  4. The experiment continues until a total number of r successes have been observed, where r is a specified positive integer.
+
+- In contrast to the binomial rv, the number of successes is fixed and the number of trials is random.
+
+---
+## Formulas for the negative binomial distribution
+- probability mass function
+$$\binom{x+r-1}{r-1}p^r(1-p)^x , x = 0,1,2,...$$
+
+- expected value
+$$\frac{r(1-p)}{p}$$
+
+- variance
+$$\frac{r(1-p)}{p^2}$$
+---
+background-image:url(https://media0.giphy.com/media/l3nWhI38IWDofyDrW/giphy.gif)
+## Can we guess which functions in R calculate the  pmfs and cdfs?
+- judging from the prior slides, can you guess the names of the functions?
+
+---
+## The R functions for the negative binomial distribution
+  - dnbinom(x, size, prob, mu, log = FALSE)
+  - pnbinom(q, size, prob, mu, lower.tail = TRUE, log.p = FALSE)
+  - qnbinom(p, size, prob, mu, lower.tail = TRUE, log.p = FALSE)
+  - rnbinom(n, size, prob, mu)
+  
+---
+## Example of the negative binomial rv
+- A pediatrician wishes to recruit 5 couples, each of whom is expecting their first child, to participate in a new natural childbirth regimen. Let p = P (a randomly selected couple agrees to participate). If p = .2, what is the probability that 15 couples must be asked before 5 are found who agree to participate? That is, with s = Agree to participate, what is the probability that 10 failures occur before the fifth s.
+```{r}
+x <- 10 #number of failures
+r <- 5 #number of successes
+p <- .2 #p from above
+dnbinom(x,r,p) # r way with built in function
+choose(x+r-1,r-1)*(1-p)^x* p^(r) #r way with user generated function
+```
+
+---
+## Further Example of a negative binomial rv
+- There are `r nrow(studentdata)` students in this class. If I want to pick 3 students whose major is computer science and p = 17/28, what is the probability that 5 students must be asked before I select 3 students who are computer science majors?
+
+```{r}
+x <- 5
+r <- 3
+p <- 17/28
+dnbinom(x,r,p)
+```
+
+---
+## Geometric RV's 
+- Assume we have a sequence of independent bernoulli trials with probability of success p. Let X be the independent random variable representing the number of failures until the first success. Then X is a random geometric variable and the probability density function of x is 
+$$p(x,p) = \{^{(1-p)^x*p, x = 0,1,2,3....}_{0, otherwise}$$
+- With expected value
+$$\frac{(1-p)}{p}$$
+- With Variance
+$$\frac{(1-p)}{p^2}$$
+---
+## Geometric Distribution and R
+- dgeom(x, prob, log = FALSE)
+- pgeom(q, prob, lower.tail = TRUE, log.p = FALSE)
+- qgeom(p, prob, lower.tail = TRUE, log.p = FALSE)
+- rgeom(n, prob)
+
+- **NOTE R's dgeom represents the number of failures until the 1st success which is always 1 less than the number of trials until the 1st success**
+
+---
+## Geometric Distributions example
+- A fair die is tossed until the first ‘3’ appears. What is the probability that the first ‘3’ appears on the 5th toss? What is the probability that it would take more than 6 rolls for the first 3 to appear?
+
+```{r}
+#part 1 
+dgeom(4,1/6)
+
+#part2
+pgeom(5,1/3, lower.tail = FALSE)
+```
+---
+## Poisson Distribution
+- A discrete random variable is said to have a Poisson Distribution with parameter $\mu{(\mu\gt{0})}$ if the pmf of x is 
+$$p(x,\mu) = \frac{e^{-\mu}*\mu^x}{x!}$$
+- Further, the probability of more than 1 event in very short intervals is approximately 0.
+
+- The number of events in an interval is independent of the number of the events prior to this interval. This indicates that the process has "no memory" or that the process is restartable.
+
+---
+## Poisson Distribution continued:
+- In the poisson model, we are interested in the number X of events which occur in a given time period or a given physical space.
+
+- $\lambda$ is the average number of events which occur in the physical space. The rate $\alpha$ is the average number of events which occur in a unit time period or unit space.
+
+- $\lambda = \alpha{t}$ is proportional to the length of the interval or size of the space.
+
+- If X is poisson, with parameter $\alpha$ for time period 1, then the same process Y considered for time period t will be poisson with a parameter of $\lambda = \alpha{t}$. Same for space 1 vs space t.
+---
+## R functions to approximate the poisson distribution
+
+- dpois(x, lambda, log = FALSE)
+- ppois(q, lambda, lower.tail = TRUE, log.p = FALSE)
+- qpois(p, lambda, lower.tail = TRUE, log.p = FALSE)
+- rpois(n, lambda)
+
+---
+## Examples of the poisson process
+- The number of requests for assistance received by a towing service is a Poisson process with rate $\alpha = 4$ per hour.
+  - Compute the probability that exactly 10 requests are processed during a particular 2 hour period.
+  - If the operators of the towing service take a 30-min break for  lunch,  what  is  the  probability  that  they  do not  miss any calls for assistance?
+  - How many calls would you expect during their break?
+
+```{r}
+#part 1
+dpois(10,8) # remember, alpha times t = lambda
+#part 2
+dpois(0,2)
+#part 3
+#remember E(x) = lambda for the poisson distribution and so does V(X)
+```
+---
+## Other properties of the binomial distribution
+- Five percent (5%) of Christmas tree light bulbs manufactured by a company are defective. The company's Quality Control Manager is quite concerned and therefore randomly samples 100 bulbs coming off of the assembly line. Let X denote the number in the sample that are defective. What is the probability that the sample contains at most three defective bulbs?
+```{r}
+pbinom(3,100,.05)
+```
+```{r}
+ppois(3,5)
+```
+- NOTE: the poisson distribution is excellent to approximate binomial distributions if n is large and p is small. If so $\lambda = np$ 
