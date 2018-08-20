@@ -30,6 +30,9 @@ At the end of the course, students are expected to have a strong grasp on the fo
 # Grading Rubric:
 There will be 3 quizzes, online homework, several R projects, and a final exam. Homeworks will constitute 15% of the grade with the lowest homework grade being dropped. The quizzes and R projects will constitute 30 percent of the final grade or 15 percent each. The final exam will constitute the remaining 20 percent of the grade. Grades in this course will be curved.
 
+# Labs:
+Although optional, I will provide students with an opportunity on Tuesdays to come to class and learn more in regards to R and how to use it as a valuable tool throughout the course. I strongly encourage students who wish to learn more about the functions in R and how to do some basic programming tasks. Labs will be focused on addressing student concerns regarding R as well as cover some of the foundational structures.
+
 # Collaboration:
 Although not graded, I encourage you to work with study partners to solve problems and create a culture of collaboration. If students choose to work with others, they must submit the original solutions and list all collaborators and sources of information consulted. This class will also have a discussion board where students will be able to communicate with one another to solve problems. In these discussions, please refrain from posting answers to assignments. Rather, appropriate collaboration should clarify what's being asked, shed light on a topic, or direct others to the relevant material. 
 
@@ -39,12 +42,13 @@ Although subject to change, the schedule for this course is as follows.
 library(tidyverse)
 library(kableExtra)
 
-syllabus <- tibble(Week = c(1,2), 
-                   Topic = c("Crash Course in R, integrals, and descriptive statistics", "Probability - experiments, sample spaces, axioms of probability, proving results from axioms, multiplication principle, permutations, and combinations"),
-                  Text = c("Read `A very (short) introduction to R' from https://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf, sections 3-8 of the Introduction to Integration Part 1: Anti-Differentiation (https://sydney.edu.au/stuserv/documents/maths_learning_centre/integration_part1.pdf) and sections 2-5  Introduction to Integration Part 2:The Definite Integral (https://sydney.edu.au/stuserv/documents/maths_learning_centre/integration_part2.pdf) ", "chapter 2 in Devore"))
+syllabus <- tibble(Week = c(1:5), 
+                   Topic = c("Crash Course in R, integrals, and descriptive statistics", "Probability - experiments, sample spaces, axioms of probability, proving results from axioms, multiplication principle, permutations, and combinations", "Discrete random variables and their distributions: probability mass functions,cumulative distribution function, expected values, variance, standard deviations and binomial distributions",
+                             "hypergeometric distributions, geometric distributions, poisson distributions,negative binomial distributions","Quiz 1: chapters 1-3"),
+                  Text = c("Read `A very (short) introduction to R' from https://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf, sections 3-8 of the Introduction to Integration Part 1: Anti-Differentiation (https://sydney.edu.au/stuserv/documents/maths_learning_centre/integration_part1.pdf) and sections 2-5  Introduction to Integration Part 2:The Definite Integral (https://sydney.edu.au/stuserv/documents/maths_learning_centre/integration_part2.pdf) ", "chapter 2 in Devore",
+                           "Chapter 3 in Devore (up to section 3)","Chapter 3 sections 4-6", "No reading due"))
 
 
 kable(syllabus) %>% 
   kable_styling(bootstrap_options = "striped")
-install.packages("xaringan-themes")
 ```
