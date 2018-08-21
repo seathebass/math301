@@ -1,0 +1,261 @@
+---
+title: "Continuous Random Variables and Probability Distributions"
+author: "Sebastian Hoyos-Torres"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: robot
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(tidyverse)
+```
+## Refresher on types of random variables
+- Remember, a discrete random variable can take on a finite set of values or a countable infinite set of values
+
+- However, if a random variable X is continuous, it will have possible values comprise either a single interval on the number line (for some A$\lt$B, any number X between A and B is a possible value) or a union of disjoint intervals and P(X = c) = 0 for any number c that is a possible value of X.
+
+- Some examples of continuous data are:
+  - Amount of rain (in inches), that falls during a storm in NYC.
+  - Weight in pounds of a dog
+  - Waiting time for the MTA trains
+
+---
+## Why we covered some calculus in section 1
+- Probability density function of a continuous random variable is defined as the area under the curve.
+
+- The formula for the probability density function of a continuous random variable X is a function f such that
+  1. $f(x) \geq{0} for all x$
+  2. $\int^{\infty}_{infty}f(x)dx = 1$
+
+- and such that for any two numbers $a \leq{b}$
+$$P(a\leq{X}\leq{b} = \int_a^bf(x)dx$$
+
+- a probability defined as above has all properties of a probability as studied previously. Implicit in this definition is that for any single value v, the probability P(X = v) = 0.
+
+---
+## How it looks
+```{r, echo=FALSE,fig.align='center'}
+dat <- with(density(rnorm(10000)), data.frame(x, y))
+dat %>% 
+  ggplot(aes(x,y))+
+  geom_line()+
+  geom_area(aes(x = ifelse(x >= -1 & x <= 1,x,0),fill = "red"))+
+  scale_y_continuous(limits = c(0,max(dat$y)))+
+  labs(x = "value",y = "probability", title = "Area between -1 and 1")+
+  geom_vline(xintercept = c(-1,1), lty = "dashed")+
+  theme_minimal()
+```
+---
+## Mixed Random Variables
+- There are random variables which are neither discrete nor continuous. These variables are called "mixed". One consequence of using the integrals of density functions is that this is that the probability of any single value is always 0.
+---
+## More on probability density functions
+- The probability density function can be viewed as a limit of discrete histograms. Consider lake depth measurement. We can discretize X by measuring to the nearest meter. The histograms then represent proportions of lake in the depth category. The total of all proportions = 1. The limiting function is also the probability density function.
+---
+## Uniform Distributions
+- One type of continuous random variable is the uniform distribution
+```{r,echo=FALSE, fig.align="center", fig.height=3}
+unifdata <-tibble(index = 1:100000,xval = runif(100000))
+unifdata %>% 
+  ggplot(aes(xval))+
+  geom_histogram()+
+  labs(title = "Random uniform value counts")+
+  theme_minimal()
+```
+- A continuous random variable X is said to have a uniform distribution on the interval [A,B] then the probability density function of X is 
+$$f(x;A,B) = \{^{\frac{1}{B-A}, A\leq{x}\leq{B}}_{0, otherwise}$$
+---
+##CDF, Variance, and expected value
+- The cumulative density function of X is 
+$$f(x;A,B) = \begin{cases}
+0, & \text{$x\leq{A}$}\\
+\frac{x-A}{B-A}, & \text{$A\leq{x}\leq{B}$}\\
+1, & \text{$x\geq{B}$}
+\end{cases}$$
+
+- The Expected value of a uniform distribution is 
+$$E(X) = \frac{A+B}{2}$$
+- The variance is 
+$$V(X) = \frac{(B-A)^2}{12}$$
+---
+## The R translation for the uniform distribution functions
+- As in the prior class, these are the functions to calculate these in R
+
+- dunif(x, min = 0, max = 1, log = FALSE)
+- punif(q, min = 0, max = 1, lower.tail = TRUE, log.p = FALSE)
+- qunif(p, min = 0, max = 1, lower.tail = TRUE, log.p = FALSE)
+- runif(n, min = 0, max = 1)
+
+```{r}
+expectedunif <- function(A,B){(A+B)/2}
+Varianceunif <- function(A,B){(B-A)^2/12}
+```
+---
+## Example of the uniform distribution
+- Assume the waiting time,X, for a professor is uniformly distributed on the interval [0,5] minutes after the start of class. what is the probability that class starts 3 minutes after the official start of class? What is the probability that class starts between 2 to 4 minutes after the official start of class?
+
+```{r}
+#part 1
+dunif(3,0,5)
+#part2
+punif(4,0,5)-punif(2,0,5)
+## or
+integrate(function(x){dunif(x,0,5)},2,4)
+```
+---
+## Plot of previous problem part 2
+```{r, echo=FALSE}
+x <- seq(-1,10,0.01)
+unifprobexample <- tibble(xval = x, probability = dunif(xval,0,5))
+unifprobexample %>% 
+  ggplot(aes(xval, probability))+
+  geom_line()+
+  geom_area(aes(x = ifelse(xval >= 2 & xval <= 4, xval,0), fill = "red"))+
+  scale_y_continuous(limits = c(0, max(unifprobexample$probability)))+
+  theme_minimal()
+```
+---
+## Using R to calculate definite integrals
+- We can use R to calculate definite integrals through the integrate command
+- integrate(f, lower, upper, ..., subdivisions = 100L,
+          rel.tol = .Machine$double.eps^0.25, abs.tol = rel.tol,
+          stop.on.error = TRUE, keep.xy = FALSE, aux = NULL)
+
+```{r}
+integralresult <- integrate(function(x){dunif(x,0,1)},.2,.5)
+### note the structure of the result you can use either str() or glimpse
+integralresult %>% 
+  glimpse()
+#typically we will be interested in the value. To access the value, we can use $ or [[]]
+integralresult$value
+integralresult[["value"]]
+```
+---
+## Important Note
+
+- Note R does not perform symbolic integration but can perform definite integrals.
+
+---
+## The cumulative distribution function
+- The cumulative distribution function X for a continuous random variable X is defined by every numeber x by
+$$F(x) = P(X \lt{x})=\int_{-\infty}^{\infty}f(y)dy$$
+
+- For each x, F(x) is the area under the density curve to the left of x (remember, this is the case for cumulative distributions). From this we see that f(x) = F(x) at every x at which F(x) exists.
+$$F(x) = \int_{-\infty}^{x}f(y)dy= \int_{A}^{x}\frac{1}{B-A}dy= \frac{x-A}{B-A}$$
+
+- For $x \lt{A}$, F(x) = 0. For $x \geq{B}$, F(x) = 1. If we are given this F(x) to begin with, we can get f(x) by taking the derivative.
+
+---
+## Probabilities and the cdf
+- Let X be a continuous rv with pdf f(x) and cdf F(x). Then for any number $\alpha$
+$$P(X \gt{\alpha})= 1- F(\alpha)$$
+
+- For any two numbers $\alpha$ and $\beta$ with $\alpha\lt{b}$
+$$P(\alpha \leq{X}\leq{b}) = F(b) - F(a)$$
+
+---
+## Example
+- Suppose the cdf of the magnitude X is given by 
+$$F(x) = \begin{cases}
+0, & \text{$x\lt{0}$} \\
+\frac{x}{8} + \frac{3}{16}x^2, & \text{$0\leq{X}\leq{2}$} \\
+1, & \text{$2\lt{X}$}
+\end{cases}$$
+
+- The probability that the load is between 1 and 1.9 is
+$F(b)-F(a) = F(1.9) - F(1) = 0.297$
+
+---
+## Uniroot and differentiation
+If we have the cdf of a random variable X, say:
+$$F(x) = \begin{cases}
+0, & \text{$x\lt{0}$}\\
+\frac{1}{8} + \frac{6}{16}x, & \text{$0\leq{x}\leq{2}$}\\
+0, & \text{x\gt{2}}$$
+
+```{r}
+functionpdf <- function(x){1/8 + (6/16)*x}
+functioncdf <- function(x){x/8 + (3/16)*x^2}
+functioncdf(1.5) - functioncdf(1)
+#or using the pdf 
+integrate(functionpdf,lower =  1,upper =1.5)
+```
+---
+## Uniroot continued
+- Suppose we wanted to find the median value
+```{r}
+uniroot(function(x){functioncdf(x)-.5},c(0,2)) # this finds the root value using a crude bisection method.
+uniexample <- uniroot(function(x){functioncdf(x)-.5},c(0,2))
+functioncdf(uniexample[["root"]]) # this turns out to be approximately 50 percent prob/ the median.
+```
+---
+## Percentiles of a continuous distribution
+- Typically when we refer to percentiles, we refer to people being above or below a certain percentile. 
+
+- One traditional example is in the test. For example, if you scored in the 85th percentile, we typically say that 15 percent of test takers scored above you while 85 percent scored below.
+
+- Taking it further, let p be a number between 0 and 1. The (100p)th percentile of the distribution of a continuous rv X, denoted by n(p) is defined by:
+$$F(n(p)) = \int_{-\infty}^{n(p)}f(y)dy$$
+- The median/ 50th percentile is located where 50 percent of the values fall under (and above). The median is thus one measure of central tendency of a distribution.
+---
+## Percentiles in R
+- In case you were wondering about one of the functions we didn't cover so far when it came to distributions, namely those that start with a q, the wait is over.
+
+- In R, functions which start with a q generate estimates of the percentile. For example, lets say we wanted to find the value in the 85th percentile of a standardized normal distribution. With R we could either do
+```{r}
+qnorm(.85)
+# or
+uniroot(function(x)pnorm(x) - .85, c(0,5))$root 
+```
+
+---
+## Mean of a continuous random variable
+- A different characterization of the center of the distribution is the expected value or mean of X
+$$E(X) = \int_{-\infty}^{\infty}f(x)dx$$
+- a symmetric or continuous distribution means that the density curve to the left is a mirror image of the density curve to the right of that point. Both the mean and median are equal to the point of symmetry.
+
+---
+## Expected value of a function of a rv.
+- If X is a rv with pdf f(x) and h(X) is any function of X, then 
+$$E[h(X)] =\int_{-\infty}^{\infty}h(x)*f(x)dx$$
+- for h(X), a linear function
+$$E(aX+b = aE(x) + b$$
+---
+## Example
+- Two species are competing for control of a certain resource. Let X be the proportion controlled by species 1 and suppose X has a uniform distribution on [0,1]. Then the species that controls the majority of the resources controls the amount (Devore, 149).
+$$h(x) = max(X,1-X)$$
+$$E[h(x)] = \int_{-\infty}^{\infty}max(x,1-x)*f(x)dx$$
+$$\int_0^1max(x,1-x)*1dx$$
+$$\int_0^{1/2}(1-x)dx+\int_{1/2}^{1}xdx=$$
+$$\frac{3}{4}$$
+---
+## Doing it in R
+```{r}
+functionmax <- function(x){pmax(x,1-x)} #or h in the equation
+#plot using ggplot
+ggplot(tibble(x = c(0,1)),aes(x))+
+  stat_function(fun = functionmax)
+integrate(functionmax,0,1)$value
+variancemax <- integrate(function(x){(x-.75)^2*functionmax(x)},0,1)
+variancemax$value
+sqrt(variancemax[["value"]])#standard deviation
+```
+
+---
+## Variance of a continuous random variable
+- Although we just explored it in R briefly, the variance of a continuous random variable x with pdf f(x) and mean value $\mu$ is 
+$$V(X) = \int_{-infty}^{\infty}(x-\mu)^2f(x)dx$$
+- The standard deviation of an expected random variable X is 
+$$\sigma^2_X = \sqrt{V(X)}$$
+
+- The Variance and the standard deviation describe the spread of the distribution.
+
+- A shortcut formula for the variance is 
+$$E(X^2)-[E(X)]^2$$
