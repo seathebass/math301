@@ -1,23 +1,20 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>A Crash lesson in R, Integration, and descriptive statistics</title>
-    <meta charset="utf-8">
-    <meta name="author" content="Sebastian Hoyos-Torres" />
-    <link href="libs/remark-css/default.css" rel="stylesheet" />
-    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
-  </head>
-  <body>
-    <textarea id="source">
-class: center, middle, inverse, title-slide
-
-# A Crash lesson in R, Integration, and descriptive statistics
-### Sebastian Hoyos-Torres
-
+---
+title: "A Crash lesson in R, Integration, and descriptive statistics"
+author: "Sebastian Hoyos-Torres"
+date: ""
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
 ---
 
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
 
-
+```
 
 ### Welcome!
 - Why this class? 
@@ -33,25 +30,19 @@ class: center, middle, inverse, title-slide
 
 - Once you get the hang of R, you should be able to figure out problems much quicker than working the problem out by hand
 
-- For example, let's say we had a vector of values from 0-100 and wanted to add the values together. Using a calculator, this process would look like `\(0 +1 + 2 + 3+...100\)` .
+- For example, let's say we had a vector of values from 0-100 and wanted to add the values together. Using a calculator, this process would look like $0 +1 + 2 + 3+...100$ .
 
 in R, you could solve this problem relatively quickly
-
-```r
-x &lt;- c(0:100) # this creates an array of values from 0 to 100
+```{r}
+x <- c(0:100) # this creates an array of values from 0 to 100
 sum(x) #this command adds all of the values together and gives you the answer you're looking for
-```
-
-```
-## [1] 5050
 ```
 ---
 ### What you need to know:
 - This all said, although the class does require you to learn how to use R; it does **not** require mastery of R.
 
 - We should start with the simplest data structure in R, the vector
-
-```r
+```{r,eval=FALSE}
 is.atomic(1)||is.list(1) #returns true. R does not use scalars
 
 #although there are things that seem to behave like scalars like the following
@@ -65,19 +56,17 @@ is.atomic(1)||is.list(1) #returns true. R does not use scalars
 - Atomic vectors come in the following flavors: logical, integer, character, double, and character
 
 - We will mostly use integer and doubles in the course to avoid confusion
-
-```r
-dbl_vector &lt;- c(1,2,3,4,5)
-chr_vector &lt;- c("cat","dog","apple")
-log_vector &lt;- c(TRUE, FALSE,FALSE)
-int_vector &lt;- c(1L,2L,3L)
+```{r}
+dbl_vector <- c(1,2,3,4,5)
+chr_vector <- c("cat","dog","apple")
+log_vector <- c(TRUE, FALSE,FALSE)
+int_vector <- c(1L,2L,3L)
 ```
 ---
 ### R and vector behavior:
 - Although it is not the focus of the class, it should be noted that R can exhibit some interesting features which may lead to some problems.
   - First, let's look at these examples:
-
-```r
+```{r, eval=FALSE}
 .1 == .3/3
 
 seq(0,1, by -.1) == .3
@@ -90,9 +79,9 @@ FALSE + FALSE + FALSE
 
 1 == "1"
 
-"one" &lt; 2
+"one" < 2
 
-"3" &lt; 2
+"3" < 2
 ```
 - What do you think the results will be without putting these into R? 
 
@@ -110,26 +99,21 @@ FALSE + FALSE + FALSE
 
 - Base R would require teaching syntax such as $ and [[]], loops, and conditionals, data types. 
 
-- tidy allows us to use popular packages such as ggplot2 and magrittr's %&gt;% so we will use a mixture of both in this course (this requires you use tidyverse so you should probably install it).
+- tidy allows us to use popular packages such as ggplot2 and magrittr's %>% so we will use a mixture of both in this course (this requires you use tidyverse so you should probably install it).
 
 ---
 ### Functions
 - most functions that we write out by hand can be written directly into R
 
-- We are familiar with the formula for the mean being `\(\frac{\Sigma x_i}{n}\)`
+- We are familiar with the formula for the mean being $\frac{\Sigma x_i}{n}$
 
 - This is directly translatable into R
-
-```r
-formula_for_average &lt;- function(x){
+```{r}
+formula_for_average <- function(x){
   sum(x)/length(x) #this is directly equivalent to the mathematical formula
 }
-samples &lt;- rnorm(100) #we'll delve into these functions later in the semester
+samples <- rnorm(100) #we'll delve into these functions later in the semester
 formula_for_average(samples)# use the average
-```
-
-```
-## [1] -0.01575981
 ```
 ---
 ### Functions continued...
@@ -139,8 +123,7 @@ formula_for_average(samples)# use the average
 
 - If you ever have a question on an r function that has already been defined, use ? before the function
 
-
-```r
+```{r,eval=FALSE}
 ?rnorm #for those who are curious as to what rnorm does
 ```
 ---
@@ -148,15 +131,14 @@ formula_for_average(samples)# use the average
 - Understanding what integrals do will help in understanding probability distributions in the future
 
 - For example, take the following function from the interval of 0-1
-`\(f(x) = x^2\)`
+$f(x) = x^2$
 when we integrate the function, we do the following
 
-`$$\int_0^1x^2dx = [\frac{1}{3}x^3]_0^1 = (\frac{1}{3}(1))-(\frac{1}{3}(0)) = \frac{1}{3}$$`
+$$\int_0^1x^2dx = [\frac{1}{3}x^3]_0^1 = (\frac{1}{3}(1))-(\frac{1}{3}(0)) = \frac{1}{3}$$
 ---
-
-```r
+```{r,warning=FALSE, message=FALSE, fig.align="center", fig.height=3}
 library(tidyverse)
-fun1 &lt;- function(x){x^2}
+fun1 <- function(x){x^2}
 ggplot(NULL, aes(c(0,2)))+
   stat_function(fun = fun1)+
   geom_area(stat = "function",fun = fun1,xlim = c(0,1), fill = "red")+
@@ -164,8 +146,6 @@ ggplot(NULL, aes(c(0,2)))+
        y = "y-axis",
        title = "Integral of x")
 ```
-
-&lt;img src="week1_files/figure-html/unnamed-chunk-7-1.png" style="display: block; margin: auto;" /&gt;
 ---
 ### How will integrals be used in this course?
 - later on in this course, we will use integrals to interpret the probability density and cumulative density functions of multiple distributions. 
@@ -174,16 +154,11 @@ ggplot(NULL, aes(c(0,2)))+
 
 - let's try the previous example using R
 
-
-```r
-functiontointegrate &lt;- function(x){
+```{r}
+functiontointegrate <- function(x){
   x^2
 }
 integrate(functiontointegrate,0,1) #this gives us 1/3 as well
-```
-
-```
-## 0.3333333 with absolute error &lt; 3.7e-15
 ```
 ---
 ### Applications, Part 1
@@ -207,7 +182,7 @@ integrate(functiontointegrate,0,1) #this gives us 1/3 as well
 - Those people have not taken this class.
 
 - Given the information, we would approach the problem using Bayes Theorem.
-`$$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$`
+$$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
 
 ---
 ### Bayes Cont.
@@ -220,17 +195,12 @@ We can solve this manually or through R after we finished identifying the necess
 ---
 ### Bayes and R
 - Remember, you can always define functions in R to do your computations. Be careful with the formulas!
-
-```r
-bayes &lt;- function(A,B,BA){
+```{r}
+bayes <- function(A,B,BA){
   (BA*A)/(B)
 }
 
 bayes(.49,.8,.95) #just remember to assign the right arguments
-```
-
-```
-## [1] 0.581875
 ```
 ---
 ### Descriptive statistics
@@ -260,41 +230,31 @@ and the Blue(all cabs blue), operate in the city. The following facts are known:
 ### Simulation of taxi cab
 - Let's say there were 1000 cabs in the city. Following the problem, 850 are green and 150 are blue (85 percent green, 15 percent blue)
 - If the cab was blue, the witness would say blue 80 percent of the time or for 20 percent of the green cabs (chance he makes a mistake). This looks as follows in R
+```{r}
+green <- 850
+blue <- 150
+chancebluecorrect <- .8
+chanceblueincorrect <- 1-.8
 
-```r
-green &lt;- 850
-blue &lt;- 150
-chancebluecorrect &lt;- .8
-chanceblueincorrect &lt;- 1-.8
-
-blueasblue &lt;- blue*chancebluecorrect #turns out to be 120 blue identified correctly
-blueasgreen&lt;- green*chanceblueincorrect #turns out to be 170
+blueasblue <- blue*chancebluecorrect #turns out to be 120 blue identified correctly
+blueasgreen<- green*chanceblueincorrect #turns out to be 170
 #of blue answers, we see that the person would identify 170 incorrectly
 #if person correctly identifies 120 cabs correctly, then:
-totblueidentified &lt;- blueasblue+blueasgreen
+totblueidentified <- blueasblue+blueasgreen
 
 paste(round(blueasblue/totblueidentified*100,2),"%")
 ```
-
-```
-## [1] "41.38 %"
-```
 ---
-
-```r
+```{r}
 #Bayes Theorem applied (for those curious)
-pblue &lt;- .15
-pgreen &lt;- .85
-pblueidblue &lt;- .8
-pgreenidblue &lt;- .2
+pblue <- .15
+pgreen <- .85
+pblueidblue <- .8
+pgreenidblue <- .2
 
 #law of total probability = P(B) = P(B|A)*P(A) + P(B|AC)*P(AC)
-pidbluecorr&lt;- (pblueidblue*pblue) + (pgreenidblue*pgreen)
+pidbluecorr<- (pblueidblue*pblue) + (pgreenidblue*pgreen)
 pblueidblue*pblue/pidbluecorr
-```
-
-```
-## [1] 0.4137931
 ```
 ---
 ### Enumerative Study
@@ -318,15 +278,10 @@ pblueidblue*pblue/pidbluecorr
 ### Sampling in R
 - Computers are great for selecting a random sample and thus, here is how to sample in R. 
 
-
-```r
-x &lt;- 1:20
+```{r}
+x <- 1:20
 
 sample(x,5)
-```
-
-```
-## [1] 17 15 12  5  7
 ```
 
 ---
@@ -335,103 +290,22 @@ sample(x,5)
 
 - let's try it out
 
-
-```r
-x &lt;- rnorm(100, mean = 50,sd = 10 )
-x %&gt;% mean() #gets the mean
-```
-
-```
-## [1] 51.15403
-```
-
-```r
-x %&gt;% median() #summarizes the median
-```
-
-```
-## [1] 51.68052
-```
-
-```r
-x %&gt;% summary()#all summary output.
-```
-
-```
-##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   25.36   44.04   51.68   51.15   57.08   77.33
+```{r}
+x <- rnorm(100, mean = 50,sd = 10 )
+x %>% mean() #gets the mean
+x %>% median() #summarizes the median
+x %>% summary()#all summary output.
 ```
 ---
 ### Descriptive plots
-
-```r
+```{r,message=FALSE,warning=FALSE}
 stem(x)#stem and leaf plot
-```
-
-```
-## 
-##   The decimal point is 1 digit(s) to the right of the |
-## 
-##   2 | 57
-##   3 | 02333447889
-##   4 | 11112233333444555667788888999
-##   5 | 0000011222333444455555566666677777899999
-##   6 | 0000112467888
-##   7 | 02247
 ```
 ---
 ### Descriptive plots cont
+```{r,message=FALSE,warning=FALSE}
 
-```r
 qplot(x,geom = "histogram") #could also use hist(x)
+
 ```
 
-![](week1_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
-    </textarea>
-<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
-<script>var slideshow = remark.create({
-"highlightStyle": "github",
-"highlightLines": true,
-"countIncrementalSlides": false
-});
-if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
-  window.dispatchEvent(new Event('resize'));
-});
-(function() {
-  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
-  if (!r) return;
-  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
-  d.head.appendChild(s);
-})();</script>
-
-<script>
-(function() {
-  var i, text, code, codes = document.getElementsByTagName('code');
-  for (i = 0; i < codes.length;) {
-    code = codes[i];
-    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
-      text = code.textContent;
-      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
-          /^\$\$(.|\s)+\$\$$/.test(text) ||
-          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
-        code.outerHTML = code.innerHTML;  // remove <code></code>
-        continue;
-      }
-    }
-    i++;
-  }
-})();
-</script>
-<!-- dynamically load mathjax for compatibility with self-contained -->
-<script>
-(function () {
-  var script = document.createElement('script');
-  script.type = 'text/javascript';
-  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
-  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
-    script.src  = script.src.replace(/^https?:/, '');
-  document.getElementsByTagName('head')[0].appendChild(script);
-})();
-</script>
-  </body>
-</html>
