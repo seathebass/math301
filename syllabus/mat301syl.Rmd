@@ -1,23 +1,38 @@
 ---
 title: "Mat 301 Syllabus Fall 2018"
 author: "Sebastian Hoyos-Torres"
-output: html_document
-theme: journal
-fontsize: 12pt
 geometry: margin = 1in
+output:
+  html_document: default
+number_sections: yes
 header-includes:
 - \usepackage{placeins}
 - \usepackage{setspace}
 - \usepackage{chngcntr}
 - \doublespacing
-number_sections: yes
+- \usepackage{booktabs}
+- \usepackage{longtable}
+- \usepackage{array}
+- \usepackage{multirow}
+- \usepackage[table]{xcolor}
+- \usepackage{wrapfig}
+- \usepackage{float}
+- \usepackage{colortbl}
+- \usepackage{pdflscape}
+- \usepackage{tabu}
+- \usepackage{threeparttable}
+- \usepackage{threeparttablex}
+- \usepackage[normalem]{ulem}
+- \usepackage{makecell}
+theme: journal
+fontsize: 12pt
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 # Description:
-This course focuses on probability theory needed to understand statistical inference. Within this course, students will undergo an introduction to probability theory, independence and conditional probabilities including Bayes' Theorem. Following this introduction,  Several discrete (binomial, hypergeometric, negative binomial, Poisson) and continuous (Normal, exponential, gamma, uniform) probability distributions will be studied including the concept of a distribution function, probability mass and density functions, expected value, variance, and standard deviation. Joint probability and sampling distributions will then follow. The course will then examine how to apply the probabilities learned to concepts such as a point estimate, confidence interval, hypothesis test, and regressions. This course will also apply many probabilistic concepts to real world applications to demonstrate how many probabilistic concepts are used in the field. Notes for each topic will be found in the blackboard page for this course. Students will also be expected to install R and will be guided on how to use it to address different probability questions. 
+This course focuses on probability theory needed to understand statistical inference. Within this course, students will undergo an introduction to probability theory, independence and conditional probabilities including Bayes' Theorem. Following this, several discrete (binomial, hypergeometric, negative binomial, Poisson) and continuous (Normal, exponential, gamma, uniform) probability distributions will be studied including the concept of a distribution function, probability mass and density functions, expected value, variance, and standard deviation. Joint probability and sampling distributions will follow. The course will then examine how to apply the probabilities learned to point estimates, confidence intervals, hypothesis tests, and regressions. This course will also apply many probabilistic concepts to real world applications to demonstrate how many probabilistic concepts are used in the field. Notes for each topic will be found in the blackboard and github page for this course. Students will also be expected to install R and will be guided on how to use it to address different probability questions. 
 
 # Objectives:
 At the end of the course, students are expected to have a strong grasp on the following:
@@ -31,7 +46,10 @@ At the end of the course, students are expected to have a strong grasp on the fo
 There will be 3 quizzes, homework, R projects, and a final exam. Homeworks will constitute 20% of the grade. The R projects will constitute 20 percent of the final grade altogether. Additionally, the quizzes and final exam will constitute the remaining 60 percent of the grade with the lowest quiz score being dropped.
 
 # Labs:
-Although optional, I will provide students with an opportunity on Tuesdays to come to class and learn more in regards to R and how to use it as a valuable tool for probability. I strongly encourage students who wish to learn more about the functions in R and how to do some basic programming tasks. Labs will be focused on addressing student concerns regarding R as well as cover some of the foundations.
+Although optional, I will provide students with an opportunity on Tuesdays to come to class (This still needs to be arranged) or establish a forum online where we will learn more in regards to R and how to use it as a tool for probability. I strongly encourage students who wish to learn more about the functions in R and how to do some basic programming tasks to take advantage of this. Labs will be focused on addressing student concerns in R as well as covering some of the foundations of analysis.
+
+# Random Number Generator:
+By being in this class, you consent to having your name placed in a random number generator which will be used primarily to pick on students if I have a question and no one wishes to participate.  
 
 # Collaboration:
 Although not graded, I encourage you to work with study partners to solve problems and create a culture of collaboration. If students choose to work with others, they must submit the original solutions and list all collaborators and sources of information consulted. This class will also have a discussion board where students will be able to communicate with one another to solve problems. In these discussions, please refrain from posting answers to assignments. Rather, appropriate collaboration should clarify what's being asked, shed light on a topic, or direct others to the relevant material. 
@@ -43,7 +61,7 @@ As provided by the CUNY [guidelines](http://www2.cuny.edu/about/administration/o
 Americans with Disabilities Act (ADA) Policies: Qualified students with disabilities will be provided reasonable academic accommodations if determined eligible by the Office of Accessibility Services (OAS).  Prior to granting disability accommodations in this course, the instructor must receive written verification of a student’s eligibility from the OAS, which is located Room L.66 NB (212-237-8031).  It is the student’s responsibility to initiate contact with the office and to follow the established procedures for having the accommodation notice sent to the instructor. 
 
 # Github and Blackboard:
-This class has both a github and blackboard page where material will be made to students. In addition to having the lecture notes for the class available for people to see; both github and blackboard can be used by students to ask questions and generate a forum where students can discuss and offer further material. The link to the github page for this course is: https://github.com/seathebass/math301 and the blackboard can be accessed through the regular methods.
+This class has both a github and blackboard page where material will be made available to students. In addition to having the lecture notes and slides for the class available for people to see; both github and blackboard can be used by students to ask questions and generate a forum where students can discuss and offer further material. The link to the github page for this course is: https://github.com/seathebass/math301 and blackboard can be accessed through the regular methods.
 
 # Course Schedule:
 Although subject to change, the schedule for this course is as follows.
@@ -51,11 +69,10 @@ Although subject to change, the schedule for this course is as follows.
 library(tidyverse)
 library(kableExtra)
 
-syllabus <- tibble(Week = c(1:5), 
-                   Topic = c("Crash Course in R, integrals, and descriptive statistics", "Probability - experiments, sample spaces, axioms of probability, proving results from axioms, multiplication principle, permutations, and combinations", "Discrete random variables and their distributions: probability mass functions,cumulative distribution function, expected values, variance, standard deviations and binomial distributions",
-                             "hypergeometric distributions, geometric distributions, poisson distributions,negative binomial distributions","Quiz 1: chapters 1-3"),
+syllabus <- tibble(Week = c(1:17), 
+                   Topic = c("Crash Course in R, integrals, and descriptive statistics", "Probability - experiments, sample spaces, axioms of probability, proving results from axioms, multiplication principle, permutations, and combinations", "Discrete random variables and their distributions: probability mass functions,cumulative distribution function, expected values, variance, standard deviations and binomial distributions","hypergeometric distributions, geometric distributions, poisson distributions,negative binomial distributions","Quiz 1: chapters 1-3", "Continuous Probability Distributions, Probability Density Functions, Cumulative Distribution Function, and properties of the normal distribution","Exponential, Gamma, and Joint Distributions, Independent Random Variables, Conditional distributions, Expected Value of a function of an RV", "Covariance, Correlations, Statistics and simulation, distribution of the sample mean and the central limit theorem","Point Estimators, minimum variance, standard error, method of moments, maximum likelihood method", "Quiz 2","Confidence intervals- single samples, precision, sample size, large sample confidence and the normal distribution, small sample confidence intervals and the t distribution, chi square confidence intervals for variance", "Test of hypotheses- single sample, null vs alternative hypotheses, type 1 and type 2 error, power, tests concerning means/proportions", " Inferences based on two samples","Quiz 3 due", "Regression","Review", "Final Exam"),
                   Text = c("Read `A very (short) introduction to R' from https://cran.r-project.org/doc/contrib/Torfs+Brauer-Short-R-Intro.pdf, sections 3-8 of the Introduction to Integration Part 1: Anti-Differentiation (https://sydney.edu.au/stuserv/documents/maths_learning_centre/integration_part1.pdf) and sections 2-5  Introduction to Integration Part 2:The Definite Integral (https://sydney.edu.au/stuserv/documents/maths_learning_centre/integration_part2.pdf) ", "chapter 2 in Devore",
-                           "Chapter 3 in Devore (up to section 3)","Chapter 3 sections 4-6", "No reading due"))
+                           "Chapter 3 in Devore sections 1-3","Chapter 3 sections 4-6", "No reading due", "chapter 4 in Devore, sections 1-3", "Chapter 4 in Devore sections 4-6 and Chapter 5 sections 1-3 in Devore", "Chapter 5 sections 4-5, 1st R assignment due", "Chapter 6", "No Reading Due", "Chapter 7", "Chapter 8 and 2nd R assignment due", "Chapter 9", "No reading due", "Chapter 12", "No reading due", "No reading due"))
 
 
 kable(syllabus) %>% 
