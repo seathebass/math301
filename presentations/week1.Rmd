@@ -1,7 +1,6 @@
 ---
 title: "A Crash lesson in R, Integration, and descriptive statistics"
 author: "Sebastian Hoyos-Torres"
-transition: rotate
 output:
   xaringan::moon_reader:
     lib_dir: libs
