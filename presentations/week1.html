@@ -18,11 +18,15 @@ class: center, middle, inverse, title-slide
 
 
 
-
 ### Welcome!
+
 - Why this class? 
+--
+
 
 - What's the point?
+--
+
 
 - R?
 ---
@@ -61,8 +65,12 @@ is.atomic(1)||is.list(1) #returns true. R does not use scalars
 ---
 ### Types of Vectors
 - Vectors come in two types; atomic vectors and lists. We will focus on the former rather than the latter in this course.
+--
 
-- Atomic vectors come in the following flavors: logical, integer, character, double, and character
+
+- Atomic vectors come in the following types: logical, integer, character, double, and character
+--
+
 
 - We will mostly use integer and doubles in the course to avoid confusion
 
@@ -129,7 +137,7 @@ formula_for_average(samples)# use the average
 ```
 
 ```
-## [1] -0.01575981
+## [1] 0.1182375
 ```
 ---
 ### Functions continued...
@@ -326,7 +334,7 @@ sample(x,5)
 ```
 
 ```
-## [1] 17 15 12  5  7
+## [1] 14  5 15  3  7
 ```
 
 ---
@@ -342,7 +350,7 @@ x %&gt;% mean() #gets the mean
 ```
 
 ```
-## [1] 51.15403
+## [1] 49.61078
 ```
 
 ```r
@@ -350,7 +358,7 @@ x %&gt;% median() #summarizes the median
 ```
 
 ```
-## [1] 51.68052
+## [1] 49.55611
 ```
 
 ```r
@@ -359,7 +367,7 @@ x %&gt;% summary()#all summary output.
 
 ```
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-##   25.36   44.04   51.68   51.15   57.08   77.33
+##   21.18   44.14   49.56   49.61   56.51   74.07
 ```
 ---
 ### Descriptive plots
@@ -372,12 +380,12 @@ stem(x)#stem and leaf plot
 ## 
 ##   The decimal point is 1 digit(s) to the right of the |
 ## 
-##   2 | 57
-##   3 | 02333447889
-##   4 | 11112233333444555667788888999
-##   5 | 0000011222333444455555566666677777899999
-##   6 | 0000112467888
-##   7 | 02247
+##   2 | 1559
+##   3 | 012245678999
+##   4 | 0001124444444455666777777777888999
+##   5 | 0011222233333344455566666777777
+##   6 | 000011122234678
+##   7 | 0144
 ```
 ---
 ### Descriptive plots cont
@@ -392,7 +400,8 @@ qplot(x,geom = "histogram") #could also use hist(x)
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
-"countIncrementalSlides": false
+"countIncrementalSlides": false,
+"ratio": "16:9"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));

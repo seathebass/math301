@@ -1,7 +1,7 @@
 ---
 title: "A Crash lesson in R, Integration, and descriptive statistics"
 author: "Sebastian Hoyos-Torres"
-date: ""
+transition: rotate
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -9,17 +9,24 @@ output:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
+      ratio : 16:9
+      
+      
 ---
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 
 ```
-
 ### Welcome!
+
 - Why this class? 
+--
+
 
 - What's the point?
+--
+
 
 - R?
 ---
@@ -52,8 +59,12 @@ is.atomic(1)||is.list(1) #returns true. R does not use scalars
 ---
 ### Types of Vectors
 - Vectors come in two types; atomic vectors and lists. We will focus on the former rather than the latter in this course.
+--
 
-- Atomic vectors come in the following flavors: logical, integer, character, double, and character
+
+- Atomic vectors come in the following types: logical, integer, character, double, and character
+--
+
 
 - We will mostly use integer and doubles in the course to avoid confusion
 ```{r}
