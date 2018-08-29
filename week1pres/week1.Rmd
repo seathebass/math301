@@ -1,0 +1,321 @@
+---
+title: "A Crash lesson in R, Integration, and descriptive statistics"
+author: "Sebastian Hoyos-Torres"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio : 16:9
+      
+      
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+
+```
+### Welcome!
+
+- Why this class? 
+--
+
+
+- What's the point?
+--
+
+
+- R?
+---
+### An introduction to R
+- Although there are some materials in this class that should be figured out by hand,  everyone should download and use R from the Comprehensive R Archive Network (CRAN) 
+
+- In fact, the presentations for this class are made using R with Rstudio as the integrated developer environment (IDE).
+
+- Once you get the hang of R, you should be able to figure out problems much quicker than working the problem out by hand
+
+- For example, let's say we had a vector of values from 0-100 and wanted to add the values together. Using a calculator, this process would look like $0 +1 + 2 + 3+...100$ .
+
+in R, you could solve this problem relatively quickly
+```{r}
+x <- c(0:100) # this creates an array of values from 0 to 100
+sum(x) #this command adds all of the values together and gives you the answer you're looking for
+```
+---
+### What you need to know:
+- This all said, although the class does require you to learn how to use R; it does **not** require mastery of R.
+
+- We should start with the simplest data structure in R, the vector
+```{r,eval=FALSE}
+is.atomic(1)||is.list(1) #returns true. R does not use scalars
+
+#although there are things that seem to behave like scalars like the following
+1+1
+# this does not mean they are scalars
+```
+---
+### Types of Vectors
+- Vectors come in two types; atomic vectors and lists. We will focus on the former rather than the latter in this course.
+--
+
+
+- Atomic vectors come in the following types: logical, integer, character, double, and character
+--
+
+
+- We will mostly use integer and doubles in the course to avoid confusion
+```{r}
+dbl_vector <- c(1,2,3,4,5)
+chr_vector <- c("cat","dog","apple")
+log_vector <- c(TRUE, FALSE,FALSE)
+int_vector <- c(1L,2L,3L)
+```
+---
+### R and vector behavior:
+- Although it is not the focus of the class, it should be noted that R can exhibit some interesting features which may lead to some problems.
+  - First, let's look at these examples:
+```{r, eval=FALSE}
+.1 == .3/3
+
+seq(0,1, by -.1) == .3
+
+TRUE + TRUE + TRUE
+
+FALSE + FALSE + FALSE
+
+"one" == 1
+
+1 == "1"
+
+"one" < 2
+
+"3" < 2
+```
+- What do you think the results will be without putting these into R? 
+
+---
+### R as a tool
+- Although there are more things to consider with datatypes when using R, this does not take away from the value of using R to help solve problems. 
+
+- Aside from R's weird behavior with floating points, the problems shouldn't affect our computations for most problems. however, it will be useful later on.
+
+- Throughout the course, we will also be using a mixture of Base R and the tidyverse
+
+---
+### Base vs Tidy
+- There are some disagreements on whether to use Base or tidy approaches to analysis.
+
+- Base R would require teaching syntax such as $ and [[]], loops, and conditionals, data types. 
+
+- tidy allows us to use popular packages such as ggplot2 and magrittr's %>% so we will use a mixture of both in this course (this requires you use tidyverse so you should probably install it).
+
+---
+### Functions
+- most functions that we write out by hand can be written directly into R
+
+- We are familiar with the formula for the mean being $\frac{\Sigma x_i}{n}$
+
+- This is directly translatable into R
+```{r}
+formula_for_average <- function(x){
+  sum(x)/length(x) #this is directly equivalent to the mathematical formula
+}
+samples <- rnorm(100) #we'll delve into these functions later in the semester
+formula_for_average(samples)# use the average
+```
+---
+### Functions continued...
+- Defining a function will save you time in the long run as long as you know the formula and how to apply it
+
+- It will also prevent you from writing the same code over and over again to solve similar problems.
+
+- If you ever have a question on an r function that has already been defined, use ? before the function
+
+```{r,eval=FALSE}
+?rnorm #for those who are curious as to what rnorm does
+```
+---
+### Integrals
+- Understanding what integrals do will help in understanding probability distributions in the future
+
+- For example, take the following function from the interval of 0-1
+$f(x) = x^2$
+when we integrate the function, we do the following
+
+$$\int_0^1x^2dx = [\frac{1}{3}x^3]_0^1 = (\frac{1}{3}(1))-(\frac{1}{3}(0)) = \frac{1}{3}$$
+---
+```{r,warning=FALSE, message=FALSE, fig.align="center", fig.height=3}
+library(tidyverse)
+fun1 <- function(x){x^2}
+ggplot(NULL, aes(c(0,2)))+
+  stat_function(fun = fun1)+
+  geom_area(stat = "function",fun = fun1,xlim = c(0,1), fill = "red")+
+  labs(x = "x-axis",
+       y = "y-axis",
+       title = "Integral of x")
+```
+---
+### How will integrals be used in this course?
+- later on in this course, we will use integrals to interpret the probability density and cumulative density functions of multiple distributions. 
+
+- Since integrals are not a prerequisite for this course, we will find ways in R to integrate for definite integrals. For example, the calculations for a definite integral can also be found using R
+
+- let's try the previous example using R
+
+```{r}
+functiontointegrate <- function(x){
+  x^2
+}
+integrate(functiontointegrate,0,1) #this gives us 1/3 as well
+```
+---
+### Applications, Part 1
+- When will we use probability or statistics?
+
+- Currently, probability and statistics are used in almost every field.
+
+- Let's look at Sports.
+
+---
+### Bayes Theorem
+- Let's look at basketball.  Lebron makes 49 percent of his clutch shots. If ESPN mentions the end of a game if the team is the cavaliers 80 percent of the time and mentions the end of the game given Lebron made the shot at 95 percent; what is the probability that Lebron made the shot if ESPN mentioned the end of the game?
+
+- What do you think is the probability that Lebron made the shot if the game is mentioned on ESPN?
+
+---
+--- 
+### Bayes pt 1
+- Typically, some people might want to say that Lebron has approximately a 50%, 80%, or 95 chance to make the shot.
+
+- Those people have not taken this class.
+
+- Given the information, we would approach the problem using Bayes Theorem.
+$$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
+
+---
+### Bayes Cont.
+- This problem requires us to take a few steps. 
+Problem is asking for P(A|B) or P(Lebron makes the clutch shot | ESPN mentions end of the game)
+First, identify P(A) or P(Lebron makes a clutch shot) = .49
+Next, identify P(B) or P(ESPN mentions end of the game) = .8
+Also, identify P(B|A) or P(ESPN mentions end of game | Lebron made clutch shot) = .95
+We can solve this manually or through R after we finished identifying the necessary components
+---
+### Bayes and R
+- Remember, you can always define functions in R to do your computations. Be careful with the formulas!
+```{r}
+bayes <- function(A,B,BA){
+  (BA*A)/(B)
+}
+
+bayes(.49,.8,.95) #just remember to assign the right arguments
+```
+---
+### Descriptive statistics
+- We will explore more formal applications of Bayes Theorem and the principles of probability next week.
+
+- At this point, it is worth exploring descriptive statistics before we delve into our journey into probability and statistics.
+
+- Everyone in a science is concerned with data and statistics are a tool to understand patterns within the data of a particular scientific field. 
+---
+### Descriptive stats cont.
+- Statistics are aimed at studying a particular *population* through the use of a *sample*
+
+- Let's try another Bayes theorem problem and see how we could use descriptive statistics and models to illustrate the logical mechanics.
+
+---
+### The Taxicab Problem
+- A taxicab was involved in a hit and run accident at night. Two cab companies, the Green(all cabs green) 
+and the Blue(all cabs blue), operate in the city. The following facts are known:
+  
+  - 85% of the cabs in the city are green and 15% are blue and these proportions are on the street at any one time
+  
+  - A witness identified the cab as blue. The court tested the reliability of the witness under the same circumstances that existed on the night of the accident and concluded that the witness correctly identified each one of the two colors 80% of the time and failed 20% of the time.
+
+- Let's run a simulation of this problem and see some of the mechanics behind why Bayes Theorem works.
+
+---
+### Simulation of taxi cab
+- Let's say there were 1000 cabs in the city. Following the problem, 850 are green and 150 are blue (85 percent green, 15 percent blue)
+- If the cab was blue, the witness would say blue 80 percent of the time or for 20 percent of the green cabs (chance he makes a mistake). This looks as follows in R
+```{r}
+green <- 850
+blue <- 150
+chancebluecorrect <- .8
+chanceblueincorrect <- 1-.8
+
+blueasblue <- blue*chancebluecorrect #turns out to be 120 blue identified correctly
+blueasgreen<- green*chanceblueincorrect #turns out to be 170
+#of blue answers, we see that the person would identify 170 incorrectly
+#if person correctly identifies 120 cabs correctly, then:
+totblueidentified <- blueasblue+blueasgreen
+
+paste(round(blueasblue/totblueidentified*100,2),"%")
+```
+---
+```{r}
+#Bayes Theorem applied (for those curious)
+pblue <- .15
+pgreen <- .85
+pblueidblue <- .8
+pgreenidblue <- .2
+
+#law of total probability = P(B) = P(B|A)*P(A) + P(B|AC)*P(AC)
+pidbluecorr<- (pblueidblue*pblue) + (pgreenidblue*pgreen)
+pblueidblue*pblue/pidbluecorr
+```
+---
+### Enumerative Study
+- As previously mentioned, descriptive statistics helps us understand trends within our data. 
+
+- If we use descriptive statistics, we would be conducting an enumerative study.
+  - An example would be the average GPA of students at John Jay.
+  - This would use a sampling frame listing all items in the population that might be part of the sample. Hopefully, the sample is representative.
+
+---
+### Some sampling methods.
+- **Simple Random Sample**: when members of a sample have an equal chance of being selected as any other member.
+  - Often considered the gold standard when you want to obtain information about a population from a sample.
+
+- **Stratified Sample**: separates population units into non-overlapping groups and taking a random sample from each one.
+
+- **Convenience Sample** : selecting individuals or objects without randomization
+
+- **Self- selected sample**: respondents decide individually decide whether or not to take part within a study
+---
+### Sampling in R
+- Computers are great for selecting a random sample and thus, here is how to sample in R. 
+
+```{r}
+x <- 1:20
+
+sample(x,5)
+```
+
+---
+### Some basic descriptives
+- R is useful for enumerative purposes
+
+- let's try it out
+
+```{r}
+x <- rnorm(100, mean = 50,sd = 10 )
+x %>% mean() #gets the mean
+x %>% median() #summarizes the median
+x %>% summary()#all summary output.
+```
+---
+### Descriptive plots
+```{r,message=FALSE,warning=FALSE}
+stem(x)#stem and leaf plot
+```
+---
+### Descriptive plots cont
+```{r,message=FALSE,warning=FALSE}
+
+qplot(x,geom = "histogram") #could also use hist(x)
+
+```
+
