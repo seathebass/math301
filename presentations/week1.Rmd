@@ -1,7 +1,6 @@
 ---
 title: "A Crash lesson in R, Integration, and descriptive statistics"
 author: "Sebastian Hoyos-Torres"
-transition: rotate
 output:
   xaringan::moon_reader:
     lib_dir: libs
@@ -80,7 +79,7 @@ int_vector <- c(1L,2L,3L)
 ```{r, eval=FALSE}
 .1 == .3/3
 
-seq(0,1, by -.1) == .3
+seq(0,1, by =  .1) == .3
 
 TRUE + TRUE + TRUE
 
@@ -263,9 +262,9 @@ pgreen <- .85
 pblueidblue <- .8
 pgreenidblue <- .2
 
-#law of total probability = P(B) = P(B|A)*P(A) + P(B|AC)*P(AC)
-pidbluecorr<- (pblueidblue*pblue) + (pgreenidblue*pgreen)
-pblueidblue*pblue/pidbluecorr
+#law of total probability = P(B) = P(B|A)*P(A) + P(B|A1)*P(A1)
+pidblueall<- (pblueidblue*pblue) + (pgreenidblue*pgreen)
+pblueidblue*pblue/pidblueall
 ```
 ---
 ### Enumerative Study
