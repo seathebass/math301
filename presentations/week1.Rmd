@@ -180,7 +180,7 @@ integrate(functiontointegrate,0,1) #this gives us 1/3 as well
 
 ---
 ### Bayes Theorem
-- Let's look at basketball.  Lebron makes 49 percent of his clutch shots. If ESPN mentions the end of a game if the team is the cavaliers 80 percent of the time and mentions the end of the game given Lebron made the shot at 95 percent; what is the probability that Lebron made the shot if ESPN mentioned the end of the game?
+- Let's look at basketball.  Lebron makes 49 percent of his clutch shots. If the probability ESPN mentions the end of a game  is 80 percent of the time and mentions the end of the game if a game winner is made at 95 percent; what is the probability that Lebron made the shot if ESPN mentioned the end of the game?
 
 - What do you think is the probability that Lebron made the shot if the game is mentioned on ESPN?
 
@@ -200,7 +200,7 @@ $$P(A|B) = \frac{P(B|A)P(A)}{P(B)}$$
 Problem is asking for P(A|B) or P(Lebron makes the clutch shot | ESPN mentions end of the game)
 First, identify P(A) or P(Lebron makes a clutch shot) = .49
 Next, identify P(B) or P(ESPN mentions end of the game) = .8
-Also, identify P(B|A) or P(ESPN mentions end of game | Lebron made clutch shot) = .95
+Also, identify P(B|A) or P(ESPN mentions end of game | Lebron clutch shot made ) = .95
 We can solve this manually or through R after we finished identifying the necessary components
 ---
 ### Bayes and R
