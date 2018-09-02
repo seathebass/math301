@@ -234,7 +234,7 @@ $$P(A) \leq P(B)$$
 
 - Associativity: $A\cup{(B\cup{C})} = (A\cup{B})\cup{C}$
 
-- Distributive Properties:$A\cap{(B\cup{C})} = (A\cap{B})\cup{(A\cap{C})}$ and $A\cup{(B\cap{C})} = (A\cup{B})\cap{(A\cup{C})}$ 
+- Distributive Properties: $A\cap{(B\cup{C})} = (A\cap{B})\cup{(A\cap{C})}$ and $A\cup{(B\cap{C})} = (A\cup{B})\cap{(A\cup{C})}$ 
 ---
 ## Examples
 - Let's look at a coin example. If we are tossing a coin, with two simple events {H} and {T}, assignining P(H) = .3 and P(T) = .7 is legal. However, if we assign P(H) = .6 and P(T) = .3, this becomes illegal assignment. Why?
