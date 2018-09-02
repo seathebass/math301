@@ -9,6 +9,7 @@ output:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
+      ratio: 16:9
 ---
 
 ```{r setup, include=FALSE}
@@ -95,11 +96,12 @@ options(htmltools.dir.version = FALSE)
 - We are familiar with some approaches to probability. Among the most common are the following
   - Personal Opinion Approach
   
-  - relative frequency approach - the most frequent approach
+  - relative frequency approach
+  
   $$P(A) = \frac{N(A)}{n}$$
   
   - The Classical approach
-  $$P(A) = \frac{N(A}{N(S)}$$
+  $$P(A) = \frac{N(A)}{N(S)}$$
   
 ---
 ## Relative Frequency vs. classical approaches to probability
@@ -116,7 +118,7 @@ sum(result1 %in% E) #This will give you the number of times E occurred
 table(result1)# see a table of the results. These shouldn't vary too much
 ``` 
 ---
-## Chart of the relative frequency approach
+## Visual of the relative frequency approach
 ```{r, echo=FALSE}
 freqapp <- cumsum(result1 %in% E)/1:n #dividing the results elementwise 
 freqdata <- tibble(frequencies = freqapp, index = 1:1000) #make a tibble
@@ -125,7 +127,7 @@ freqdata %>%
   ggplot(aes(index,frequencies)) +
   geom_point()+
   geom_hline(yintercept = 1/3, color = "red")+
-  labs(title = "Relative Frequency of {2,3}")
+  labs(title = "Relative Frequency of {2,3} in 1000 tosses.")
 ```
 
 ---
@@ -224,10 +226,17 @@ $$P(A \cup B) = P(A) + P(B) - P(A \cap B)$$
 $$\sum_{i = 1}^n P(A_i) = 1$$
 - Prop 5: for any events A and B, if $A \subseteq B$ then 
 $$P(A) \leq P(B)$$
-- **A Partitiion is a mutually exclusive and exhaustive set of events**
+- **A Partition is a mutually exclusive and exhaustive set of events where $A_i \cap{A_j} = \emptyset$ for all i not equal to j**
+
+---
+## Properties of Set Operations
+- Commutativity : $A\cup{B} = B\cup{A}$
+
+- Associativity: $A\cup{(B\cup{C})} = (A\cup{B})\cup{C}$
+
+- Distributive Properties:$A\cap{(B\cup{C})} = (A\cap{B})\cup{(A\cap{C})}$ and $A\cup{(B\cap{C})} = (A\cup{B})\cap{(A\cup{C})}$ 
 ---
 ## Examples
-
 - Let's look at a coin example. If we are tossing a coin, with two simple events {H} and {T}, assignining P(H) = .3 and P(T) = .7 is legal. However, if we assign P(H) = .6 and P(T) = .3, this becomes illegal assignment. Why?
 
 - From  the textbook (P.57): If we test batteries coming off an assembly line one byone until one having a voltage within prescribed limits is found. The simple events are $E_1 = {S}, E_2 = {FS}, E_3 = {FFS}...$ Suppose the probability of a battery being satisfactory is .99. If we follow this, then how would we go about assigning the probabilities of the simple event?
@@ -236,7 +245,7 @@ $$P(A) \leq P(B)$$
 Solution:
 $S = E_1\cup E_2 \cup E_3 \cup ...$
 $1 = P(S) = P(E_1) + P(E_2)+ P(E_3)+...$ remember axioms 1 and 2
-$.99(1 + 0.01 + (0.01)^2 + (0.01)^3 + ...)$
+$.99[1 + 0.01 + (0.01)^2 + (0.01)^3 + ...]$
 This is also conveniently the formula for the sum of a geometric series 
 $\frac{a}{1-r}$
 
@@ -277,16 +286,19 @@ clinics*phys*obs ## this will give you the total number of possble outcomes
 # However, this is not the right approach because each letter and number has
 # a certain number of outcomes. So L1 = 26(a-z) total outcomes while N1 = 10 #(0-9). With this in mind, we'd do the following
 26*26*26*10*10*10*10
+#or
+26^3 *10^4
 ```
 - things change if we only want distinct numbers and letters.
 
 ```{r}
 26*25*24*10*9*8*7
+#or
+prod(26:(26-3+1))*prod(10:(10-4+1))
 ```
 
 ---
 ## The Birthday Paradox
-
 - If there are one instructor and 76 students are in a classroom, what is the probability that no student has the same birthday as the instructor?
 
 ```{r}
@@ -318,7 +330,7 @@ ggplot(tibz, aes(as.numeric(people),as.numeric(probability)))+
        y = "probability of no birthday shared")
 ```
 ---
-## Permutations and Combinations
+## Perumtations and Combinations
 
 - A permutation of n objects taken r at a time, is an ordered subset of r elements taken from a set of n elements. 
 
@@ -344,10 +356,8 @@ choose(n,r)
   
   - First step is deciding whether order matters or not.
   
-  - In this case order matters so we'd have $\frac{366!}{365!}$ which simplifies to 366
-```{r}
-prod(366:(366-1+1))
-```
+  - In this case order matters so we'd have $366!$ ways to rank them 
+
 ---
 ## More examples: Combinations
  - In a standard deck of 52 cards using 13 face values and 4 different suits to play 5 card poker. If you are dealt 5 cards, what is the probability of getting a full house?
@@ -382,6 +392,7 @@ n<- 6*6 #number of total outcomes
 - The multiplication rule: The probability that two events A and B both occur is given by the multiplication rule
 $$P(A \cap B) = P(A|B)\times{P(B)}$$
 $$P(A \cap B) = P(B|A) \times P(A)$$
+- Complement Rule: $P(A^c|B) = 1 - P(A|B)$. **Note: this is not the same as P(A|B^c).The complement rule only corresponds with the first argument**
 
 ---
 ## Example of the multiplication rule
@@ -449,6 +460,7 @@ PDA1 <- .08
 PDA2 <- .04
 PDA3 <- .02
 PD <- sum((PDA1*A1),(PDA2*A2),(PDA3*A3))
+PD
 (A1 * PDA1)/PD
 ```
 ---
@@ -477,7 +489,7 @@ $$P(A_{i_{1}} \cap{A_{i_{2}}}...\cap{A_{i_{k}}}) = P(A_{i_{1}})P(A_{i_{2}})...P(
 ```{r}
 lpizza <- .75
 npizza <- 1-lpizza
-#Probability that first likes pizza while second does not is
+#Probability that first loves pizza while second does not is
 lpizza*(npizza)
 ```
 

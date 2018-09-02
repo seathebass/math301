@@ -99,11 +99,12 @@ class: center, middle, inverse, title-slide
 - We are familiar with some approaches to probability. Among the most common are the following
   - Personal Opinion Approach
   
-  - relative frequency approach - the most frequent approach
+  - relative frequency approach
+  
   `$$P(A) = \frac{N(A)}{n}$$`
   
   - The Classical approach
-  `$$P(A) = \frac{N(A}{N(S)}$$`
+  `$$P(A) = \frac{N(A)}{N(S)}$$`
   
 ---
 ## Relative Frequency vs. classical approaches to probability
@@ -121,7 +122,7 @@ sum(result1 %in% E) #This will give you the number of times E occurred
 ```
 
 ```
-## [1] 325
+## [1] 328
 ```
 
 ```r
@@ -131,10 +132,10 @@ table(result1)# see a table of the results. These shouldn't vary too much
 ```
 ## result1
 ##   1   2   3   4   5   6 
-## 163 163 162 155 185 172
+## 178 171 157 155 170 169
 ```
 ---
-## Chart of the relative frequency approach
+## Visual of the relative frequency approach
 ![](week2_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
 
 ---
@@ -266,10 +267,17 @@ intersect(C2,D2) #this will return an empty value because it is an empty set
 `$$\sum_{i = 1}^n P(A_i) = 1$$`
 - Prop 5: for any events A and B, if `\(A \subseteq B\)` then 
 `$$P(A) \leq P(B)$$`
-- **A Partitiion is a mutually exclusive and exhaustive set of events**
+- **A Partition is a mutually exclusive and exhaustive set of events where `\(A_i \cap{A_j} = \emptyset\)` for all i not equal to j**
+
+---
+## Properties of Set Operations
+- Commutativity : `\(A\cup{B} = B\cup{A}\)`
+
+- Associativity: `\(A\cup{(B\cup{C})} = (A\cup{B})\cup{C}\)`
+
+- Distributive Properties:$A\cap{(B\cup{C})} = (A\cap{B})\cup{(A\cap{C})}$ and `\(A\cup{(B\cap{C})} = (A\cup{B})\cap{(A\cup{C})}\)` 
 ---
 ## Examples
-
 - Let's look at a coin example. If we are tossing a coin, with two simple events {H} and {T}, assignining P(H) = .3 and P(T) = .7 is legal. However, if we assign P(H) = .6 and P(T) = .3, this becomes illegal assignment. Why?
 
 - From  the textbook (P.57): If we test batteries coming off an assembly line one byone until one having a voltage within prescribed limits is found. The simple events are `\(E_1 = {S}, E_2 = {FS}, E_3 = {FFS}...\)` Suppose the probability of a battery being satisfactory is .99. If we follow this, then how would we go about assigning the probabilities of the simple event?
@@ -278,7 +286,7 @@ intersect(C2,D2) #this will return an empty value because it is an empty set
 Solution:
 `\(S = E_1\cup E_2 \cup E_3 \cup ...\)`
 `\(1 = P(S) = P(E_1) + P(E_2)+ P(E_3)+...\)` remember axioms 1 and 2
-`\(.99(1 + 0.01 + (0.01)^2 + (0.01)^3 + ...)\)`
+`\(.99[1 + 0.01 + (0.01)^2 + (0.01)^3 + ...]\)`
 This is also conveniently the formula for the sum of a geometric series 
 `\(\frac{a}{1-r}\)`
 
@@ -330,6 +338,15 @@ clinics*phys*obs ## this will give you the total number of possble outcomes
 ```
 ## [1] 175760000
 ```
+
+```r
+#or
+26^3 *10^4
+```
+
+```
+## [1] 175760000
+```
 - things change if we only want distinct numbers and letters.
 
 
@@ -341,9 +358,17 @@ clinics*phys*obs ## this will give you the total number of possble outcomes
 ## [1] 78624000
 ```
 
+```r
+#or
+prod(26:(26-3+1))*prod(10:(10-4+1))
+```
+
+```
+## [1] 78624000
+```
+
 ---
 ## The Birthday Paradox
-
 - If there are one instructor and 76 students are in a classroom, what is the probability that no student has the same birthday as the instructor?
 
 
@@ -380,7 +405,7 @@ prod(290:365)/365^76 # the manual way
 
 ![](week2_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
 ---
-## Permutations and Combinations
+## Perumtations and Combinations
 
 - A permutation of n objects taken r at a time, is an ordered subset of r elements taken from a set of n elements. 
 
@@ -408,15 +433,8 @@ choose(n,r)
   
   - First step is deciding whether order matters or not.
   
-  - In this case order matters so we'd have `\(\frac{366!}{365!}\)` which simplifies to 366
+  - In this case order matters so we'd have `\(366!\)` ways to rank them 
 
-```r
-prod(366:(366-1+1))
-```
-
-```
-## [1] 366
-```
 ---
 ## More examples: Combinations
  - In a standard deck of 52 cards using 13 face values and 4 different suits to play 5 card poker. If you are dealt 5 cards, what is the probability of getting a full house?
@@ -468,6 +486,7 @@ n&lt;- 6*6 #number of total outcomes
 - The multiplication rule: The probability that two events A and B both occur is given by the multiplication rule
 `$$P(A \cap B) = P(A|B)\times{P(B)}$$`
 `$$P(A \cap B) = P(B|A) \times P(A)$$`
+- Complement Rule: `\(P(A^c|B) = 1 - P(A|B)\)`. **Note: this is not the same as P(A|B^c).The complement rule only corresponds with the first argument**
 
 ---
 ## Example of the multiplication rule
@@ -551,6 +570,14 @@ PDA1 &lt;- .08
 PDA2 &lt;- .04
 PDA3 &lt;- .02
 PD &lt;- sum((PDA1*A1),(PDA2*A2),(PDA3*A3))
+PD
+```
+
+```
+## [1] 0.056
+```
+
+```r
 (A1 * PDA1)/PD
 ```
 
@@ -584,7 +611,7 @@ PD &lt;- sum((PDA1*A1),(PDA2*A2),(PDA3*A3))
 ```r
 lpizza &lt;- .75
 npizza &lt;- 1-lpizza
-#Probability that first likes pizza while second does not is
+#Probability that first loves pizza while second does not is
 lpizza*(npizza)
 ```
 
@@ -596,7 +623,8 @@ lpizza*(npizza)
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
-"countIncrementalSlides": false
+"countIncrementalSlides": false,
+"ratio": "16:9"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
