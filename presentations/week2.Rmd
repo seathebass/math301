@@ -385,7 +385,7 @@ $$P(A|B) = \frac{P(A\cap B)}{P(B)}$$
 n<- 6*6 #number of total outcomes 
 2/n
 #if given first number is 1
-1/n
+1/n/(1/6)
 ```
 ---
 ## More on conditional probability
