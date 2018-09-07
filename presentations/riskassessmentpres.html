@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Proposal Risk Assessment in Criminal Justice</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Sebastian Hoyos-Torres" />
+    <meta name="date" content="2018-09-07" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Proposal Risk Assessment in Criminal Justice
+### Sebastian Hoyos-Torres
+### 2018-09-07
+
+---
+
+background-image: url(http://www.hec.edu/var/corporate/storage/images/knowledge/point-de-vue/smart-law-comment-reguler-par-les-donnees-et-les-algorithmes/796930-19-eng-GB/Smart-Law-Regulating-by-Big-Data-and-Algorithms_knowledge_standard.jpg)
+
+
+---
+# Risk Assessment?
+
+--
+- What is risk assessment?
+
+  - Risk Assessment is the use of instruments to measure potential risks involved in a variety of decisions such as insurance.
+--
+
+- The appeal to criminal justice agencies
+
+  - Risk Assessment tools aim to measure a person's "risk" to allow criminal justice employees to assess where to best direct their limited resources.
+--
+
+
+- What are some common areas risk assessments are being used?
+
+---
+
+#Policing
+
+.pull-left[
+- Policing has used risk assessments for a while. Currently, the risk assessment being used for policing is Risk Terrain Modeling
+
+- Risk Terrain Modeling: attempts to identify spatial features of a landscape and tests a variety of factors thought to be related to crime incidence (Caplan, Kennedy, Barnum, and Piza, 2015)
+
+- From RTM, certain areas are deemed "risky" and typically result in more LE resources being focused on those risky areas. RTM has been applied to multiple precincts
+]
+
+.pull-right[
+&lt;img src = "http://www.riskterrainmodeling.com/uploads/2/6/2/0/26205659/slide3_orig.jpg", height = 400&gt;
+]
+---
+--- 
+# Courts
+.pull-left[
+- Courts have also implemented some risk assessment algorithms to assist in making bail decisions. 
+
+- To assess who is a flight risk, there are a number of tools to assess who is a "flight risk"
+
+- These have also been implemented to sentencing decisions but in both cases, Judges are not required to follow the suggestions of these algorithms 
+]
+
+--
+.pull-right[
+&lt;img src= "https://media.giphy.com/media/x6RunS9u1L3AA/giphy.gif", height= 400&gt;
+]
+
+---
+# Corrections
+.pull-left[
+- Corrections attempt to assess which offenders are most likely to recommit offenses. 
+
+- Additionally, assessing risky offenders can more efficiently allocate resources for high risk offenders.
+
+- This applies to **everyone under correctional supervision** including those in prisons.
+]
+
+--
+.pull-right[
+&lt;img src = "https://media.giphy.com/media/DMtxoyLsLVfTa/giphy.gif", height = 400&gt;
+]
+---
+--- 
+#Why Am I against the implementations of algorithms in Criminal Justice?
+.center[
+&lt;img src= "https://media.giphy.com/media/CaiVJuZGvR8HK/giphy.gif", height= 400&gt;
+]
+---
+# How it works: RTM edition
+- How it Works
+
+--
+  1. Select an outcome of particular interest.
+  2. Choose a study area
+  3. Choose a time period
+  4. Obtain base maps of study area
+  5. Identify aggravating and mitigating factors related to the outcome event.
+  6. Select particular factors to include in the RTM.
+  7. Operationalize spaital influence of factors to risk map layers.
+  8. Weight risk map layers relative to one another
+  9. Combine risk map layers to form a composite map
+  10. Finalize the terrain map to communicate meaningful and actionable information. (Caplan and Kennedy, 2011)
+
+
+---
+# Example of Risk factors for aggravated assault.
+- What is aggravated assault?
+  - Attack or attempted attack with a weapon, regardless of whether an injury occurred as well as an attack without a weapon where serious injury occurred.
+
+- Key factors include:
+
+--
+  - Bars and nightclubs
+  - Entertainment venues
+  - Gang activity
+  - Drug trade
+  - Drug or alcohol use (Caplan and Kennedy 2011).
+  
+---
+# The statistics behind RTM
+- The RTMDx Utility uses a penalized poisson regression model assuming a poisson distribution (Caplan, Kennedy, Barnum and Piza, 2015).
+  - What does a poisson distribution look like?
+&lt;img src="riskassessmentpres_files/figure-html/unnamed-chunk-1-1.png" style="display: block; margin: auto;" /&gt;
+
+- From the penalized poisson model, these variables are loaded into a new statistical procedure.
+
+
+--- 
+---
+# Statistics RTM continued
+- After the penalized poisson regression is conducted, a bidirectional stepwise regression is used to create a model with the lowest Bayesian Information Criterion (BIC).
+
+--
+  - This is optimized through using both negative binomial and poisson regressions
+
+- After salient risk factors are identified, then they are applied to a map through GIS and a risk terrain model is built (Caplan et.al 2015).
+
+---
+--- 
+# RTM, a look back
+- Let's look back at the risk factors for aggravated assault
+
+--
+  - Bars and nightclubs
+  - Entertainment venues
+  - Gang activity
+  - Drug trade
+  - Drug or alcohol use (Caplan and Kennedy 2011).
+
+--
+- These factors operate off of environmental criminology and routine activities theory. 
+
+---
+# Why RTM is a problem
+
+- RTM looks at the environment and intends to generate a risk model for certain areas
+
+- People argue that it doesn't profile people but does profile neighborhoods so it should be ok. What are neighborhoods or those cells composed of?
+
+- Ultimately the model tells Law enforcement to patrol neighborhoods or "cells" which are more prone to crime through police patrols.
+
+
+---
+# Algorithms and bail
+- Many CJ reform activists probably were excited in regards to California ending cash bail for defendants. (https://www.npr.org/2018/08/28/642795284/california-becomes-first-state-to-end-cash-bail)
+
+- What is hidden in the story is that
+
+&gt;Under the California law those arrested and charged with a crime won't be putting up money or borrowing it from a bail bond agent to obtain their release. Instead, local courts will decide who to keep in custody and whom to release while they await trial. Those decisions will be based on an algorithm created by the courts in each jurisdiction.
+
+---
+# Bail decision criteria 
+ 
+- When a defendant is assigned bail, typically the judge has full discretion on how much bail should be assigned (there are some criteria legally)l.
+
+- If bail is to be assigned to a defendant, it is usually in cases where the defendant poses a risk to others or is believed to be a flight risk.
+
+- If it is decided that a person should be held on bail, they will usually be incarcerated until they plea bargain or they take their case to trial.
+
+---
+# How does this look like in NYS? And an example of a Bail Assessment
+- [It looks Like this](https://twitter.com/MichaelBloch15/status/1037798223468015616)
+
+- People can be held for a dollar bail. How do I know?
+
+-[COMPAS](https://www.documentcloud.org/documents/2702103-Sample-Risk-Assessment-COMPAS-CORE.html)
+
+---
+# The Algorithm for bail decisions
+
+--
+.center[
+&lt;img src = "https://media.giphy.com/media/XeXzWgD6P4LG8/giphy.gif", height = 400&gt;
+]
+---
+# The algorithms that we know about
+- There is a paper out by Jung, Concannon, Shroff, Goel, and Goldstein (2017) that hints as to what is going on (Ironically, the paper is not directly about algorithms but an argument for their particular method.
+  - In their paper, they discuss using data from a "public prosecutor's office" (Thankfully, I know their secret)
+
+- In it, they use a logistic regression model first to find which variables influence a defendant's likelihood to appear. From the results, they compute a risk score for the defendants based on their age group and failure to appear.
+
+- Then they use the randomForest package in R and set 1000 trees
+
+```r
+install.packages("randomForest")
+library(randomForest)
+```
+
+---
+# What's a random forest?
+- A random forest is an advancement of a decision tree
+
+- Formally, it is "a classifier consisting of a collection of tree-structured
+classifiers {h(x, `\(\Theta_k\)` ), k = 1, . . .} where the {$\Theta_k$  } are independent identically distributed
+random vectors and each tree casts a unit vote for the most popular class at input x." (Breiman, 2001 p. 2)
+
+- Applied Example
+
+---
+# Jung et.al continued
+- Jung et.al continue with trying to develop a new method that is much more accessible to cj practitioners.
+
+- They introduce their method as Select Regress and round. 
+
+- Like RTM, feature selection begins via a stepwise regression to detect which model fits the data best.
+
+- This is then run through a lasso logistic regression which yields fitted coefficients.
+
+- From those coefficients, they are rescaled and rounded.
+
+---
+# Problems with bail and algorithms 
+- There is evidence that suggests these algorithms are biased against African American defendants (Corbett-Davies, Pierson, Feller, Goel, Huq, 2017)
+
+- However, Corbett-Davies et.al (2017) propose algorithmic fairness. 
+
+---
+# Risk and bail continued.
+- Every algorithm requires human input and is built by humans. Input can be biased and can reproduce bias
+
+- **Garbage in Garbage Out**
+
+- Cathy O'neill notes that in some cities, people's zip codes are analysed (https://www.bloomberg.com/view/articles/2018-03-09/big-data-alone-can-t-fix-a-broken-bail-system)
+
+---
+# What I propose
+- I would like to look further into the risk assessment problem and see if some of the factors used are associated with race of an individual
+
+- Using Harcourt(2015), I wish to examine the notion that risk is a proxy for race
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9",
+"css": "Metropolitan"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
