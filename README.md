@@ -13,5 +13,3 @@ During these 2 weeks, we will cover a variety of distributions associated with r
 
 ## Week 6
 During this week, we will explore continuous random variables and a host of distributions which have been studied with continuous random variables. The slides can be found [**here**](https://seathebass.github.io/math301/presentations/week5.html)
-
-[slides](https://seathebass.github.io/math301/presentations/riskassessmentpres.html)
