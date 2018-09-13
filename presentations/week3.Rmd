@@ -10,12 +10,12 @@ output:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
+      ratio: 16:9
 ---
 
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 library(tidyverse)
-studentdata <- read_csv("~/mat301/data/studentmajors.csv")
 ```
 ## What we will cover in this section
 - Random Variables
@@ -33,9 +33,13 @@ studentdata <- read_csv("~/mat301/data/studentmajors.csv")
 ---
 ## Random Variables
 - What is a random variable?
+--
+
   - (From p.93 Devore) A RV is any rule that associates a number with each outcome is $S$. Mathematically, this is expressed as a function whose domain is the sample space and whose range is the set of real numbers.
+--
 
 .center[This can manifest itself in the following]
+--
 
 - **Bernoulli Experiment**: an experiment with a binary outcome. In this case we define the random variable as success = 1, failure = 0
 
@@ -46,24 +50,27 @@ studentdata <- read_csv("~/mat301/data/studentmajors.csv")
 ---
 ## Discrete Random Variables:
 - From the prior slide, note that a variable which can only assume **distinct** values is said to be discrete. Typically, they represent counts.
-  
-  - From the prior slide a dicrete random variable could manifest itself as a bernoulli experiment, a binomial, or a geometric variable.
+--
+
+  - From the prior slide a dicrete random variable can manifest itself as a bernoulli experiment, a binomial, or a geometric variable.
   
   - Note, these can either finite or infinite.
   
 ---
 ## Continuous Random Variables:
 - Simply put, a continuous random variable can assume any value in a finite or infinite interval is said to be continuous.
-  - In slide 2, these would typically take the form of measurements
+  - In slide 3, these would typically take the form of measurements
 
 ---
 ## Examples
 - Discrete Variable examples:
-  - A dog is selected at random from a shelter with male {M} and female {F} dogs. The sample space would then be 
+  - A dog is selected at random from a shelter with a male {M} and female {F} dog. The sample space would then be 
   $$S = \{M,F\}$$ 
 .center[where if X = 0, the dog is male and if X = 1 the dog is female.]
-  
+--
+
   - (Devore, p.94) Consider an experiment where a battery is tested until one with an acceptable voltage (S) is obtained. Define an RV by X = the number of outcomes before the experiment terminates. If we do so, X(S) = 1, X(FS) = 2,... X(FFFFS) = 5
+--
 
 - Continuous Random Variables
   - Time till failure which could take any positive value.
@@ -72,6 +79,7 @@ studentdata <- read_csv("~/mat301/data/studentmajors.csv")
 ---
 ## Probability Mass Functions (pmf):
 - Note, pmf can be denoted as probability density functions, frequency functions, or probability function **These terms all refer to the same thing**
+
 - All it refers to is how the total probability of 1 is distributed among the various possible X values. For example, if we have 4 values (1,2,3,4) then,
 .center[p(0) = the probability of the X value 0 = P(X = 0)]
 .center[p(1) = the probability of the X value 1 = P(X= 1)]
@@ -80,10 +88,16 @@ studentdata <- read_csv("~/mat301/data/studentmajors.csv")
 
 .center[**IN R THE VARIOUS PMF FUNCTIONS START WITH A d**. eg. dpois, dnorm, dbinom, dgeom, dhyper]
 ---
-## Pmf cont
+## Pmf continued
 - Further:
+--
+
 $$p(x)\gt{0}, -\infty\lt{x}\lt{\infty}$$
+--
+
 $$\Sigma_{x\in{S}}f(x) = 1$$
+--
+
 $$P(X\in{A}) = \Sigma_{x\in{A}}f(x)$$
 ---
 ## PMF's in R
@@ -127,8 +141,10 @@ pmfcdf
 ## Visual of the CDF
 ```{r, fig.height=5, fig.align="center"}
 ggplot(pmfcdf, aes(value, cdf))+
-  stat_ecdf() + ##note we won't worry too much about the differences between ecdf and cdfs yet. 
+  geom_step()+
+   ##note we won't worry too much about the differences between ecdf and cdfs   
   labs(title = "CDF of the example") 
+pmfcdf
 ```
 
 ---
