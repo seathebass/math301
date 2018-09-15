@@ -1,0 +1,320 @@
+---
+title: "Week 2 Assignment in R"
+author: "Sebastian Hoyos-Torres"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+#  Week 2 section 1 problems
+## Question 1 parts a-d
+
+For part A we simply need to list all of the possible outcomes which are
+S = {1324,1342,1432,1423,2314,2341,2413,2431,3124,3142,3241,3214,4123,4132,4213,4231}
+
+```{r}
+Samplespace <-  c(1324,1342,1432,1423,2314,2341,2413,2431,3124,3142,3241,3214,4123,4132,4213,4231)
+```
+
+For part B, we are interested in $A\subset{S}$ where A is the event that A wins the tournament. There are four outcomes that accomplish this. Those are 
+```{r}
+# We can do the following to subset the events which are less than 2000 so that we only get the events with a 1 in the 1000's place
+EventA<- Samplespace[Samplespace <2000]
+EventA
+```
+
+For Part C, we're concerned with the probability that team 2 gets to the champioship game which equals 8 possible outcomes
+```{r}
+EventB <- c(2314,2341,2413,2431,4213,4231,3241,3214)
+EventB
+```
+
+For Part D, we're concerned with the unions of A and B and the intersections. We'd also need to take the complement of A. This can be done via the following in R
+```{r}
+union(EventA,EventB) # finds the union
+intersect(EventA,EventB) # finds the intersection. In this case the intersection is the empty
+Samplespace[Samplespace != EventA] #  filter out the events of A from the sample space
+```
+
+## Question 2 problems
+
+In Section A, we are concerned with having  all vehicles go in the same direction
+```{r}
+EventA <- c("LLL","RRR","SSS")
+EventA
+```
+
+Section B is different directions so al possibilities where they take different direction
+```{r}
+EventB <- c("LRS","LSR","RLS","RSL","SRL","SLR")
+EventB
+```
+
+Section C is exactly two vehicles turn right
+```{r}
+EventC <- c("RRS","RRL","SRR","LRR","RSR","RLR")
+EventC
+```
+
+
+Section D is the even that exactly two go the same direction
+```{r}
+EventD <- c("LLS","LLR","RRS","RRL","RRS","SSR","SLL","RLL","SRR","LRR","RSS","LSS","SRS","SLS","RSR","RLR","LSL","LRL")
+```
+
+
+## Question 3 
+
+Section A asks the event that exactly 2 of 3 components function. Try to denote S as success and F as failure
+```{r}
+EventA <- c("SSF","SFS","FSS")
+```
+
+Section B asks at least 2 components function which is the folowing
+```{r}
+EventB <- c(EventA,"SSS")
+EventB
+```
+Section C requires component 1 to function. We can denote this as folows. This solves the problem using string manipulation
+```{r}
+EventC<- EventB[str_detect(EventB,"^S")]
+EventC
+```
+
+Section D is a 4 part problem.
+```{r}
+ccomp <- c("SFF","FSF","FSS","FSS","FFF") # listing events where C does not happen is when the system does not work
+union(EventA,EventC) # union of a and c
+intersect(EventA,EventC) # intersection of a and c
+union(EventB,EventC) # union of b and c
+intersect(EventB,EventC) # intersection of b and c
+```
+
+# Section 2
+## Question 12
+Section A is simply asking for the union of A and B so here's some quick R code
+```{r}
+PA <- 0.5
+PB <- 0.4
+PAandB <-0.25 
+PAorB<- PA +PB -PAandB # P(A union B) = P(A)+P(B) - P(A instersect B)
+PAorB
+```
+Section B is asking for the probability that person has neither card. This is an application of De Morgan's Law which is $P(A^c\cap{B^c})= P(A\cup{B})^c$
+```{r}
+1- PAorB
+```
+
+Section C is asking for the probability of having a visa card but not a mastercard. This is denoted as $P(A\cup{B^c})$
+```{r}
+PA-PAandB
+```
+
+## Question 13 
+This is asking for the words as well as the probabilities associated with each of the expressions.For part A, this is denoted as follows. The probability of event $A_1$ or event $A_2$
+```{r}
+PA1 <- .22
+PA2 <- .25
+PA3 <- .28
+PA1andA2 <- .11
+PA1andA3 <- .05
+PA2andA3 <- .07
+PA1andA2andA3 <- .01
+PA1orA2<- PA1+PA2 - PA1andA2
+PA1orA2
+```
+B is the probability ot the complement of  A1 or A2 (De Morgan's Laws)
+```{r}
+PcompA1andcompA2 <- 1- PA1orA2
+PcompA1andcompA2
+```
+C is the probability of A1 or A2 or A3.
+```{r}
+PA1orA2orA3<- PA1+ PA2 + PA3 - PA1andA3-PA2andA3 - PA1andA2 + PA1andA2andA3
+PA1orA2orA3
+```
+D is the probability of the complement of A1 and the complement of A2 and the complement of A3
+```{r}
+1 - (PA1orA2 +PA3- PA1andA3- PA2andA3 + PA1andA2andA3)
+```
+
+E is the probability of the complement of A1 and the complement of A2 and A3
+```{r}
+PA3 - PA2andA3-PA1andA3 + PA1andA2andA3
+```
+
+F is the probability of the complement of A1 and the complement of A2 or A3
+```{r}
+PcompA1andcompA2+PA1andA3+PA2andA3 - PA1andA2andA3
+```
+
+## Question 14
+Section A is looking for the intersection between people who consumed both coffee and soda. In probabilistic terms, this is written as $P(A\cap{B})$ where a is the probability a person drinks coffee and b is the probability that a person consumes soda
+```{r}
+PA <- .55
+PB <- .45
+PAandB <- .7
+PA + PB - PAandB
+```
+Section B is just looking for the complement of adults who don't consume at least 1 coffee or beverage.
+```{r}
+1-PAandB
+```
+
+# Section 2.3
+## Question 29
+
+Section A is simply asking for the entirety of the names which can be formed with letters from A-Z
+```{r}
+26*26
+```
+If we permit digits from 0-9
+```{r}
+(26*10)+ (10*26) +(26 *26)+ (10*10)  # arrangement of all the possible values that can appear
+36^2
+```
+Section B is asking for something similar to section a except the length is 3 characters instead of 2
+```{r}
+26*26*26
+```
+The second part is the same as section a
+```{r}
+(26*26*10)+(26*10*26)+(10*26*26) + (10*10*26)+ (10*26*10) + (26*10 *10)+ (26^3)+(10^3)
+# or
+36^3
+```
+Section C is asking the same but building up
+```{r}
+26^4
+36^4
+```
+Section D is asking for the classical probability approach
+```{r}
+1-97786/36^4
+```
+
+## Question 30
+in section A order is important to we are doing a permutation as order matters
+```{r}
+prod(8:(8-3+1))
+factorial(8)/factorial(5)
+```
+if order does not matter
+```{r}
+choose(30,6)
+```
+
+if order matters
+```{r}
+factorial(30)/factorial(30-6)
+```
+Section C :this is just the product rule for k = 3.
+```{r}
+choose(8,2)*choose(10,2) *choose(12,2)
+```
+Section D: looking at the probability of 2 bottles of each variety over 6 randomly selected ones.
+```{r}
+(choose(8,2)*choose(10,2) *choose(12,2))/choose(30,6)
+```
+Section E: modifying the problem a little
+```{r}
+choose(8,6)/choose(30,6)+  choose(10,6)/choose(30,6) +choose(12,6)/choose(30,6)
+```
+
+##  Question 31
+Section A is just asking for the product of songs 
+```{r}
+9*27
+```
+Section B is similar except divide by number of days in a year
+```{r}
+9*27*15/365
+```
+
+# Section 4
+## Question 45
+Section A is asking for the probability of all people with type a blood, followed by eth group 3 and the intersection of a and c
+```{r}
+typea <- c(.106,.141,.200)
+sum(typea) # part 1
+ethc <- c(.215,.2,.065,.02)
+sum(ethc)# part 2
+intersect(typea,ethc) # part 3
+```
+Section B is making use of conditional probability wording. This can be solved as follows
+```{r}
+.2/sum(ethc)
+.2/sum(typea)
+```
+Section C is asking for the probability that a person belongs in ethnic group 1 if they do not have type B blood
+```{r}
+sum(.082,.106,.004)/(1-sum(.008,.018,.065))
+```
+## Question 46
+PA given B is greater because it is the proportion of adult males over 6 ft among basketball players while PB given A is the proportion of basketball players among adult males over 6 ft. Or since P(B) < P(A), $P(A|B)>P(B|A)$
+
+##  Question 47
+Section A is solved as follows
+```{r}
+# look back to question 12
+PA <- 0.5
+PB <- 0.4
+PAandB <-0.25 
+PAorB<- PA +PB -PAandB # P(A union B) = P(A)+P(B) - P(A instersect B)
+PAandB/PA# solution to part 1
+```
+Section B is looking for the complement of B given A
+```{r}
+PBcompandA <- PA - PAandB
+PBcompandA/PA
+```
+Section C is looking A given B
+```{r}
+PAandB/PB
+```
+Section D is asking for the complement of A given B which is just an application of the complement rule
+```{r}
+1- PAandB/PB
+```
+Section E is looking for the probability of at least 1 card
+```{r}
+PC <- (PA+PB) - PAandB 
+PA/PC
+```
+
+# Section 5
+
+##  Question 70
+Question 70 is asking for independence vs dependence. To answer this question, you can look at the properties for independence. Namely, does $P(A\cap{B}) = P(A)\dot{P(B)}$
+```{r}
+PA <- 0.5
+PB <- 0.4
+PAandB <-0.25 
+PA*PB == PAandB
+```
+## Question 71
+Section A is asking for the probability that the European project is not successful given that the asian project is not successful
+$P(A) = .4$
+$P(B) = .7$
+
+```{r}
+PA <- .4
+PB <- .7
+(1-PA)*(1-PB)/(1-PA)
+# or just use the complement 
+1-PB
+```
+Similar to question 47 e, we need to find the probability of at least 1. However, we also need to assess for PA and PB. Note, we do not divide by PC in this case
+```{r}
+PAandB <- PA*PB
+PC <- (PA+PB)-PAandB # at least 1 success
+PC
+```
+Section C is just asking  for the following. Don't forget your parentheses
+```{r}
+(PA- PAandB)/(PA + PB - PAandB)
+```
+
