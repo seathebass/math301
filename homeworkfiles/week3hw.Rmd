@@ -1,0 +1,238 @@
+---
+title: "Week3"
+author: "Sebastian Hoyos-Torres"
+date: "9/12/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+# Chapter 3 
+
+## Section 1 
+
+### Question 6
+
+Possible X values are 
+
+$X = \{1,2,3,4,...\}$
+
+and 5 possible outcomes are:
+
+$X(L) = 1, X(AL)= 2, X(AARRL) = 5, X(RL) = 2, X(AAAL) = 4$
+
+### Question 10
+
+For the number of pumps in use at the station, we can simply do the following.
+
+Part A
+
+$T = \{0,1,2,3,4,5,6,7,8,9,10\}$
+
+Part B (just subtract station 1's pumps in use from station 2's)
+
+$X = \{-4,-3,-2,-1,0,1,2,3,4,5,6\}$
+
+##Section 2
+
+### Question 12
+We can do this in R or do this manually. I will show everyone the R code as follows
+```{r}
+#make a dataframe or tibble of values
+pmfy <- tibble(y = 45:55,py = c(0.05,0.1,0.12,.14,.25,.17,.06,.05,.03,.02,.01))
+```
+Part A is asking for the first 50 ticketed passengers so
+```{r}
+pmfyfilt<- pmfy %>% filter(y <= 50) 
+sum(pmfyfilt$py)
+```
+Part B is asking for the probability that not all ticketed passengers can be accomodated. So the probability for people from 51 onwards (or $P(Y>50)$)
+
+```{r}
+pmfyfilt<- pmfy %>% filter(y >= 51) 
+sum(pmfyfilt$py)
+```
+Part C is two parts but in R, this is done in a pretty similar manner
+```{r}
+# if you're the first person on the waiting list you need person 50 to drop so 
+pmfyfilt<- pmfy %>% filter(y <= 49) 
+sum(pmfyfilt$py) #solution to first part
+# if you're 3rd you need persons 47-50 to drop
+pmfyfilt<- pmfy %>% filter(y <= 47) 
+sum(pmfyfilt$py)
+```
+
+### Question 13
+Let's set this table up in R as a tibble
+```{r}
+pmfx <- tibble(x = 0:6, px = c(seq(.1,.25,by = .05),.2,.06,.04))
+```
+Part A is asking for $P(X = x \leq 3)$
+```{r}
+pmfxfilt <- pmfx %>% filter(x <= 3)
+sum(pmfxfilt$px)
+```
+Part B is asking for $P(X = x < 3)$
+```{r}
+pmfxfilt <- pmfx %>% filter(x < 3)
+sum(pmfxfilt$px)
+```
+Part C is asking for $p(x \geq 3)$
+```{r}
+pmfxfilt <- pmfx %>% filter(x >= 3)
+sum(pmfxfilt$px)
+```
+Part D gets a little trickier but is asking for $1 - p(2\leq{x}\leq{5}$
+```{r}
+pmfxfilt <- pmfx %>% filter(x >= 2 &x <= 5)
+sum(pmfxfilt$px)
+```
+Part E is similar but 4 lines instead and its asking about lines **not in use**.  Working this out we find that that if 4 lines are not in use, then 2 are is use, if 3,3 lines in use and if 2, 4 are in use so in this case we can do the same type of filtering
+```{r}
+pmfxfilt <- pmfx %>% filter(x >= 2 & x <= 4)
+sum(pmfxfilt$px)
+```
+Part F is a little different. If at least 4 are not in use then there can be 0-2 lines in use inclusive
+```{r}
+pmfxfilt <- pmfx %>% filter(x >= 0 & x <= 2)
+sum(pmfxfilt$px)
+```
+
+### Question 14 
+
+Looking at this problem, we are just solving for k in the first part while substituting for y so you'd get $k[1+2+3+4+5] = 1$
+$$k[15] = 1$$
+$$k = \frac{1}{15}$$
+```{r}
+1/sum(1:5) #or 1/15
+1/15
+```
+For part B we need at most three forms so lets create a tibble.
+```{r}
+pmfy <- tibble(y = 1:5, py = (1/15)*y)
+pmfyfilt <- pmfy %>% filter(y <= 3) 
+sum(pmfyfilt$py)
+```
+Part C is similar
+```{r}
+pmfyfilt <- pmfy %>% filter(y >= 2 & y <= 4) 
+sum(pmfyfilt$py)
+```
+Part D is no since the values do not equal 1 if we substitute with the new py. Remember, the sum of all the probabilities must equal 1
+```{r}
+newpmfy<- pmfy %>% mutate(py2 = y^2/50)
+sum(newpmfy$py2) == 1
+```
+
+### Question 16
+To denote the probability distribution of X where 4 people are randomly selected, we can do the following in R
+```{r}
+#first is p(0)
+.65^4
+#next is (think of the possible arrangements with 3 failures)
+4*(.75^3*.25)
+#next is p(2)(think of possible permutations with 2 failures)
+6*(.75^2 * .25^2)
+#afterwards, p(3)
+4*(.75 *.25^3)
+# finally
+.25^4
+```
+If we just store our results, we could just get R to plot things for us
+```{r,warning=FALSE}
+pinsurance <- tibble(insured = 0:4, pinsured = c(.65^4
+,4*(.75^3*.25)
+,6*(.75^2 * .25^2)
+,4*(.75 *.25^3)
+,.25^4)) 
+pinsurance %>% 
+  ggplot(aes(insured,pinsured))+
+  geom_histogram(stat = "identity")
+```
+
+If we did part 2 ok, we should see that seeing 1 person insured is the most likely value of X.
+Part D is just using R as we already have to filter x values in the range.
+```{r}
+pinsurance %>% 
+  filter(insured >= 2) %>% 
+  summarise(pinsurednew = sum(pinsured))
+```
+### Question 18
+This question is interesting because it asks us to focus on the maximum. In this case, just think of the number of tosses and apply the classical approach to probability
+```{r}
+1/36 #one way to get a max of 1 which is (1,1)
+3/36 #3 ways to get a max of 2 (2,1),(1,2),(2,2)
+5/36 #5 ways to get a max of 3 (1,3),(2,3)(3,3)(3,2)(3,1)
+7/36 #7 ways to get a max of 4 
+9/36 #9 ways to get a max of 5
+11/36 # 11 ways to get a max of 6
+# if you noted the pattern early on, you could just use :
+seq(1,11,by = 2)/36
+```
+For the cdf of x, we can make a tibble to solve this
+```{r}
+dice <- tibble(x = 1:6,px = seq(1,11,by = 2)/36,cdfx = cumsum(px))
+dice
+dice %>% 
+  ggplot(aes(x,cdfx))+
+  geom_step()
+```
+
+## Section 3
+
+### Question 29
+Question 29 is where we can put our defining functions in R skills to use. But first, let's make a tibble
+
+```{r}
+memoryx <- tibble(x = c(1,2,4,8,16), px = c(.05,.1,.35,.4,.1))
+expectedval <- function(x,px){
+  sum(x*px)
+}
+expectedval(memoryx$x,memoryx$px)
+```
+Part B is just looking at the formula and trying to replicate it in R. Remember the formula for the variance is $V(X) = \Sigma_D(x-\mu)^2*p(x)$ . In R, it would appear as follows
+```{r}
+variancex <- function(x,mu,px){
+  sum((x-mu)^2*px)
+}
+variancex(memoryx$x,expectedval(memoryx$x,memoryx$px), memoryx$px)
+```
+the standard deviation is the square root of the variance
+```{r}
+sqrt(variancex(memoryx$x,expectedval(memoryx$x,memoryx$px), memoryx$px))
+```
+
+### Question 30
+This problem is similar to the prior one and now that we have defined a function for the expected value and the variance, we can compute the expected value easily in R. First, create your tibbles.
+```{r}
+violations <- tibble(y = 0:3,py = c(.6,.25,.1,.05))
+expectedval(violations$y,violations$py)
+```
+and the 100 in this case is just a constant that we can multiply by as follows.
+```{r}
+100 *expectedval(violations$y^2,violations$py) #don't forget to square the Y
+```
+
+### Question 32
+As is usually the case, it's best to start off with a tibble for R and we can just apply the function we built.
+```{r}
+freezer <- tibble(x = c(13.9,15.9,19.1),px = c(.2,.5,.3))
+expectedval(freezer$x,freezer$px) #expected value
+expectedval(freezer$x^2,freezer$px) #expected value x^2
+variancex(freezer$x, expectedval(freezer$x,freezer$px),freezer$px)#variance
+```
+Part B is just using the expected value within the function
+```{r}
+25*expectedval(freezer$x,freezer$px)-8.5
+```
+the variance is
+```{r}
+25^2 *3.5584
+```
+and part d is
+```{r}
+sum((freezer$x - 0.01*freezer$x^2)*freezer$px)
+```
+
