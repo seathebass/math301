@@ -131,7 +131,7 @@ dbinom(x,size, prob) #finds the pmf of the binomial variable
 pbinom() #finds the cdf of the binomial variable
 qbinom() #finds the value at the quantile specified.
 ```
-where x = number of successes specified, size = total number of trials, prob = probability associated with the outcome
+where x = number of successes specified, size = total number of trials, prob = probability associated with the outcome. Look here for more info on using the binomial family of functions in [R](http://www.stat.umn.edu/geyer/old/5101/rlook.html#binom)
 
 For Hypergeometric variables:
 ```{r,eval=FALSE}
@@ -139,7 +139,7 @@ dhyper(x,m,n,k) # pmf
 phyper() # cdf
 qhyper() # value at quantile specified
 ```
-where x = number of successes specified, m = number of possible successes, n = number of possible failures, k = subset of the total number of outcomes
+where x = number of successes specified, m = number of possible successes, n = number of possible failures, k = subset of the total number of outcomes.Look here for more info on using the hypergeometric family of functions in [R](http://www.math.grin.edu/~mooret/courses/math335/binom-hyper.html)
 
 For Poisson variables: 
 ```{r, eval=FALSE}
@@ -147,7 +147,8 @@ dpois(x,lambda ) #pmf
 ppois() #cdf
 qpois() #quantile
 ```
-where x = number of occurrences we are interested in and lambda = average number per time period selected.
+where x = number of occurrences we are interested in and lambda = average number per time period selected.Look here for more info on using the Poisson family of functions in [R](https://www.stat.wisc.edu/courses/st371-larget/poisson-handout.pdf)
+
 
 ### Helpful formulas to keep in mind:
 Conditional Probability:
@@ -178,7 +179,7 @@ $$E(Y) = E[h(x)] = \Sigma h(x)*px$$
 Of the binomial distribution:
 $$E(X) = np$$
 Hypergeometric distribution
-$$E(X) = n*\frac{M}{N}$$
+$$E(X) = n*\frac{k}{N}$$
 Poisson Distribution
 $$\lambda = E(X)$$
 
@@ -192,6 +193,6 @@ Binomial
 $$V(X) = np(1-p)$$
 
 Hypergeometric
-$$V(X)= \frac{(N-n)}{(N-1)}*n *\frac{M}{N} * (1-\frac{M}{N})$$
+$$V(X)= \frac{nk(N-k)(N-n)}{N^2(N-1)}$$
 Poisson
 $$\lambda = V(X)$$

@@ -474,17 +474,17 @@ pmfdata</code></pre>
 <pre class="r"><code>dbinom(x,size, prob) #finds the pmf of the binomial variable
 pbinom() #finds the cdf of the binomial variable
 qbinom() #finds the value at the quantile specified.</code></pre>
-<p>where x = number of successes specified, size = total number of trials, prob = probability associated with the outcome</p>
+<p>where x = number of successes specified, size = total number of trials, prob = probability associated with the outcome. Look here for more info on using the binomial family of functions in <a href="http://www.stat.umn.edu/geyer/old/5101/rlook.html#binom">R</a></p>
 <p>For Hypergeometric variables:</p>
 <pre class="r"><code>dhyper(x,m,n,k) # pmf
 phyper() # cdf
 qhyper() # value at quantile specified</code></pre>
-<p>where x = number of successes specified, m = number of possible successes, n = number of possible failures, k = subset of the total number of outcomes</p>
+<p>where x = number of successes specified, m = number of possible successes, n = number of possible failures, k = subset of the total number of outcomes.Look here for more info on using the hypergeometric family of functions in <a href="http://www.math.grin.edu/~mooret/courses/math335/binom-hyper.html">R</a></p>
 <p>For Poisson variables:</p>
 <pre class="r"><code>dpois(x,lambda ) #pmf
 ppois() #cdf
 qpois() #quantile</code></pre>
-<p>where x = number of occurrences we are interested in and lambda = average number per time period selected.</p>
+<p>where x = number of occurrences we are interested in and lambda = average number per time period selected.Look here for more info on using the Poisson family of functions in <a href="https://www.stat.wisc.edu/courses/st371-larget/poisson-handout.pdf">R</a></p>
 </div>
 <div id="helpful-formulas-to-keep-in-mind" class="section level3">
 <h3>Helpful formulas to keep in mind:</h3>
@@ -497,14 +497,14 @@ qpois() #quantile</code></pre>
 <h3>Expected Values:</h3>
 <p>of a random variable <span class="math display">\[\Sigma x*p(x)\]</span></p>
 <p>Of a function <span class="math display">\[E(Y) = E[h(x)] = \Sigma h(x)*px\]</span></p>
-<p>Of the binomial distribution: <span class="math display">\[E(X) = np\]</span> Hypergeometric distribution <span class="math display">\[E(X) = n*\frac{M}{N}\]</span> Poisson Distribution <span class="math display">\[\lambda = E(X)\]</span></p>
+<p>Of the binomial distribution: <span class="math display">\[E(X) = np\]</span> Hypergeometric distribution <span class="math display">\[E(X) = n*\frac{k}{N}\]</span> Poisson Distribution <span class="math display">\[\lambda = E(X)\]</span></p>
 <p>**remember that lambda is a*t**</p>
 </div>
 <div id="variances" class="section level3">
 <h3>Variances</h3>
 <p>Of a random discrete variable <span class="math display">\[V(X)= \Sigma(x-\mu)^2*p(x)\]</span></p>
 <p>Binomial <span class="math display">\[V(X) = np(1-p)\]</span></p>
-<p>Hypergeometric <span class="math display">\[V(X)= \frac{(N-n)}{(N-1)}*n *\frac{M}{N} * (1-\frac{M}{N})\]</span> Poisson <span class="math display">\[\lambda = V(X)\]</span></p>
+<p>Hypergeometric <span class="math display">\[V(X)= \frac{nk(N-k)(N-n)}{N^2(N-1)}\]</span> Poisson <span class="math display">\[\lambda = V(X)\]</span></p>
 </div>
 
 
