@@ -4,7 +4,7 @@
     <title>Continuous Random Variables and Probability Distributions</title>
     <meta charset="utf-8">
     <meta name="author" content="Sebastian Hoyos-Torres" />
-    <meta name="date" content="2018-10-02" />
+    <meta name="date" content="2018-10-04" />
     <link href="libs/remark-css/robot.css" rel="stylesheet" />
   </head>
   <body>
@@ -13,7 +13,7 @@ class: center, middle, inverse, title-slide
 
 # Continuous Random Variables and Probability Distributions
 ### Sebastian Hoyos-Torres
-### 2018-10-02
+### 2018-10-04
 
 ---
 
@@ -44,158 +44,6 @@ class: center, middle, inverse, title-slide
 
 ---
 ## How it looks
-
-```
-##   [1] "Red"                                     
-##   [2] "Green"                                   
-##   [3] "Blue"                                    
-##   [4] "Orange"                                  
-##   [5] "Gray"                                    
-##   [6] "Red Light"                               
-##   [7] "Green Light"                             
-##   [8] "Blue Light"                              
-##   [9] "Orange Light"                            
-##  [10] "Area Red"                                
-##  [11] "Area Green"                              
-##  [12] "Area Brown"                              
-##  [13] "Blue-Green Sequential"                   
-##  [14] "Brown Sequential"                        
-##  [15] "Purple Sequential"                       
-##  [16] "Grey Sequential"                         
-##  [17] "Red-Blue"                                
-##  [18] "Red-Green"                               
-##  [19] "Red-White-Green"                         
-##  [20] "Red-Black"                               
-##  [21] "Red-White-Black"                         
-##  [22] "Green-Blue"                              
-##  [23] "Orange-Blue"                             
-##  [24] "Orange-White-Blue"                       
-##  [25] "Red-Green Light"                         
-##  [26] "Red-White-Green Light"                   
-##  [27] "Red-White-Black Light"                   
-##  [28] "Orange-Blue Light"                       
-##  [29] "Orange-White-Blue Light"                 
-##  [30] "Orange-Blue"                             
-##  [31] "Light Red-Green"                         
-##  [32] "Temperature"                             
-##  [33] "rainbow"                                 
-##  [34] "heat.colors"                             
-##  [35] "terrain.colors"                          
-##  [36] "topo.colors"                             
-##  [37] "cm.colors"                               
-##  [38] "redscale"                                
-##  [39] "greenscale"                              
-##  [40] "bluescale"                               
-##  [41] "blueyellow"                              
-##  [42] "cyanyellow"                              
-##  [43] "redgreen"                                
-##  [44] "jetColors"                               
-##  [45] "greyscale"                               
-##  [46] "bathyDeepPal"                            
-##  [47] "chlPal"                                  
-##  [48] "icePal"                                  
-##  [49] "sstPal"                                  
-##  [50] "coolwarm"                                
-##  [51] "warmcool"                                
-##  [52] "jet"                                     
-##  [53] "parula"                                  
-##  [54] "cubicyf"                                 
-##  [55] "isol"                                    
-##  [56] "cubicl"                                  
-##  [57] "linearl"                                 
-##  [58] "linearlhot"                              
-##  [59] "ocean.algae"                             
-##  [60] "ocean.deep"                              
-##  [61] "ocean.dense"                             
-##  [62] "ocean.gray"                              
-##  [63] "ocean.haline"                            
-##  [64] "ocean.ice"                               
-##  [65] "ocean.matter"                            
-##  [66] "ocean.oxy"                               
-##  [67] "ocean.phase"                             
-##  [68] "ocean.solar"                             
-##  [69] "ocean.thermal"                           
-##  [70] "ocean.turbid"                            
-##  [71] "ocean.balance"                           
-##  [72] "ocean.curl"                              
-##  [73] "ocean.delta"                             
-##  [74] "ocean.amp"                               
-##  [75] "ocean.speed"                             
-##  [76] "ocean.tempo"                             
-##  [77] "kovesi.cyclic_grey_15_85_c0"             
-##  [78] "kovesi.cyclic_grey_15_85_c0_s25"         
-##  [79] "kovesi.cyclic_mrybm_35_75_c68"           
-##  [80] "kovesi.cyclic_mrybm_35_75_c68_s25"       
-##  [81] "kovesi.cyclic_mygbm_30_95_c78"           
-##  [82] "kovesi.cyclic_mygbm_30_95_c78_s25"       
-##  [83] "kovesi.cyclic_wrwbw_40_90_c42"           
-##  [84] "kovesi.cyclic_wrwbw_40_90_c42_s25"       
-##  [85] "kovesi.diverging_isoluminant_cjm_75_c23" 
-##  [86] "kovesi.diverging_isoluminant_cjm_75_c24" 
-##  [87] "kovesi.diverging_isoluminant_cjo_70_c25" 
-##  [88] "kovesi.diverging_linear_bjr_30_55_c53"   
-##  [89] "kovesi.diverging_linear_bjy_30_90_c45"   
-##  [90] "kovesi.diverging_rainbow_bgymr_45_85_c67"
-##  [91] "kovesi.diverging_bkr_55_10_c35"          
-##  [92] "kovesi.diverging_bky_60_10_c30"          
-##  [93] "kovesi.diverging_bwr_40_95_c42"          
-##  [94] "kovesi.diverging_bwr_55_98_c37"          
-##  [95] "kovesi.diverging_cwm_80_100_c22"         
-##  [96] "kovesi.diverging_gkr_60_10_c40"          
-##  [97] "kovesi.diverging_gwr_55_95_c38"          
-##  [98] "kovesi.diverging_gwv_55_95_c39"          
-##  [99] "kovesi.isoluminant_cgo_70_c39"           
-## [100] "kovesi.isoluminant_cgo_80_c38"           
-## [101] "kovesi.isoluminant_cm_70_c39"            
-## [102] "kovesi.linear_bgy_10_95_c74"             
-## [103] "kovesi.linear_bgyw_15_100_c67"           
-## [104] "kovesi.linear_bgyw_15_100_c68"           
-## [105] "kovesi.linear_blue_5_95_c73"             
-## [106] "kovesi.linear_blue_95_50_c20"            
-## [107] "kovesi.linear_bmw_5_95_c86"              
-## [108] "kovesi.linear_bmw_5_95_c89"              
-## [109] "kovesi.linear_bmy_10_95_c71"             
-## [110] "kovesi.linear_bmy_10_95_c78"             
-## [111] "kovesi.linear_gow_60_85_c27"             
-## [112] "kovesi.linear_gow_65_90_c35"             
-## [113] "kovesi.linear_green_5_95_c69"            
-## [114] "kovesi.linear_grey_0_100_c0"             
-## [115] "kovesi.linear_grey_10_95_c0"             
-## [116] "kovesi.linear_kry_5_95_c72"              
-## [117] "kovesi.linear_kry_5_98_c75"              
-## [118] "kovesi.linear_kryw_5_100_c64"            
-## [119] "kovesi.linear_kryw_5_100_c67"            
-## [120] "kovesi.linear_ternary_blue_0_44_c57"     
-## [121] "kovesi.linear_ternary_green_0_46_c42"    
-## [122] "kovesi.linear_ternary_red_0_50_c52"      
-## [123] "kovesi.rainbow_bgyr_35_85_c72"           
-## [124] "kovesi.rainbow_bgyr_35_85_c73"           
-## [125] "kovesi.rainbow_bgyrm_35_85_c69"          
-## [126] "kovesi.rainbow_bgyrm_35_85_c71"          
-## [127] "berlin"                                  
-## [128] "bilbao"                                  
-## [129] "broc"                                    
-## [130] "cork"                                    
-## [131] "davos"                                   
-## [132] "devon"                                   
-## [133] "grayC"                                   
-## [134] "lajolla"                                 
-## [135] "lapaz"                                   
-## [136] "lisbon"                                  
-## [137] "oleron"                                  
-## [138] "oslo"                                    
-## [139] "roma"                                    
-## [140] "tofino"                                  
-## [141] "tokyo"                                   
-## [142] "turku"                                   
-## [143] "vik"                                     
-## [144] "viridis"                                 
-## [145] "inferno"                                 
-## [146] "magma"                                   
-## [147] "plasma"                                  
-## [148] "cividis"
-```
-
 &lt;img src="week5_files/figure-html/unnamed-chunk-1-1.png" style="display: block; margin: auto;" /&gt;
 ---
 ## Mixed Random Variables
@@ -530,6 +378,18 @@ qnorm(.99)
 
 ---
 ## Visual of the problem
+
+```
+## 
+## Attaching package: 'cowplot'
+```
+
+```
+## The following object is masked from 'package:ggplot2':
+## 
+##     ggsave
+```
+
 &lt;img src="week5_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
 ---
 ## Nonstandard normal distributions

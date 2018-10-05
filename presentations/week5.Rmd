@@ -44,7 +44,6 @@ $$P(a\leq{X}\leq{b}) = \int_a^bf(x)dx$$
 ## How it looks
 ```{r, echo=FALSE,fig.align='center'}
 library(paletteer)
-palettes_c_names$palette
 dat <- with(density(rnorm(10000)), data.frame(x, y))
 dat %>% 
   ggplot(aes(x,y))+
