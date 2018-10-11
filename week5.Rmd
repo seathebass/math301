@@ -1,0 +1,670 @@
+---
+title: "Continuous Random Variables and Probability Distributions"
+author: "Sebastian Hoyos-Torres"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: robot
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: 16:9
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(tidyverse)
+```
+## Refresher on types of random variables
+- Remember, a discrete random variable can take on a finite set of values or a countable infinite set of values
+
+- However, if a random variable X is continuous, it will have possible values comprised of either a single interval on the number line (for some A $\lt$ B, any number X between A and B is a possible value) or a union of disjoint intervals and P(X = c) = 0 for any number c that is a possible value of X.
+
+- Some examples of continuous data are:
+  - Amount of rain (in inches), that falls during a storm in NYC.
+  - Weight in pounds of a dog
+  - Waiting time for the MTA trains
+
+---
+## Why we covered some calculus in section 1
+- Probability density function of a continuous random variable is defined as the area under the curve.
+
+- The formula for the probability density function of a continuous random variable X is a function f such that
+  1. $f(x) \geq{0} for all x$
+  2. $\int^{\infty}_{infty}f(x)dx = 1$
+
+- and such that for any two numbers $a \leq{b}$
+$$P(a\leq{X}\leq{b}) = \int_a^bf(x)dx$$
+
+- a probability defined as above has all properties of a probability as studied previously. Implicit in this definition is that for any single value v, the probability P(X = v) = 0.
+
+---
+## How it looks
+```{r, echo=FALSE,fig.align='center'}
+library(paletteer)
+dat <- with(density(rnorm(10000)), data.frame(x, y))
+dat %>% 
+  ggplot(aes(x,y))+
+  geom_line()+
+  geom_area(aes(x = ifelse(x >= -1 & x <= 1,x,0),fill = "red"))+
+  scale_fill_manual(values = paletteer_c("viridis","viridis",1))+
+  scale_y_continuous(limits = c(0,max(dat$y)))+
+  labs(x = "value",y = "probability", title = "Area between -1 and 1")+
+  geom_vline(xintercept = c(-1,1), lty = "dashed")+
+  theme_minimal()
+```
+---
+## Mixed Random Variables
+- There are random variables which are neither discrete nor continuous. These variables are called "mixed". One consequence of using the integrals of density functions is that this is that the probability of any single value is always 0.
+---
+## More on probability density functions
+- The probability density function can be viewed as a limit of discrete histograms. Consider lake depth measurement. We can discretize X by measuring to the nearest meter. The histograms then represent proportions of lake in the depth category. The total of all proportions = 1. The limiting function is also the probability density function.
+---
+## Uniform Distributions
+- One type of continuous random variable is the uniform distribution
+```{r,echo=FALSE, fig.align="center", fig.height=3, message=FALSE}
+unifdata <-tibble(index = 1:100000,xval = runif(100000))
+unifdata %>% 
+  ggplot(aes(xval))+
+  geom_histogram()+
+  labs(title = "Random uniform value counts")+
+  theme_minimal()
+```
+- A continuous random variable X is said to have a uniform distribution on the interval [A,B] then the probability density function of X is 
+$$f(x;A,B) = \{^{\frac{1}{B-A}, A\leq{x}\leq{B}}_{0, otherwise}$$
+---
+##CDF, Variance, and expected value
+- The cumulative density function of X is 
+$$f(x;A,B) = \begin{cases}
+0, & \text{$x\leq{A}$}\\
+\frac{x-A}{B-A}, & \text{$A\leq{x}\leq{B}$}\\
+1, & \text{$x\geq{B}$}
+\end{cases}$$
+
+- The Expected value of a uniform distribution is 
+$$E(X) = \frac{A+B}{2}$$
+- The variance is 
+$$V(X) = \frac{(B-A)^2}{12}$$
+---
+## The R translation for the uniform distribution functions
+- As in the prior class, these are the functions to calculate these in R
+
+- dunif(x, min = 0, max = 1, log = FALSE)
+- punif(q, min = 0, max = 1, lower.tail = TRUE, log.p = FALSE)
+- qunif(p, min = 0, max = 1, lower.tail = TRUE, log.p = FALSE)
+- runif(n, min = 0, max = 1)
+
+```{r}
+expectedunif <- function(A,B){(A+B)/2}
+Varianceunif <- function(A,B){(B-A)^2/12}
+```
+---
+## Example of the uniform distribution
+- Assume the waiting time,X, for a professor is uniformly distributed on the interval [0,5] minutes after the start of class. what is the probability that class starts 3 minutes after the official start of class? What is the probability that class starts between 2 to 4 minutes after the official start of class?
+
+```{r}
+#part 1
+dunif(3,0,5)
+#part2
+punif(4,0,5)-punif(2,0,5)
+## or
+integrate(function(x){dunif(x,0,5)},2,4)
+```
+---
+## Plot of previous problem part 2
+```{r, echo=FALSE, fig.align="center", fig.height=5}
+x <- seq(-1,10,0.01)
+unifprobexample <- tibble(xval = x, probability = dunif(xval,0,5))
+unifprobexample %>% 
+  ggplot(aes(xval, probability))+
+  geom_line()+
+  geom_area(aes(x = ifelse(xval >= 2 & xval <= 4, xval,0)))+
+  scale_fill_manual(values = paletteer_c("viridis","viridis",2)[1])+
+  scale_y_continuous(limits = c(0, max(unifprobexample$probability)))+
+  scale_fill_discrete(guide = FALSE)+
+  theme_minimal()+
+    labs(title = "uniform distribution",
+         x = "value")
+```
+---
+## Using R to calculate definite integrals
+- We can use R to calculate definite integrals through the integrate command
+- integrate(f, lower, upper, ..., subdivisions = 100L,...)
+```{r}
+integralresult <- integrate(function(x){dunif(x,0,1)},.2,.5)
+### note the structure of the result you can use either str() or glimpse()
+#typically we will be interested in the value. To access the value, we can use $ or [[]]
+integralresult$value
+integralresult[["value"]]
+e<- exp(1)
+```
+---
+## Important Note
+
+- R does not perform symbolic integration but can perform definite integrals.
+
+---
+## The cumulative distribution function
+- The cumulative distribution function X for a continuous random variable X is defined by every number x by
+$$F(x) = P(X \lt{x})=\int_{-\infty}^{\infty}f(y)dy$$
+
+- For each x, F(x) is the area under the density curve to the left of x (remember, this is the case for cumulative distributions). From this we see that f(x) = F(x) at every x at which F(x) exists.
+$$F(x) = \int_{-\infty}^{x}f(y)dy= \int_{A}^{x}\frac{1}{B-A}dy= \frac{x-A}{B-A}$$
+
+- For $x \lt{A}$, F(x) = 0. For $x \geq{B}$, F(x) = 1. If we are given this F(x) to begin with, we can get f(x) by taking the derivative.
+
+---
+## Probabilities and the cdf
+- Let X be a continuous rv with pdf f(x) and cdf F(x). Then for any number $\alpha$
+$$P(X \gt{\alpha})= 1- F(\alpha)$$
+
+- For any two numbers $\alpha$ and $\beta$ with $\alpha\lt{b}$
+$$P(\alpha \leq{X}\leq{b}) = F(b) - F(a)$$
+
+---
+## Example
+- Suppose the cdf of the magnitude X is given by 
+
+$$F(x) = \begin{cases}
+0, & \text{$x\lt{0}$} \\
+\frac{x}{8} + \frac{3}{16}x^2, & \text{$0\leq{X}\leq{2}$} \\
+1, & \text{$2\lt{X}$}
+\end{cases}$$
+
+- The probability that the load is between 1 and 1.9 is
+$F(b)-F(a) = F(1.9) - F(1) = 0.297$
+
+---
+## Uniroot and differentiation
+- If we have the cdf of a random variable X, say:
+$$F(x) = \begin{cases}
+0, & \text{$x\lt{0}$}\\
+\frac{1}{8} + \frac{6}{16}x, & \text{$0\leq{x}\leq{2}$}\\
+0, & \text{$x\gt{2}$}
+\end{cases}$$
+- then
+```{r}
+functionpdf <- function(x){1/8 + (6/16)*x}
+functioncdf <- function(x){x/8 + (3/16)*x^2}
+functioncdf(1.5) - functioncdf(1)
+#or using the pdf 
+integrate(functionpdf,lower =  1,upper =1.5)
+```
+---
+## Uniroot continued
+- Suppose we wanted to find the median value
+```{r}
+uniroot(function(x){functioncdf(x)-.5},c(0,2))$root # this finds the root value using a crude bisection method.
+uniexample <- uniroot(function(x){functioncdf(x)-.5},c(0,2))
+functioncdf(uniexample[["root"]]) # this turns out to be approximately 50 percent prob/ the median.
+```
+---
+## Percentiles of a continuous distribution
+- Typically when we refer to percentiles, we refer to people being above or below a certain percentile. 
+
+- One traditional example is in the test. For example, if you scored in the 85th percentile, we typically say that 15 percent of test takers scored above you while 85 percent scored below.
+
+- Taking it further, let p be a number between 0 and 1. The (100p)th percentile of the distribution of a continuous rv X, denoted by n(p) is defined by:
+$$F(n(p)) = \int_{-\infty}^{n(p)}f(y)dy$$
+- The median/ 50th percentile is located where 50 percent of the values fall under (and above). The median is thus one measure of central tendency of a distribution.
+---
+## Percentiles in R
+- In case you were wondering about one of the functions we didn't cover so far when it came to distributions, namely those that start with a q, the wait is over.
+
+- In R, functions which start with a q generate estimates of the percentile. For example, lets say we wanted to find the value in the 85th percentile of a standardized normal distribution. With R we could either do
+```{r}
+qnorm(.85)
+# or
+uniroot(function(x)pnorm(x) - .85, c(0,5))$root 
+```
+
+---
+## Mean of a continuous random variable
+- A different characterization of the center of the distribution is the expected value or mean of X
+$$E(X) = \int_{-\infty}^{\infty}f(x)dx$$
+- a symmetric or continuous distribution means that the density curve to the left is a mirror image of the density curve to the right of that point. Both the mean and median are equal to the point of symmetry.
+
+---
+## Expected value of a function of a rv.
+- If X is a rv with pdf f(x) and h(X) is any function of X, then 
+$$E[h(X)] =\int_{-\infty}^{\infty}h(x)*f(x)dx$$
+- for h(X), a linear function
+$$E(aX+b) = aE(x) + b$$
+---
+## Example
+- Two species are competing for control of a certain resource. Let X be the proportion controlled by species 1 and suppose X has a uniform distribution on [0,1]. Then the species that controls the majority of the resources controls the amount (Devore, 149).
+$$h(x) = max(X,1-X)$$
+$$E[h(x)] = \int_{-\infty}^{\infty}max(x,1-x)*f(x)dx$$
+$$\int_0^1max(x,1-x)*1dx$$
+$$\int_0^{1/2}(1-x)dx+\int_{1/2}^{1}xdx=$$
+$$\frac{3}{4}$$
+---
+## Doing it in R
+```{r, fig.height=5,fig.align="center"}
+functionmax <- function(x){pmax(x,1-x)} #or h in the equation
+#plot using ggplot
+ggplot(tibble(x = c(0,1)),aes(x))+
+  stat_function(fun = functionmax)
+```
+---
+## Doing it in R cont.
+```{r}
+integrate(functionmax,0,1)$value
+variancemax <- integrate(function(x){(x-.75)^2*functionmax(x)},0,1)
+variancemax$value
+sqrt(variancemax[["value"]])#standard deviation
+```
+
+---
+## Variance of a continuous random variable
+- Although we just explored it in R briefly, the variance of a continuous random variable x with pdf f(x) and mean value $\mu$ is 
+$$V(X) = \int_{-infty}^{\infty}(x-\mu)^2f(x)dx$$
+- The standard deviation of an expected random variable X is 
+$$\sigma^2_X = \sqrt{V(X)}$$
+
+- The Variance and the standard deviation describe the spread of the distribution.
+
+- A shortcut formula for the variance is 
+$$E(X^2)-[E(X)]^2$$
+
+---
+## The Normal Distribution
+- Perhaps the most important distribution in all of statistics since many distributions tend to follow a normal curve.
+
+- The formula for the pdf of a normal distribution with parameters $\mu$ and $\sigma$ where $-\infty\leq{x}\leq{\infty}$ is
+$$f(x;\mu,\sigma)= \frac{1}{\sqrt{2\pi{\sigma}}}e^{-(x-\mu)^2(2\sigma^2)}, -\infty\leq{x}\leq{\infty}$$
+- This is commonly denoted as $X \tilde{}N(\mu,\sigma^2)$
+
+- Further, E(X) = $\mu$ and V(X) = $\sigma^2$
+
+---
+## Plot of normal distribution pdf
+```{r, echo=FALSE, fig.align="center",fig.height=5}
+library(scico)
+tibx<- tibble(x = -5:5)
+colors <- scico::scico(3)
+ggplot(tibx,aes(x = -5:5))+
+  stat_function(fun = dnorm,aes(color = colors[1]))+
+  stat_function(fun = dnorm,args = list(mean = 3, sd = 2),aes(color = colors[2]))+
+  stat_function(fun = dnorm, args = list(mean = 1, sd = 1.5),aes(color = colors[3]))+
+  scale_color_discrete(guide = FALSE)+
+  theme_minimal()+
+  labs(x = "value",
+       y = "probability",
+       title = "The pdfs of the normal distribution")
+```
+
+---
+## Normal Distribution properties
+- N(0,1) is called the standard normal distribution. A standard normal distribution will typically be denoted by z. The cdf of Z will be denoted by $\Phi(z) = P(Z \lt{z})$
+
+- For example, if we were interested in finding  $P(-.38 \leq{Z}\leq{1.25})$ and the 99th percentile, we can do the following
+```{r}
+#part 1
+pnorm(1.25) - pnorm(-.38)
+
+#part 2
+qnorm(.99)
+```
+
+---
+## Visual of the problem
+```{r, echo=FALSE, fig.align="center", fig.height=5}
+library(cowplot)
+p138<- ggplot(NULL,aes(c(-5,5)))+
+  stat_function(fun = dnorm)+
+  geom_area(stat = "function", fun = dnorm, fill = colors[3], xlim = c(-.38,1.25))+
+  labs(title = "P(-.38<Z<1.25) of the s. normal distribution",
+       x = "values",
+       y = "Probability")
+p99 <- ggplot(NULL,aes(c(-5,5)))+
+  stat_function(fun = dnorm)+
+  geom_area(stat = "function", fun = dnorm, fill = colors[3],xlim = c(-5,qnorm(.99)))+
+  labs(title = "99th pct of the s. normal distribution",
+       x = "values",
+       y = "Probability")
+plot_grid(p138,p99,align = "H")
+```
+---
+## Nonstandard normal distributions
+- Often, we will not have normal distributions so when X~ N($\mu,\sigma$), we can standardize the values so that the standard deviation is 1 rather than $$\sigma$$. Therefore:
+$$Z = \frac{X-\mu}{\sigma}$$
+- which has a standard normal distribution and thus
+$$P(a\leq{X}\leq{b}) = \Phi{\frac{b-\mu}{\sigma}}-\Phi{\frac{a-\mu}{\sigma}}$$
+---
+## Nonstandard normal distribution examples
+
+- Let's say we had a nonstandard normally distributed variable with $\mu = 5, \sigma=1.94$ and wanted to find the probability for $P(3.65\leq{X}\leq{5.6})$. How would we go about finding the probability?
+
+```{r}
+#solution to the problem
+pnorm(5.6,5,1.94) - pnorm(3.65, 5,1.94)
+```
+- How about if I wanted to find the probability $P(x\leq{5})$?
+```{r}
+pnorm(5,5,1.94)
+#or 
+pnorm((5-5)/1.94)
+```
+---
+## Visual Representation
+```{r, echo=FALSE,fig.align="center"}
+ggplot(NULL, aes(x = c(0,10)))+
+  stat_function(fun = dnorm, args = list(mean = 5,sd = 1.94))+
+  geom_area(stat = "function", fun = dnorm, args = list(mean = 5,sd = 1.94), xlim = c(3.65,5.6), fill = scico::scico(2)[2])+
+  theme_minimal()+
+  labs(title = "probability of selecting between 3.65 and 5.6",
+       x = "x",
+       y = "f(x)")
+```
+---
+## Visual Representation of quantile 99
+```{r,echo=FALSE,fig.align="center", fig.height=5}
+ggplot(NULL, aes(x = c(0,10)))+
+  stat_function(fun = dnorm, args = list(mean = 5,sd = 1.94))+
+  geom_area(stat = "function", fun = dnorm, args = list(mean = 5,sd = 1.94), xlim = c(0,qnorm(.99,5,1.94)), fill = scico::scico(2)[2])+
+  theme_minimal()+
+  labs(title = "probability of selecting beneath the 99 percentile",
+       x = "x",
+       y = "f(x)")
+```
+
+---
+## Normal Approximation to Binomial
+- Suppose $X \tilde{}np$. Provided that $np\geq{10}$ and $n(1-p)\geq10$, X has approximately a normal distribution with $\mu = np$ and $\sigma = \sqrt{np(1-p)}$ and 
+$$P(X\leq{x})\approx{\Phi{\frac{x+0.5-np}{\sqrt{np(1-p)}}}}, x = 0,1,...,n$$
+
+---
+## Example
+- Suppose 25% of all drivers do not have insurance. Let X ba the number of uninsured drivers in a random sample of size 20. Then $X\tilde{}Bin(20,0.25)$. Evaluate $P(5\leq{X}\leq{10})$
+
+```{r}
+### step by step guide
+x1 <- 10 #1st x
+x2 <- 5 #2nd x
+n <- 20 # sample size
+p <- .25 #probability
+
+pnorm(10.5,mean = n*p, sd = sqrt(.25*.75*n) ) - pnorm(4.5,mean = n*p, sd = sqrt(.25*.75*n))
+sum(dbinom(5:10,20,.25))
+```
+---
+## The Gamma Distribution
+- For $\alpha\gt0$ the gamma function $\Gamma{\alpha}$ is defined by
+
+$$\Gamma{\alpha} = \int_{0}^{\infty}x^{\alpha - 1}e^{-x}dx$$
+- The properties of the gamma function are the following:
+  
+  - For any $\alpha \gt{1}$, $\Gamma{\alpha} = (\alpha - 1)*\Gamma{(\alpha-1)}$
+  - For any positive integer n, $\Gamma(n) = (n-1)!$
+  - $\Gamma{(\frac{1}{2})} = \sqrt{\pi}$
+
+---
+## The Gamma Distribution Continued
+- A continuous random variable X is said to have a gamma distribution if the pdf of X is 
+$$f(x;a,\beta{}) = \begin{cases}
+\frac{1}{\beta{}^{\alpha}\Gamma{(\alpha)}}x^{\alpha - 1}e^{\frac{-x}{\beta{}}}, & \text{$x\geq{0}$} \\
+0, & \text{otherwise} 
+\end{cases}$$
+- Where $\alpha\gt0$ and $\beta\gt0$.The standard gamma distribution has $\beta = 1$. $E(X) = a\beta$ and $V(X) = a\beta^2$.
+
+- **Note, alpha is the shape parameter while beta is the scale parameter**
+
+---
+## Visual of the distribution functions
+```{r, fig.align="center",fig.height=5, echo=FALSE}
+ggplot(NULL,aes(c(0,10)))+
+  stat_function(fun = dgamma,args = list(1,1),color = scico::scico(5)[5], size = 2)+
+  stat_function(fun = dgamma,args = list(2,2),color = scico::scico(5)[4], size = 2)+
+  stat_function(fun = dgamma,args = list(2,1/3),color = scico::scico(5)[3], size = 2)+
+  stat_function(fun = dgamma,args = list(2,1),color = scico::scico(5)[2], size = 2)+ 
+  labs(title = "Gamma Density curves",
+       y = "f(x)", x = "x")+ theme_minimal()
+```
+---
+## Probabilities from the gamma distribution
+- Example 4.21 from the text: Suppose the survival time X in weeks of a randomly selected male mouse exposed to 240 rads of gamma radiation has a gamma distribution with $\alpha = 8$ and $\beta = 15$. What is the probabiity that a mouse survives between 60 and 120 weeks?
+```{r}
+### two ways to solve this problem
+diff(pgamma(c(60,120),shape = 8, scale = 15))
+## OR 
+pgamma(120,8,15)- pgamma(60, 8,15)
+```
+
+---
+## Visual representation of the probability of prior example
+```{r, echo=FALSE,fig.align="center", fig.height=5}
+ggplot(NULL ,aes(c(0,300)))+
+  stat_function(fun = dgamma, args = list(shape = 8, scale =15))+
+  geom_area(stat = "function", fun = dgamma, args = list(shape = 8,scale = 15), xlim = c(60,120), fill = scico::scico(10)[7])+
+  theme_minimal()+
+  labs(title = "gamma curve with a shape of 8 and scale of 15",
+       x = "values",
+       y = "probability")
+```
+---
+
+## Applications of the gamma distribution
+- The gamma distribution has been used to model insurance claims, rainfall accumulated in a reservoir and serves as an important distribution in Bayesian Statistics.
+---
+--- 
+## The exponential distributions
+- Sometimes, the distribution of our variable of interest is skewed and therefore not normal. To amend for this, we can use the exponential distribution
+
+- X is said to have an exponential distribution with paramater $\lambda(\lambda\gt0)$ if the pdf of X is:
+
+$$f(x;\lambda) = \begin{cases}
+\lambda{e^{-\lambda{x}}}, & \text{$x\geq{0}$} \\
+0, & \text{otherwise}
+\end{cases}$$
+
+- If X is an exponential random variable with parameter $\lambda$, then
+$E(X) = \frac 1 \lambda$ and $V(X) = \frac {1} {\lambda^2}$
+
+---
+
+## Visual of the Exponential Density Curves
+```{r, echo=FALSE, fig.height=5,fig.align="center"}
+
+ggplot(tibble(x = 0:6 ), aes(x = x))+
+  stat_function(fun = dexp, args = list(rate = 0.5))+
+  stat_function(fun = dexp, args = list(rate = 2))+
+  stat_function(fun = dexp, args = list(rate =1))+
+  labs(title = "exponential density curves",
+       x = "x",
+       y = "f(x)")
+```
+---
+## Where has the exponential distribution been used?
+
+1. The exponential distribution is often helpful in situations which involve wait times. Also, in cases where the occurrences of a phenomenon follows a Poisson distribution, the time between occurrence follows an exponential distribution with the same parameter.
+
+2. Some situations involve an exponential random variable:
+- time for next text message to arrive
+- distance betweent mutations on a DNA strand
+- Time between calls to a help desk.
+
+3. An exponential distribution is memoryless. To see what this means, suppose X is an exponential random variable and s and t are any two positive numbers. Then $P(X\gt{s+t}|X\gt{s}) = P(X \gt{t})$
+
+---
+## Applications
+- Students arrive at a local bar and restaurant according to an approximate Poisson process at a mean rate of 30 students per hour. What is the probability that the bouncer has to wait more than 3 minutes to card the next student?
+
+```{r}
+rate <- 30 #number of students per hour
+rpm <- rate/60
+1 - pexp(3,rpm)
+# OR
+pexp(3,rpm,lower.tail = FALSE)
+```
+---
+## The "memoryless" property further explained
+- From Devore p.167: Suppose component lifetime is exponentially distributed with parameter $\lambda$. After putting the component into service, we leave for a period of $t_0$ hours and then return to find the component still working; what is the probability that it lasts for an addtional t hours? 
+
+- Therefore 
+$$P(X\geq{t+t_0}|X\geq{t_0}) = \frac{P(X\geq{t+t_0}\cap{X\geq{t_0}})}{P(X\geq{t_0})}$$
+$$\frac{1 - F(t +t_0*\lambda)}{1-F(t_0*\lambda)} = e^{-\lambda{t}}$$
+**Note: the distribution of additional lifetime is exactly the same as the original distribution of lifetime**
+---
+## Beta Distribution 
+- The standard Beta distribution with parameters $\alpha$ and $\beta$ has the density function:
+
+$$f(x;\alpha,\beta) = \begin{cases}
+0, & \text{$x\lt{0}$} \\ 
+x^{-1 + \alpha}(1-x)^{-1 +\beta}, & \text{$0\leq{x}\leq{1} where B(\alpha,\beta) = \frac{\Gamma{(\alpha)}\Gamma{(\beta)}}{\Gamma{(\alpha + \beta)}}$} \\
+0, & \text{$x\gt{1}$}
+\end{cases}$$
+
+- If X has a standard Beta distribution, then X only takes on values in [0,1]. X will have expected value
+$$\frac{\alpha}{\alpha+\beta}$$
+
+- and variance:
+$$\frac{\alpha\beta}{(\alpha + \beta)^2(\alpha + \beta + 1)}$$
+
+---
+## Visual of the beta distribution
+```{r, echo=FALSE,fig.align="center",fig.height=5 }
+ggplot(tibble(x = seq(0,1,0.1)),aes(x =x))+
+  stat_function(fun = dbeta, args = list(5,2), aes(color = "5,2"))+
+  stat_function(fun = dbeta, args = list(2,5), aes(color = "2,5"))+
+  stat_function(fun = dbeta, args = list(1,1), aes(color = "1,1"))+
+  stat_function(fun = dbeta, args = list(.02,3), aes(color = "0.02,3"))+
+  theme_minimal()+
+  labs(title = "Beta densities")+
+  scale_color_manual(name = "alpha and Beta",
+                     values = c(scico::scico(10)[4],
+                                scico::scico(10)[3],
+                                scico::scico(10)[2],
+                                scico::scico(10)[5])) +
+  labs(title = "beta density functions",
+       x = "x",
+       y = "f(x)")+
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+---
+## A few notes about the beta distribution
+- We could test this further but note that the beta density can vary in a large number of ways if you adjust alpha and beta.
+
+---
+## Example of the beta distribution in action
+- Beta is often used to model probabilities and proportions which makes it attractive to Bayesians to model prior distributions. An example of this follow
+
+-Project  managers  often  use  a  method  labeled  PERT—for  program  evaluation  and review  technique—to  coordinate  the  various  activities  making  up  a large  project. (One successful application was in the construction of the Apollo spacecraft.) A standard assumption in PERT analysis is that the time necessary to complete any particular activity once it has been started has a beta distribution with A = the optimistic time  (if  everything  goes  well)  and B =  the  pessimistic  time  (if  everything  goes badly). Suppose that in constructing a single-family house, the time X (in days) necessary for laying the foundation has a beta distribution with A = 2, B =5 $\alpha = 2,\beta =3$
+
+```{r}
+beta(1,3)
+pbeta(beta(1,3),2,3)
+```
+
+---
+## The Chi- Square Distribution
+Let v be a positive integer. Then a random variable X is said to have a chi- squared distribution with parameter v if the pdf of X is the gamma density with a = v/2 and B = 2. The pdf of a chi-squared rv $\chi^2(v)$ is:
+$$f(x;v) = \begin{cases}
+\frac{1}{2^{v/2}\gamma{(v/2)}}x^{(v/2)-1}e^{-x/2},& \text{$x\geq{0}$} \\
+0,x\leq{0}
+\end{cases}$$
+Where parameter v is referred to as the **degrees of freedom** of X.
+
+---
+## Visual of the chi-square distribution
+```{r, echo=FALSE, fig.align="center"}
+ggplot(tibble(x = 0:7),aes(x))+
+  stat_function(fun = dchisq,args = list(df = 1),aes(color = "df = 1"))+
+  stat_function(fun = dchisq,args = list(df = 2), aes(color = "df = 2"))+
+  stat_function(fun = dchisq,args = list(df = 3), aes(color = "df = 3"))+
+  stat_function(fun = dchisq,args = list(df = 4), aes(color = "df = 4"))+
+    scale_color_manual(name = "Degrees of freedom",
+                     values = c(scico::scico(10)[4],
+                                scico::scico(10)[3],
+                                scico::scico(10)[2],
+                                scico::scico(10)[5])) +
+  labs(title = "Chi-square density functions",
+       x = "x",
+       y = "f(x)")+ 
+  theme_minimal()
+```
+
+---
+## More on the Chi-Squared Distribution
+- The chi- squared distribution with k degrees of freedom is the distribution of the sum of k independent standard normal variables.
+
+- In statistics, the chi-squared distribution is used to test for the goodness of fit and independence. Also note that the student's t and the F distribution have chi-squared random variables as components.
+
+- As with all of our distributions, there are built in R functions
+
+- Also note that a chi-squared distribution with k degrees of freedom has expected value k and variance 2k
+---
+--- 
+## The T Distribution
+If $X\approx{N(0,1)}$ and $Y\approx{\chi(n)}$ and X and Y are independent, then the statistic 
+$$T = \frac{X}{\sqrt{\frac{Y}{n}}}$$
+is said to have a t-distribution with n degrees of freedom.
+The pdf of T is given by:
+$$f(x;n) = \frac{\Gamma{(\frac{1}{2}n + \frac{1}{2})}}{\sqrt{\pi{n}}\Gamma{(\frac{1}{2}n)}(1+\frac{x^2}{n})^{\frac{1}{2}n +\frac{1}{2}}}$$
+Again, there are built in R functions to handle the calculations of the pdf and cdf so make sure to use them! As has followed the pattern for all probabilities, the functions are qt, pt,dt, and rt.
+---
+## More on Students t-distribution
+
+- If X is a t-distribution with n degrees of freedom, then:
+  - E(X^r) exists for $r\lt{n}$
+  - E(X) = 0 if $n\gt{2}$
+  - V(X) = $\frac{n}{(n-2)}$ if $n\gt{2}$
+
+---
+## Visual of the t-distribution pdf
+```{r, echo=FALSE,fig.align="center"}
+ggplot(tibble(x = -5:5),aes(x = x))+
+  stat_function(fun = dt, args = list(df= 1),aes(color = "df = 1"))+
+  stat_function(fun = dt, args = list(df= 2),aes(color = "df = 2"))+
+  stat_function(fun = dt, args = list(df= 3),aes(color = "df = 3"))+
+  stat_function(fun = dt, args = list(df= 4),aes(color = "df = 4"))+
+  theme_minimal()+
+  scale_color_discrete()
+  
+```
+---
+## The Weibull Distribution
+A Random Variable is said to have a Weibull Distribution with parameters a and B $(a\gt{0},B\gt{0})$ if the pdf of X is :
+
+$$f(x;a,B) = \begin{cases}\\
+\frac{a}{B}x^{a-1}e^{-(x/B)^a},& \text{$x\geq{0}$} \\
+0, & \text{x\lt{0}}
+\end{cases}$$
+
+Where a is the shape parameter and B is the scale parameter. The expected value and the variance of the Weibull Distribution is given as:
+$\mu = B\Gamma(1+\frac{1}{a})$ and $\sigma^2 = B^2(\Gamma{(1+\frac{2}{a})}-[\Gamma{(1+ \frac{1}{a})}]^2)$
+
+The cdf of a Weibull is then:
+$$F(x;a,B) = \begin{cases}
+0, & \text{$x\lt{0}$}
+1-e^{-(x/b)^{a}}, & \text{x \geq{0}}
+\end{cases}$$
+
+---
+## Example and visualization of the Weibull distribution in action
+Suppose X is the amount of Nitrous Oxide emissions from a certain engine and X has a Weibull Distribution with shape parameter a = 2 and scale parameter B = 10. Find the probability that the amount of nitrous oxide is less than 11
+```{r}
+pweibull(11, shape = 2,scale = 10)
+```
+
+Find a value that separates the 95% of engines with the least Nitrous Oxide from the rest.
+```{r}
+qweibull(.95, shape = 2, scale = 10)
+```
+
+---
+## Visual of part 2
+```{r, echo=FALSE,fig.align="center"}
+ggplot(tibble(x = 0:20), aes(x))+
+  stat_function(fun = dweibull,args = list(shape = 2, scale = 10))+
+  geom_area(stat = "function", fun = dweibull, args = list(shape = 2, scale = 10),
+            xlim = c(0,x = qweibull(.95, shape = 2, scale = 10)), fill = scico::scico(2)[2])+
+  theme_minimal()+
+  labs(x = "x",y = "f(x)")+
+  labs(title = "Area underneath the curve")
+```
+
+
