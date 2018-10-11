@@ -231,7 +231,7 @@ $$E(X) = \int_{-\infty}^{\infty}f(x)dx$$
 - If X is a rv with pdf f(x) and h(X) is any function of X, then 
 $$E[h(X)] =\int_{-\infty}^{\infty}h(x)*f(x)dx$$
 - for h(X), a linear function
-$$E(aX+b = aE(x) + b$$
+$$E(aX+b) = aE(x) + b$$
 ---
 ## Example
 - Two species are competing for control of a certain resource. Let X be the proportion controlled by species 1 and suppose X has a uniform distribution on [0,1]. Then the species that controls the majority of the resources controls the amount (Devore, 149).
@@ -342,7 +342,7 @@ $$P(a\leq{X}\leq{b}) = \Phi{\frac{b-\mu}{\sigma}}-\Phi{\frac{a-\mu}{\sigma}}$$
 #solution to the problem
 pnorm(5.6,5,1.94) - pnorm(3.65, 5,1.94)
 ```
-- How about if I wanted to find the probability P($x\leq{5}$)?
+- How about if I wanted to find the probability $P(x\leq{5})$?
 ```{r}
 pnorm(5,5,1.94)
 #or 
@@ -504,7 +504,7 @@ pexp(3,rpm,lower.tail = FALSE)
 - From Devore p.167: Suppose component lifetime is exponentially distributed with parameter $\lambda$. After putting the component into service, we leave for a period of $t_0$ hours and then return to find the component still working; what is the probability that it lasts for an addtional t hours? 
 
 - Therefore 
-$$P(X\geq{t+t_0}|X\geq{t_0}) = \frac{P(X\geq{t+t_0}\cap{X\geq{t_0}}}{P(X\geq{t_0})}$$
+$$P(X\geq{t+t_0}|X\geq{t_0}) = \frac{P(X\geq{t+t_0}\cap{X\geq{t_0}})}{P(X\geq{t_0})}$$
 $$\frac{1 - F(t +t_0*\lambda)}{1-F(t_0*\lambda)} = e^{-\lambda{t}}$$
 **Note: the distribution of additional lifetime is exactly the same as the original distribution of lifetime**
 ---
@@ -530,7 +530,7 @@ ggplot(tibble(x = seq(0,1,0.1)),aes(x =x))+
   stat_function(fun = dbeta, args = list(5,2), aes(color = "5,2"))+
   stat_function(fun = dbeta, args = list(2,5), aes(color = "2,5"))+
   stat_function(fun = dbeta, args = list(1,1), aes(color = "1,1"))+
-  stat_function(fun = dbeta, args = list(.02,3), aes(color = "0.2,3"))+
+  stat_function(fun = dbeta, args = list(.02,3), aes(color = "0.02,3"))+
   theme_minimal()+
   labs(title = "Beta densities")+
   scale_color_manual(name = "alpha and Beta",
@@ -557,6 +557,114 @@ ggplot(tibble(x = seq(0,1,0.1)),aes(x =x))+
 ```{r}
 beta(1,3)
 pbeta(beta(1,3),2,3)
+```
+
+---
+## The Chi- Square Distribution
+Let v be a positive integer. Then a random variable X is said to have a chi- squared distribution with parameter v if the pdf of X is the gamma density with a = v/2 and B = 2. The pdf of a chi-squared rv $\chi^2(v)$ is:
+$$f(x;v) = \begin{cases}
+\frac{1}{2^{v/2}\gamma{(v/2)}}x^{(v/2)-1}e^{-x/2},& \text{$x\geq{0}$} \\
+0,x\leq{0}
+\end{cases}$$
+Where parameter v is referred to as the **degrees of freedom** of X.
+
+---
+## Visual of the chi-square distribution
+```{r, echo=FALSE, fig.align="center"}
+ggplot(tibble(x = 0:7),aes(x))+
+  stat_function(fun = dchisq,args = list(df = 1),aes(color = "df = 1"))+
+  stat_function(fun = dchisq,args = list(df = 2), aes(color = "df = 2"))+
+  stat_function(fun = dchisq,args = list(df = 3), aes(color = "df = 3"))+
+  stat_function(fun = dchisq,args = list(df = 4), aes(color = "df = 4"))+
+    scale_color_manual(name = "Degrees of freedom",
+                     values = c(scico::scico(10)[4],
+                                scico::scico(10)[3],
+                                scico::scico(10)[2],
+                                scico::scico(10)[5])) +
+  labs(title = "Chi-square density functions",
+       x = "x",
+       y = "f(x)")+ 
+  theme_minimal()
+```
+
+---
+## More on the Chi-Squared Distribution
+- The chi- squared distribution with k degrees of freedom is the distribution of the sum of k independent standard normal variables.
+
+- In statistics, the chi-squared distribution is used to test for the goodness of fit and independence. Also note that the student's t and the F distribution have chi-squared random variables as components.
+
+- As with all of our distributions, there are built in R functions
+
+- Also note that a chi-squared distribution with k degrees of freedom has expected value k and variance 2k
+---
+--- 
+## The T Distribution
+If $X\approx{N(0,1)}$ and $Y\approx{\chi(n)}$ and X and Y are independent, then the statistic 
+$$T = \frac{X}{\sqrt{\frac{Y}{n}}}$$
+is said to have a t-distribution with n degrees of freedom.
+The pdf of T is given by:
+$$f(x;n) = \frac{\Gamma{(\frac{1}{2}n + \frac{1}{2})}}{\sqrt{\pi{n}}\Gamma{(\frac{1}{2}n)}(1+\frac{x^2}{n})^{\frac{1}{2}n +\frac{1}{2}}}$$
+Again, there are built in R functions to handle the calculations of the pdf and cdf so make sure to use them! As has followed the pattern for all probabilities, the functions are qt, pt,dt, and rt.
+---
+## More on Students t-distribution
+
+- If X is a t-distribution with n degrees of freedom, then:
+  - E(X^r) exists for $r\lt{n}$
+  - E(X) = 0 if $n\gt{2}$
+  - V(X) = $\frac{n}{(n-2)}$ if $n\gt{2}$
+
+---
+## Visual of the t-distribution pdf
+```{r, echo=FALSE,fig.align="center"}
+ggplot(tibble(x = -5:5),aes(x = x))+
+  stat_function(fun = dt, args = list(df= 1),aes(color = "df = 1"))+
+  stat_function(fun = dt, args = list(df= 2),aes(color = "df = 2"))+
+  stat_function(fun = dt, args = list(df= 3),aes(color = "df = 3"))+
+  stat_function(fun = dt, args = list(df= 4),aes(color = "df = 4"))+
+  theme_minimal()+
+  scale_color_discrete()
+  
+```
+---
+## The Weibull Distribution
+A Random Variable is said to have a Weibull Distribution with parameters a and B $(a\gt{0},B\gt{0})$ if the pdf of X is :
+
+$$f(x;a,B) = \begin{cases}\\
+\frac{a}{B}x^{a-1}e^{-(x/B)^a},& \text{$x\geq{0}$} \\
+0, & \text{x\lt{0}}
+\end{cases}$$
+
+Where a is the shape parameter and B is the scale parameter. The expected value and the variance of the Weibull Distribution is given as:
+$\mu = B\Gamma(1+\frac{1}{a})$ and $\sigma^2 = B^2(\Gamma{(1+\frac{2}{a})}-[\Gamma{(1+ \frac{1}{a})}]^2)$
+
+The cdf of a Weibull is then:
+$$F(x;a,B) = \begin{cases}
+0, & \text{$x\lt{0}$}
+1-e^{-(x/b)^{a}}, & \text{x \geq{0}}
+\end{cases}$$
+
+---
+## Example and visualization of the Weibull distribution in action
+Suppose X is the amount of Nitrous Oxide emissions from a certain engine and X has a Weibull Distribution with shape parameter a = 2 and scale parameter B = 10. Find the probability that the amount of nitrous oxide is less than 11
+```{r}
+pweibull(11, shape = 2,scale = 10)
+```
+
+Find a value that separates the 95% of engines with the least Nitrous Oxide from the rest.
+```{r}
+qweibull(.95, shape = 2, scale = 10)
+```
+
+---
+## Visual of part 2
+```{r, echo=FALSE,fig.align="center"}
+ggplot(tibble(x = 0:20), aes(x))+
+  stat_function(fun = dweibull,args = list(shape = 2, scale = 10))+
+  geom_area(stat = "function", fun = dweibull, args = list(shape = 2, scale = 10),
+            xlim = c(0,x = qweibull(.95, shape = 2, scale = 10)), fill = scico::scico(2)[2])+
+  theme_minimal()+
+  labs(x = "x",y = "f(x)")+
+  labs(title = "Area underneath the curve")
 ```
 
 
