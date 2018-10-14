@@ -1,0 +1,136 @@
+---
+title: "Week 6 assignment in R"
+author: "Sebastian Hoyos-Torres"
+date: "10/2/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Chapter 4
+## Section 1
+### Question 2
+
+```{r}
+punif(0,-5,5) #a
+punif(2.5,-5,5)-punif(-2.5,-5,5)#b
+punif(3,-5,5) - punif(-2,-5,5)#c
+punif(4,-5,5) - punif(0,-5,5)#d
+```
+ 
+### Question 3
+gives you the probability density function and all you have to do is integrate over the interval specified.
+```{r}
+test <- function(x) .09375*(4-x^2)
+integrate(test,lower = -2, upper = 0)
+integrate(test,lower = -1, upper = 1)
+integrate(test,lower = .5, upper = 2)$value + integrate(test,upper = -.5,lower = -2)$value 
+```
+
+### Question 5
+This is just minimal integral calculus to find the value of k so
+$$\int_{0}^{2}{kx^2dx} = k\int_{0}^{2}{x^2}dx = k \frac{x^3}{3} = \frac{3}{x^3}$$
+$$k = \frac{3}{2^3} = 3/8$$
+```{r}
+3/8 #part a
+```
+Now that we found k, we can just input our function into R for the next few parts.
+```{r}
+functiontointegrate <- function(x)0.375*x^2
+integrate(functiontointegrate,0,1) #part b
+integrate(functiontointegrate,1,1.5) #part c
+integrate(functiontointegrate,1.5,2) #part d
+```
+
+## Section 2
+### Question 11
+Let's look into things with a bit more depth now. Since we have the cdf, lets plug things into R just and work the problems through.
+First,since the cdf of x is 0 if x < 0 or 1 if x $\geq$ 2, we just want to focus on the formula in the interval so
+```{r}
+cdfx <- function(x){x^2/4}
+cdfx(1)#a
+cdfx(1)-cdfx(.5)#b
+1-cdfx(1.5) #c
+### d is a bit different since we want to solve for the x value that will result in 0.5, therefore:
+uniroot(f = function(x){x^2/4 - .5}, interval = c(0,2))$root
+sqrt(.5*4)# part d
+#we can verify by ensuring that x value when inputted = 0.5
+cdfx(sqrt(.5*4)) #part d verification
+```
+Part E requires the derivative which is just $$\frac{x^2}{4} = \frac{2x}{4} = \frac{1}{2}x$$
+
+Part F is the expected value so just remember: 
+$$\int_{-\infty}^{\infty}x*f(x)$$
+where f(x) refers to the probability density function.
+```{r}
+integrate(function(x){x*((x)/2)},lower = 0,upper =2)
+```
+
+Part G is for finding the variance whose formula is:
+$$\int{(x-\mu)^2}*f(x)dx$$ and the standard deviation is just the square root of the variance. Therefore:
+```{r}
+integrate(function(x){(x-(4/3))^2*(x/2)},0,2)
+sqrt(integrate(function(x){(x-(4/3))^2*(x/2)},0,2)$value)
+```
+Finally, using 
+$$\int{h(x)*f(x)} = E[h(x)]$$
+```{r}
+integrate(function(x)x^2*(x/2),0,2)
+```
+
+## Question 12
+Since we're given the cdf, this follows the same method as the prior problem
+```{r}
+cdfx <- function(x){(1/2)+(3/32)*(4*x-(x^3/3))}
+cdfx(0)
+cdfx(1)-cdfx(-1)
+1-cdfx(.5)
+```
+find the derivative for part d and then the median for part e using the derivative of the cdf. 
+$$\frac{1}{2}+\frac{3}{32}(4x-\frac{x^3}{3}) = \frac{12-\frac{9x^2}{3}}{32} = \frac{12 - 3x^2}{32} = -3(\frac{x^2-4}{32})$$
+```{r}
+uniroot(function(x){cdfx(x)- .5},c(-2,2))$root #verified
+```
+ 
+## Section 3
+### Question 28
+Question 28 is just asking you for the densities of the normal disribution at different intervals.
+```{r}
+pnorm(2.17) - pnorm(0)
+pnorm(1) - pnorm(0)
+pnorm(0) - pnorm(-2.5)
+pnorm(2.5) - pnorm(-2.5)
+pnorm(1.37)
+pnorm(-1.75)
+pnorm(2)- pnorm(-1.5)
+pnorm(-1.75,lower.tail = FALSE)
+pnorm(2) - pnorm(-1.5)
+pnorm(2.5)-pnorm(1.37)
+pnorm(1.5, lower.tail = FALSE)
+pnorm(2.5) - pnorm(-2.5)
+```
+### Question 29
+```{r}
+qnorm(.9838)
+qnorm(.791) # part b. We're looking for everything to the left of c between .5 and 1
+qnorm(.121,lower.tail = FALSE) #part c
+1-pnorm(1.170002)
+pnorm( 1.170002,lower.tail = FALSE) #part  c check
+qnorm(.5+.334) #part d. remember the symmetric property of the normal distribution
+pnorm(0.9700933)-pnorm(- 0.9700933) #part d check
+qnorm(1- .008)# part e remember the symmetrical properties of the normal distribution which is why we subtract .008 from 1 to find c
+(1- pnorm(qnorm(1- .008)))+(1-pnorm(qnorm(1-.008))) #part e check
+pnorm(2.41,lower.tail = FALSE)
+```
+
+### Question 30
+This is just getting the hang of the qnorm function
+```{r}
+qnorm(.91)
+qnorm(.09)
+qnorm(.75)
+qnorm(.25)
+qnorm(.06)
+```
+
