@@ -5,11 +5,12 @@ This Github Page contains powerpoints and other useful materials to assist stude
 ## Quiz Answers:
 Solutions to the quiz will be posted as R scripts within the test answers folder. Check there and I will update this section to indicate which solution set is up. Currently, Quiz 1's solution in R has been uploaded
 
-## Assignment in R
+## Assignments in R
 Assignment solutions will be found after students turn them in so that students can see examples of how the questions can be done in R. 
 - [week 2 assignment](https://seathebass.github.io/math301/homeworkfiles/week2hw.html)
 - [week 3 assignment](https://seathebass.github.io/math301/homeworkfiles/week3hw.html)
 - [week 4 assignment](https://seathebass.github.io/math301/homeworkfiles/week4hw.html)
+- [week 6 assignment](https://seathebass.github.io/math301/homeworkfiles/week6hw.html)
 
 ## Cheatsheet
 - [Quiz 1 Cheatsheet](https://seathebass.github.io/math301/cheatsheets/quiz1cheatsheet.html)
