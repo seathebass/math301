@@ -9,6 +9,7 @@ Solutions to the quiz will be posted as R scripts within the test answers folder
 Assignment solutions will be found after students turn them in so that students can see examples of how the questions can be done in R. 
 - [week 2 assignment](https://seathebass.github.io/math301/homeworkfiles/week2hw.html)
 - [week 3 assignment](https://seathebass.github.io/math301/homeworkfiles/week3hw.html)
+- [week 4 assignment](https://seathebass.github.io/math301/homeworkfiles/week4hw.html)
 
 ## Cheatsheet
 - [Quiz 1 Cheatsheet](https://seathebass.github.io/math301/cheatsheets/quiz1cheatsheet.html)
