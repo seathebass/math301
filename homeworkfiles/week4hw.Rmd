@@ -1,0 +1,126 @@
+---
+title: "Week 4 Assignment"
+author: "Sebastian Hoyos-Torres"
+date: "9/19/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Chapter 3
+## Section 4
+
+#### Question 46
+Hopefully, you decided to use R to compute the binomial probabilities instead of manually because 46 is just variations of dbinom and pbinom.
+```{r}
+dbinom(3,8,.35) #part A
+dbinom(5,8,.6) #part B
+sum(dbinom(3:5,7,.6)) #part c
+pbinom(0,9,.1,lower.tail = FALSE) # part d
+```
+
+### Question 47 
+Just another exercise in finding binomial probabilities. Again, hopefully you decided to do this in R
+```{r}
+pbinom(4,15,.3) #part a *remember Capital B is the cdf
+dbinom(4,15,.3) #part b
+dbinom(6,15,.7) # part c
+sum(dbinom(2:4,15,.3)) #part d
+pbinom(1,15,.3,lower.tail = FALSE) #part e
+pbinom(1,15,.7) #part f
+sum(dbinom(3:5, 15,.3)) #part g. Remember that binomial random variables are discrete and that the question is asking about values less than NOT less than and equal to.
+
+```
+### Question 48
+This is an application in just extracting the valuable info in the word problem. The important part is X~Binom(25,.05).Following this, we can just solve the problems in R as follows.
+```{r}
+pbinom(2,25,.05) #part a
+pbinom(4,25,.05, lower.tail = FALSE) #part b
+sum(dbinom(1:4,25,.05)) #part b
+dbinom(0,25,.05)
+# the expected value is just np while the variance is np(1-p). Therefore;
+n <- 25
+p <- .05
+n*p #expected value
+sqrt(n*p*(1-p)) #standard dev
+```
+
+## Section 5
+### Question 69
+Question 69 is a hypergeometric distribution with m = 7, n = 5, k = 6, N = 12. With R, this is solved as follows.
+```{r}
+dhyper(5,7,5,6) #part A
+phyper(4,7,5,6) #part B
+```
+For part c, we need to find the mean value, add 1 standard dev, and then find the probability of that value
+```{r}
+#expected value of a hypergeometric distribution
+expval <- 6*(7/12)
+expval
+variex <- ((12-6)/(12-1))*6*(7/12)*(1-(7/12)) # Don't forget your parentheses!
+variex
+stdevx <- sqrt(variex)
+stdevx
+phyper(round(expval+stdevx),7,5,6, lower.tail = FALSE)
+```
+Part d would just be using the binomial distribution to approximate it.
+```{r}
+pbinom(5,15,40/400)
+```
+### Question 70
+First step: identify the probability distribution being used. In this case, we have another hypergeometric distribution because we successfully achieve all of the properties of the hypergeometric distribution. From this, we just need to denote the parameters of the distribution so m = 30, n = 20, k = 15
+```{r}
+dhyper(10,30,20,15)
+phyper(9,30,20,15, lower.tail = FALSE)
+phyper(9, 30,20,15, lower.tail = FALSE) + phyper(9,20,30,15, lower.tail = FALSE)
+
+#mean for the hypergeometric distribution
+15*(30/50)
+#standard deviation
+sqrt(((50-15)/(50-1)*15*(30/50)*(1-(30/50))))
+
+35*(30/50)
+#standard deviation
+sqrt(((50-35)/(50-1)*35*(30/50)*(1-(30/50))))
+
+```
+### Question 75
+This is a negative binomial problem because the probability is constant from trial to trial and stops when r successes are observed. Knowing this, we can identify the necessary parameters and solve it via R. The solution for 75a however is nb(x;2,.5)
+```{r}
+dnbinom(4-2,2,0.5) # To get the number of children as two, you know there has to be 2 females and 2 males. since x = 2, you can just plug it in the formula.
+pnbinom(2,2,0.5)
+# the next part is the expected value of the negative binomial distribution
+r <- 2
+p <- .5
+r*(1-p)/p # if this is the expected value of male children; then add the female children. 
+2+2
+```
+### Question 76
+Is another negative binomial distribution with X~nb(x;3,0.5). An example of the nb is given from 
+```{r}
+dnbinom(-2:2,3,0.5)+dnbinom(-2:2,3,0.5)
+```
+
+## Section 6
+### Question 79
+This is a classical poisson problem in which you're given mu and x. We can compute the probabilities as follows.
+```{r}
+ppois(8,5) #part a
+dpois(8,5) #part b
+ppois(8,5,lower.tail = FALSE) #part c
+sum(dpois(5:8,5)) #part d
+sum(dpois(6:7,5)) #part e
+```
+### Question 80
+This is another poisson problem. Just use the poisson probabilities
+```{r}
+ppois(4,4)
+#and
+ppois(3,4)
+sum(dpois(4:8,4))
+ppois(7,4,lower.tail = FALSE)
+ppois(4 +sqrt(4),4,lower.tail = FALSE) #using the properties of the poisson distribution where mu =E(X)=V(X) and sqrt(V(X)) = standard deviation of the poisson distribution
+```
+
+
