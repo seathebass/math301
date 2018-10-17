@@ -4,7 +4,7 @@
     <title>Continuous Random Variables and Probability Distributions</title>
     <meta charset="utf-8">
     <meta name="author" content="Sebastian Hoyos-Torres" />
-    <meta name="date" content="2018-10-11" />
+    <meta name="date" content="2018-10-13" />
     <link href="libs/remark-css/robot.css" rel="stylesheet" />
   </head>
   <body>
@@ -13,7 +13,7 @@ class: center, middle, inverse, title-slide
 
 # Continuous Random Variables and Probability Distributions
 ### Sebastian Hoyos-Torres
-### 2018-10-11
+### 2018-10-13
 
 ---
 
@@ -507,11 +507,11 @@ diff(pgamma(c(60,120),shape = 8, scale = 15))
 
 ```r
 ## OR 
-pgamma(120,8,15)- pgamma(60, 8,15)
+pgamma(120,shape = 8,scale = 15) - pgamma(60,shape = 8,scale = 15)
 ```
 
 ```
-## [1] 0
+## [1] 0.4959056
 ```
 
 ---
@@ -614,19 +614,19 @@ x^{-1 + \alpha}(1-x)^{-1 +\beta}, &amp; \text{$0\leq{x}\leq{1} where B(\alpha,\b
 
 
 ```r
-beta(1,3)
+beta(2,5)
 ```
 
 ```
-## [1] 0.3333333
+## [1] 0.03333333
 ```
 
 ```r
-pbeta(beta(1,3),2,3)
+pbeta(beta(2,5),2,3)
 ```
 
 ```
-## [1] 0.4074074
+## [1] 0.006374074
 ```
 
 ---
@@ -636,7 +636,7 @@ Let v be a positive integer. Then a random variable X is said to have a chi- squ
 \frac{1}{2^{v/2}\gamma{(v/2)}}x^{(v/2)-1}e^{-x/2},&amp; \text{$x\geq{0}$} \\
 0,x\leq{0}
 \end{cases}$$`
-Where parameter v is referred to as the **degrees of freedom** of X.
+Where parameter v is referred to as the **degrees of freedom** of X. The degrees of freedom therefore are the number of independent ways by which a dynamic system can move, without violating any constraint imposed on it, is called number of degrees of freedom.
 
 ---
 ## Visual of the chi-square distribution
