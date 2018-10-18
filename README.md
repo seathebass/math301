@@ -26,3 +26,6 @@ During these 2 weeks, we will cover a variety of distributions associated with r
 
 ## Week 6 and 7
 During this week, we will explore continuous random variables and a host of distributions which have been studied with continuous random variables. The slides can be found [**here**](https://seathebass.github.io/math301/presentations/week5.html)
+
+## Weeks 8 and 10
+During these weeks we will explore joint distributions for both discrete and continuous rvs. Topics such as corvariance, correlation, and simulations will be covered. Slides are [**here**](https://seathebass.github.io/math301/presentations/week6.html)
