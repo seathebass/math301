@@ -115,7 +115,6 @@ pnorm(2.5) - pnorm(-2.5)
 qnorm(.9838)
 qnorm(.791) # part b. We're looking for everything to the left of c between .5 and 1
 qnorm(.121,lower.tail = FALSE) #part c
-1-pnorm(1.170002)
 pnorm( 1.170002,lower.tail = FALSE) #part  c check
 qnorm(.5+.334) #part d. remember the symmetric property of the normal distribution
 pnorm(0.9700933)-pnorm(- 0.9700933) #part d check

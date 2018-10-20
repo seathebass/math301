@@ -1,0 +1,53 @@
+---
+title: "Week 7 Assignment"
+author: "Sebastian Hoyos-Torres"
+date: "10/10/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+# Section 4.4 The Exponential and Gamma Functions
+## Question 59
+This is just an example of how well you understand the properties of the exponential distribution.
+```{r}
+1/1 #part a
+1/1 # remember the properties of the exponential distributions
+pexp(4,1) #this is just asking for everything to the left of 4
+pexp(5,1) - pexp(2,1) #asking for the interval between 2 and 5
+```
+## Question 60
+```{r}
+expvals <- pexp(seq(100,200,100),.01386) #part a
+expvals[2]-expvals[1] #part a cont between 100 and 200
+1- pexp((1/.01386)+2*(1/.01386),.01386) #finding above 2 sds from the expected value 
+qexp(.5,.01386) #using qexp to find the 50th percentile of the distribution
+```
+## Question 66
+For the first part, we can just remember that for the gamma distribution, the mean is aB while the variance is aB^2. So which values for a and B give us the appropriate variance and mean? Once you figure out that a = 5 and B = 4, then you can just plug a and B into R
+```{r}
+pgamma(24,shape = 5,scale = 4)
+pgamma(40,shape = 5,scale = 4) - pgamma(20,shape = 5,scale = 4)
+```
+
+# Section 4.5
+## Question 72
+```{r}
+3*gamma(1+(1/2)) #use the formula for the expected value and put it into R
+3^2 * (gamma(1+(2/2)) - (gamma(1 + (1/2))^2)) #use the formula for the variance
+pweibull(6,shape = 2,scale = 3) #b
+pweibull(6,shape = 2,scale = 3) - pweibull(1.5,shape = 2,scale = 3)#c
+```
+
+## Question 73
+This is just a manipulation of the pweibull function as follows
+```{r}
+pweibull(250,shape = 2.5, scale = 200)# part a
+pweibull(250,shape = 2.5,scale = 200)
+1 - pweibull(300, shape = 2.5, scale = 200)
+pweibull(250, shape = 2.5, scale = 200)- pweibull(100, shape = 2.5, scale = 200) #part b
+qweibull(.5, shape = 2.5, scale = 200) #part c
+```
+
