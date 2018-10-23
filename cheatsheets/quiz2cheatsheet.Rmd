@@ -1,0 +1,153 @@
+---
+title: "Quiz 2 cheatsheet"
+author: "Sebastian Hoyos-Torres"
+date: "10/21/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+This upcoming quiz will focus on material from chapters 4 and some of 5. In summ, almost everything on the github slides will be fairgame. With that said, the prior quiz covered discrete distributions such as the hypergeometric and others so moving on from there, we step into the realm of continuous distributions.
+
+The very first few continuous distributions were a discussion when we are given either a **probability density function** denoted by f(x) and a **Cumulative Density Function** denoted as F(X) for the continuous distribution. We also noted that unlike discrete distributions, continuous distributions do not solely exist when we have integer values but also work when we are given a decimal. Similar to the discrete distributions, these probability density functions can take on an infinite or finite amount of values. 
+
+Once we built on the idea of probability density function, we noted that the cumulative density function (or every X $\leq$ x) is built off of the integral or:
+$$\int_{a}^{b}f(x)dx = F(x)$$ if X is between a and b
+
+Likewise, if we are given a CDF F(x), then all we need to do to find the pdf of X is take the derivative of F(x). For example, let's say f(x) is defined as $\frac{x}{360}$ where x is defined between the interval [0,360]. This density function looks as follows:
+```{r,echo=FALSE, message=FALSE}
+library(tidyverse)
+pdffunct <- function(x)1/360
+x <- 0:360
+ggplot(tibble(x = 0:360),aes(x))+
+  stat_function(fun = pdffunct)+
+  ylim(c(0,1/360))
+```
+
+So let's say we wanted to find the CDF of the pdf above for X < 100, we would do the following:
+
+$\int_0^{100}f(x) = \int_0^{100}\frac{1}{360} = \frac{x}{360} = \frac{100}{360}- 0 = \frac{100}{360}$
+
+Visually, this is just the area of the straight line to the left of 100 such as:
+```{r,echo=FALSE}
+ggplot(tibble(x = 0:360),aes(x))+
+  stat_function(fun = pdffunct)+
+  ylim(c(0,1/360))+
+  stat_function(fun = pdffunct, geom = "area", xlim = c(0,100), fill = "red")
+```
+
+Further, we also know the following formulas in regards to a continuous random variable:
+$$E(x) = \int_{-\infty}^{\infty} x*f(x)$$
+$$E(h(x)) = \int_{-\infty}^{\infty} h(x)*f(x)$$
+$$V(X) = \int_{-\infty}^{\infty}(x-\mu)^2*f(x)$$
+.center[**or**]
+$$V(X) = E(X^2)- E[(X)]^2$$
+$$SD(X) = \sqrt{V(X)}$$
+
+Keeping this in mind; we are ready then to move forward with other types of continuous random variables. 
+
+Within the chapter, we have covered the following random variables so I expect everyone to be familiar with the following:
+- Uniform Distribution
+- Normal Distribution
+- Exponential Distribution
+- Gamma Distribution
+- Weibull Distribution
+- Chi-squared distribution
+- Beta Distribution
+- t-distribution
+Let's take a normal distribution for an example though.In a standard normal distribution, we have a $\mu = 0$ and $\sigma = 1$. The pdf of the standard normal distribution is defined as 
+$$f(x) = \frac{1}{\sqrt{2\pi}}e^{-x^2/2}$$
+Visually, this looks as follows:
+```{r,echo=FALSE}
+ggplot(tibble(x = -4:4),aes(x))+
+  stat_function(fun = dnorm)
+```
+Where X is between negative infinity and infinity. If we are asked to find the probability that X < 1, mathemtically, we would do the following
+$$\int_{-\infty}^{1} \frac{1}{\sqrt{2\pi}}e^{-x^2/2}$$
+This is a relatively difficult difficult integral to integrate every time so there are a few ways to calculate the cdf in R, The first, where dnorm is the pdf of the normal distribution
+```{r}
+integrate(dnorm,lower = -Inf,upper = 1)
+pnorm(1)
+```
+The above methods calculate the integral immediately for you. What we have done visually is simply the following: 
+```{r,echo=FALSE}
+ggplot(tibble(x = -4:4),aes(x))+
+  stat_function(fun = dnorm,xlim = c(-4,4))+
+  stat_function(fun = dnorm, geom = "area",xlim = c(-4,1), fill = "red")
+```
+To find the expected value of x, we can even use the prior definition for the expected value of continuous variable.
+$$\int x * f(x)$$
+which looks like the following in R
+```{r}
+integrate(function(x){x * dnorm(x)}, lower = -Inf,upper = Inf)
+```
+Remember, the integrate function produces a list object which we can access with the $ operator
+```{r}
+integrate(function(x){x * dnorm(x)}, lower = -Inf,upper = Inf)$value
+```
+Further, to find the variance, we could just use the variance for any continuous variable
+```{r}
+EX2 <- integrate(function(x){x^2 * dnorm(x)}, lower = -Inf,upper = Inf)$value
+EX <- integrate(function(x){x * dnorm(x)}, lower = -Inf,upper = Inf)$value
+EX2 - EX^2
+sqrt(1) #standard deviation of the standard normal.
+```
+You can do it with every continuous distribution on the queiz so keep this property in mind. 
+The following are a list of the pdfs in R for the variety of continuous distributions.
+```{r,eval=FALSE}
+dnorm()
+dexp()
+dgamma()
+dweibull()
+dchisq()
+dt()
+dunif()
+```
+Likewise, the cdfs in R are:
+```{r,eval=FALSE}
+pnorm()
+pexp()
+pgamma()
+pweibull()
+pchisq()
+pt()
+punif()
+```
+and to find the quantiles
+```{r,eval=FALSE}
+qnorm()
+qexp()
+qgamma()
+qweibull()
+qchisq()
+qt()
+qunif()
+```
+It's up to you to figure out the function arguments and get used to using these functions though.
+
+Once we have a grasp of the variety of continuous distribution functions, we are ready to move to joint probability mass functions and marginal probability mass functions as well as how to apply what we have to joint pmfs.
+
+Although it is pretty straightforward when given a table as follows:
+```{r}
+tibble(x = c(0,10),y0 = c(0.2,0.3),y10 = c(0.3,0.2))
+```
+where the joint probability mass function of let's say X=0 and Y =0 would be 0.2. The marginal pmf at X = 1 would be 0.5 or 0.3 + 0.2.
+If we are asked to find the expected value of X, all we would really need to do is 
+```{r}
+x <- c(0,10)
+px <- c(0.5,0.5) # the marginal pmfs of x = 0 and x = 1
+sum(x*px)
+```
+and we would do the same for y if given a table. However, things start changing quite a bit if we are not given.
+
+One concept that I really like in probability is the concept of independence because it is an amazing property if two or more variables are independent. Recall from Chapter 2 that 
+$$P(A\cap{B}) = P(A) * P(B)$$. 
+Similar to this property, two variables, X and Y are independent if 
+P(X = x and Y = y) = p(x)*p(y) in the discrete case and
+F(X = x and Y = y) = f(x)*f(y) in the continuous case. 
+Thus, if we are given a problem from the standard normal distribution, and told each observation was independent, all we would have to do would be the following:
+```{r, eval=FALSE}
+pnorm(x)^n #where n indicates the number of X's and x is the typical pnorm function
+```
+Otherwise, remember these properties and you should do fine on the quiz. 
