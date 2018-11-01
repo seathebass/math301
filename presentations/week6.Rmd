@@ -373,7 +373,7 @@ mean(xsim) #note the mean of xsim seems pretty close to the mean of the distribu
 sd(xsim) #and so is the standard deviation.
 ```
 **Try it on your own and see what you get.**
-
+---
 --- 
 # Simulation of the Normal Distribution
 - Remember: the statistic in and of itself is a random variable. So how do you think their means and standard deviations will behave if we sample a lot of them?
