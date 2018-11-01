@@ -4,7 +4,7 @@
     <title>Joint Probability Distributions</title>
     <meta charset="utf-8">
     <meta name="author" content="Sebastian Hoyos-Torres" />
-    <meta name="date" content="2018-10-18" />
+    <meta name="date" content="2018-11-01" />
     <link href="libs/remark-css/ninjutsu.css" rel="stylesheet" />
     <script src="libs/kePrint/kePrint.js"></script>
   </head>
@@ -14,7 +14,7 @@ class: center, middle, inverse, title-slide
 
 # Joint Probability Distributions
 ### Sebastian Hoyos-Torres
-### 2018-10-18
+### 2018-11-01
 
 ---
 
@@ -407,11 +407,17 @@ Let's say that there are two traffic lights on a commuter's route to and from wo
 ## px  0.3  0.1  0.6
 ```
 a) Determine the pmf of `\(T_0 = X_1+X_2\)`
+
 b) Calculate the mean of `\(X_1\)`
+
 c) Calculate the mean of `\(T_0\)`
+
 d) Calculate the variance of `\(X_1\)`
+
 e) Calculate the variance of `\(T_0\)`
+
 f) How are the various means and variances related?
+
 ---
 # Application continued
 - Let's note that `\(T_0\)` can take on the values 0,1,2,3,4 (note the mins and maxs of `\(X_1\)` and `\(X_2\)`). From this, assuming independence, we can just use the properties of independence to figure things out.
@@ -539,8 +545,8 @@ t0pmf
 - Evaluating the distribution of a statistic from a sample with an arbitrary joint distribution is often difficult. 
 
 - To counter this, we typically make the simplifying assumption that our data constitute a random sample `\(X_1,X_2,...X_n\)` from a distribution. This means that:
-  - The X_i's are independent.
-  - all the x_i's have the same probability distribution.
+  - The `\(X_i\)`'s are independent.
+  - all the `\(X_i\)`'s have the same probability distribution.
 ---
 # Simulations (Or what are those r + distribution name functions good for?)
 
@@ -557,15 +563,11 @@ Our results will be different because we aren't setting our seed which would aff
 
 ```r
 xsim &lt;- rnorm(n = 30,mean = 65,sd = 3)
-xsim
+head(xsim)
 ```
 
 ```
-##  [1] 66.24042 65.85262 65.40743 66.85978 72.36033 61.95529 66.72200
-##  [8] 68.81809 68.63348 63.97802 60.72030 63.68190 62.32133 71.78712
-## [15] 68.74022 65.80560 70.47776 62.06803 65.41354 65.78130 69.76337
-## [22] 66.97403 65.59333 65.67592 66.21764 66.34626 66.03145 62.56404
-## [29] 67.10364 68.61542
+## [1] 68.30177 62.55908 64.84404 66.78773 64.16850 71.78121
 ```
 
 ```r
@@ -573,7 +575,7 @@ mean(xsim) #note the mean of xsim seems pretty close to the mean of the distribu
 ```
 
 ```
-## [1] 66.28366
+## [1] 66.2177
 ```
 
 ```r
@@ -581,7 +583,7 @@ sd(xsim) #and so is the standard deviation.
 ```
 
 ```
-## [1] 2.841757
+## [1] 3.239018
 ```
 **Try it on your own and see what you get.**
 
@@ -601,7 +603,7 @@ Let's say we wanted to calculate the sample mean of 1000 samples of size 30 with
 
 ```r
 emptlist &lt;- c()
-meansimulation &lt;- sapply(1:10000, function(k){
+meansimulation &lt;- sapply(1:1000, function(k){
   emptlist[k] &lt;- mean(rnorm(30,65,3))
 }) #using the apply family of functions in R
 # or using a for loop (up to you for the purposes of this class)
@@ -613,11 +615,11 @@ head(meansimulation);head(meansimulationloop)
 ```
 
 ```
-## [1] 65.05846 64.31312 64.98582 64.84308 66.29877 65.35192
+## [1] 64.79128 64.06178 65.14072 64.78806 65.10603 65.28598
 ```
 
 ```
-## [1] 64.79886 64.64977 65.17724 66.08605 65.24599 65.41547
+## [1] 65.24892 64.93010 64.26400 65.73934 64.37659 65.21171
 ```
 **Now that we have the simulation stored, let's do some exploring**
 ---
@@ -629,7 +631,7 @@ mean(meansimulation) #approximately 65
 ```
 
 ```
-## [1] 65.0029
+## [1] 65.01443
 ```
 
 ```r
@@ -637,7 +639,7 @@ sd(meansimulation) #this changes significantly but we will explain this later.
 ```
 
 ```
-## [1] 0.5541676
+## [1] 0.5345748
 ```
 
 ```r
@@ -654,7 +656,7 @@ qplot(meansimulation,geom= "histogram")
 - The simulated standard deviation **does not** equal to the population standard deviation of 3 but is approximately the population standard deviation divided by the square root of n.
 
 - We could continue this experiment with any of the distributions. Would you like to try a simulation?
-
+---
 --- 
 # Properties of the sample mean and sample sum
 - Let `\(X_1,X_2,X_3,...,X_n\)` be a random variable from a distribution with mean value `\(\mu\)` and standard deviation `\(\sigma\)`. Then 
@@ -698,8 +700,254 @@ sqrt(n*sigmas) #standard deviation of T0
 # The Central Limit Theorem
 - Let `\(X_1,X_2,X_n\)` be a random sample from a distribution with mean `\(\mu\)` and variance `\(\sigma^2\)`. Then for n sufficiently large, `\(\bar{X}\)` has approximately a normal distribution with mean = `\(\mu\)` and variance = `\(\sigma^2/n\)`
 
+Formally, the formula for the distribution is: 
+$$\frac{x-\mu}{\sigma/\sqrt{n}} ~ N(0,1) $$
+
 - The larger the value of n, the better the approximation.
+
 - For distributions that are continuous and reasonably close to being symmetric, the convergence to the normal distribution is good for even small values of n.
+
+
+---
+# The example of the uniform distribution:
+Let's examine some code for simulations. In R, to generate random values from the normal distribution is through the runif. Let's start some simulations!
+
+
+```r
+means1 &lt;- means2 &lt;- means3 &lt;- means4 &lt;- c()
+for (i in 1:5000){
+  means1[i] &lt;- mean(runif(1,-1,1))
+  means2[i] &lt;- mean(runif(2,-1,1))
+  means3[i] &lt;- mean(runif(3,-1,1))
+  means4[i] &lt;- mean(runif(4,-1,1))
+  meanslist&lt;- list(means1,means2,means3,means4)
+}
+```
+
+---
+# Visuals
+
+```r
+par(mfrow= c(2,2))
+lapply(meanslist,hist)
+```
+
+![](week6_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+
+```
+## [[1]]
+## $breaks
+##  [1] -1.0 -0.8 -0.6 -0.4 -0.2  0.0  0.2  0.4  0.6  0.8  1.0
+## 
+## $counts
+##  [1] 515 497 496 529 486 473 501 504 503 496
+## 
+## $density
+##  [1] 0.515 0.497 0.496 0.529 0.486 0.473 0.501 0.504 0.503 0.496
+## 
+## $mids
+##  [1] -0.9 -0.7 -0.5 -0.3 -0.1  0.1  0.3  0.5  0.7  0.9
+## 
+## $xname
+## [1] "X[[i]]"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
+## 
+## [[2]]
+## $breaks
+##  [1] -1.0 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1  0.0  0.1  0.2  0.3
+## [15]  0.4  0.5  0.6  0.7  0.8  0.9  1.0
+## 
+## $counts
+##  [1]  23  67 119 168 217 297 284 354 403 496 494 419 399 356 257 203 194
+## [18] 139  85  26
+## 
+## $density
+##  [1] 0.046 0.134 0.238 0.336 0.434 0.594 0.568 0.708 0.806 0.992 0.988
+## [12] 0.838 0.798 0.712 0.514 0.406 0.388 0.278 0.170 0.052
+## 
+## $mids
+##  [1] -0.95 -0.85 -0.75 -0.65 -0.55 -0.45 -0.35 -0.25 -0.15 -0.05  0.05
+## [12]  0.15  0.25  0.35  0.45  0.55  0.65  0.75  0.85  0.95
+## 
+## $xname
+## [1] "X[[i]]"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
+## 
+## [[3]]
+## $breaks
+##  [1] -1.0 -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1  0.0  0.1  0.2  0.3
+## [15]  0.4  0.5  0.6  0.7  0.8  0.9  1.0
+## 
+## $counts
+##  [1]   6  25  41 115 190 226 351 426 537 589 547 501 468 363 254 173 109
+## [18]  54  24   1
+## 
+## $density
+##  [1] 0.012 0.050 0.082 0.230 0.380 0.452 0.702 0.852 1.074 1.178 1.094
+## [12] 1.002 0.936 0.726 0.508 0.346 0.218 0.108 0.048 0.002
+## 
+## $mids
+##  [1] -0.95 -0.85 -0.75 -0.65 -0.55 -0.45 -0.35 -0.25 -0.15 -0.05  0.05
+## [12]  0.15  0.25  0.35  0.45  0.55  0.65  0.75  0.85  0.95
+## 
+## $xname
+## [1] "X[[i]]"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
+## 
+## [[4]]
+## $breaks
+##  [1] -0.9 -0.8 -0.7 -0.6 -0.5 -0.4 -0.3 -0.2 -0.1  0.0  0.1  0.2  0.3  0.4
+## [15]  0.5  0.6  0.7  0.8  0.9
+## 
+## $counts
+##  [1]   3  16  66 127 220 352 456 573 637 655 623 468 334 252 139  57  18
+## [18]   4
+## 
+## $density
+##  [1] 0.006 0.032 0.132 0.254 0.440 0.704 0.912 1.146 1.274 1.310 1.246
+## [12] 0.936 0.668 0.504 0.278 0.114 0.036 0.008
+## 
+## $mids
+##  [1] -0.85 -0.75 -0.65 -0.55 -0.45 -0.35 -0.25 -0.15 -0.05  0.05  0.15
+## [12]  0.25  0.35  0.45  0.55  0.65  0.75  0.85
+## 
+## $xname
+## [1] "X[[i]]"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
+```
+**An Important note! As sample size gets larger, the sampling distribution of the means becomes more bell shaped and more concentrated**
+
+---
+# Looking at the statistics
+- How about the statistics of these distributions?
+
+```r
+data.frame(EX = unlist(lapply(meanslist, mean)),sd = unlist(lapply(meanslist,sd)),
+           trsd = unlist(lapply(1:4,function(x)(sqrt(3)/3)/sqrt(x))))
+```
+
+```
+##             EX        sd      trsd
+## 1 -0.003124292 0.5782803 0.5773503
+## 2  0.013215879 0.4085331 0.4082483
+## 3  0.002656234 0.3361011 0.3333333
+## 4  0.004704582 0.2901478 0.2886751
+```
+
+---
+# Why the normal distribution is the best distribution
+
+- Throughout the course, everyone may have noted my fascination with the normal distribution. Besides the fact that I just like it, it has the following really useful properties.
+
+Let `\(X_1,X_2,X_n\)` be a random sample from a normal distribution with a mean `\(\mu\)` and standard deviation `\(\sigma\)`. For any `\(n&gt;0, \bar{X}\)` is normally distributed with mean `\(\mu\)` and standard deviation `\(\frac{\sigma}{\sqrt{n}}\)`. Additionally, `\(T_0 = X_1 + X_2 +...+X_n\)` has a normal distribution with mean `\(n\mu\)` and standard deviation `\(\sqrt{n\sigma}\)`. If we have a normal distribution and we know the mean and standard deviations, then we can calculate the probabilities (using pnorm or through standardization) and know everything about the distribution.
+
+---
+# The Normal Distribution continued.
+
+- If n is large enough (n &gt; 30) we don't need normality. By the central limit theorem, if n is large enough and `\(X_1,...,X_n\)` is a random sample with mean `\(\mu\)` and standard deviation `\(\sigma\)`, then `\(\bar{X}\)` is approximately normally distributed with mean `\(\mu\)` and sd `\(\frac{\sigma}{\sqrt{n}}\)`
+
+- `\(T_0 = X_1+X_2 + ...+ X_n\)` has approximately a normal distribution with mean `\(n\mu\)` and standard deviation `\(\sqrt{n\sigma}\)`. We can calculate the probabilities as if they were normal.
+
+---
+# Example
+The time it takes a randomly selected rat to find its way through a maze is a normally distributed random variable with `\(\mu = 1.5\)` mins and `\(\sigma = .37\)`mins. Suppose 6 rats are selected. 
+Let `\(X_1...X_6\)` denote their times in the maze. Assuming the `\(X_i's\)` to be a random sample from the normal distribution, what is the probability that the total time `\(T_0 = X_1+...+X_6\)` for the six is between 8 and 10 mins
+
+---
+# Example worked out
+- To find the mean of `\(T_0\)` has a normal distribution with `\(\mu_{T_{0}} = n\mu\)` therefore:
+
+```r
+6*1.5
+```
+
+```
+## [1] 9
+```
+- To find the variance use `\(n\sigma^2\)`:
+
+```r
+6*0.36^2
+```
+
+```
+## [1] 0.7776
+```
+
+- To find the standard deviation, simply plug into the formula `\(\sqrt{n}*\sigma}\)`
+
+```r
+sqrt(6)*0.36
+```
+
+```
+## [1] 0.8818163
+```
+
+```r
+sqrt(.7776)
+```
+
+```
+## [1] 0.8818163
+```
+- With these values, we are ready to start calculating the probability that the time is between 8 and 10 minutes.
+
+---
+# Example worked out continued
+- All we have to do is use pnorm and treat this as a  nonstandard normal distribution
+
+```r
+pnorm(10,9,sqrt(.7776))- pnorm(8,9,sqrt(.7776))
+```
+
+```
+## [1] 0.7432151
+```
+
+---
+# Linear combinations and their means
+- Given a collection of random variables `\(X_1,X_2,...,X_n\)` andn numerical constants `\(a_1,a_2,...,a_n\)`, thus the random variable
+`$$Y = a_1X_1 + a_2X_2 +...+ a_nX_n$$`
+is a linear combination of `\(X_is\)` whether or not the observations are independent, thus:
+
+`$$E[a_1X_1+a_2X_2+,...,+a_nX_n] = a_1E(X_1)+a_2E(X_2)+... + a_nE(X_n)$$`
+
+---
+# The Variance of linear combinations
+- If `\(X_1,X_2,...,X_n\)` are independent with variances `\(\sigma^2_1,\sigma^2_2\,...,\sigma^2_n\)`, then:
+
+`$$V(a_1X_1+a_2X_2 + ... +a_nX_n) = a^2_1\sigma^2_1+a^2_2\sigma^2_2+...+a^2_n\sigma^2_n$$`
+
+---
+# The difference between random variables
+- A common special case of linear combinations is the difference of random variables `\(Y = X_1-X_2\)`. That is, `\(n = 2\)`, `\(a_1 = 1\)` and `\(a_2 = -1\)`
+
+- The mean of the difference of Y is `\(\mu_1-\mu_2\)`. In other words, the mean of the difference is the difference of the means.
+
+- If `\(X_1\)` and `\(X_2\)` are independent, then the variance of the difference is 
+`$$V(Y) = V(X_1) + V(X_2)$$`
+This means that the variance of the difference is the sum of the variance. **IMPORTANT: This does not mean standard deviations add!**
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
@@ -741,7 +989,7 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
 (function () {
   var script = document.createElement('script');
   script.type = 'text/javascript';
-  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
   if (location.protocol !== 'file:' && /^https?:/.test(script.src))
     script.src  = script.src.replace(/^https?:/, '');
   document.getElementsByTagName('head')[0].appendChild(script);
