@@ -1,0 +1,87 @@
+---
+title: "R Project 1"
+author: "Sebastian Hoyos-Torres"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+<br><br/>
+
+# Question 1
+The first question of the project gives you the cumulative density function between a specified interval, namely the interval [15,25]. To define our own functions,all we need to do is the following
+```{r}
+cdffunction <- function(x)((sqrt(x-10))/2)-1
+```
+With the function, now all we need to do is plug in some numbers and just remember, mathematically, the cdf of X $\leq$ x is simply $F(X=x)$
+```{r}
+cdffunction(16)
+```
+For the the interval, all we need to find is $F(b)-F(a)$ so...
+```{r}
+cdffunction(20) - cdffunction(18)
+```
+Finally, for X $\geq$ x, all we need to do is 1 - F(X = x)
+```{r}
+1 - cdffunction(21)
+```
+<br><br/>
+
+# Question 2
+So we could approach the first problem in a multitude of ways but first let's recall some formulas. To calculate the expected value of any continuous variable, the formula is $\int{x*f(x)}$ where f(x) is the probability density function. With this in mind, we can just do the following.
+```{r}
+lambda <- 2.8 #set your lambda
+integrate(function(x)x*dexp(x,lambda),lower = 0, upper = Inf) #using the built in R function
+fx <- function(x){lambda*exp(-lambda *x)}
+integrate(function(x)x*fx(x),lower = 0, upper = Inf) #using the custom formula
+```
+Again, repetition is important here. Using any distribution function that is prefaced with a p (for the purpose of this course) is referring to the cumulative distribution function F(X). Thus, recalling what we did in the previous problem, we would use the notation $F(b)-F(a)$ where b is the upper and a is the lower limit. Sooo...
+```{r}
+pexp(3, lambda)-pexp(1,lambda)
+```
+This question, as long as you get an understanding of cdfs is just more repetition of $1-F(X)$ with a different probability distribution.
+```{r}
+1 - pexp(1.5,lambda)
+```
+In the next part, all this question is asking for is to add 1 to the expected value and then find the probability that X is 1 above that value. In R:
+```{r}
+EX <- integrate(function(x)x*dexp(x,lambda),lower = 0, upper = Inf)$value
+1 - pexp(EX+1,lambda)
+```
+<br><br/>
+
+# Question 3
+If X has a standard normal distribution, things become a little easy in terms of the first few parts:
+```{r}
+0 #is the expected value of the standard normal distribution
+1 #is the variance of the std normal distribution as 1^2 =1
+```
+The next part is just borrowing from the $E(X^2)$ so just use dnorm. Note, do not just take the expected value and raise it to the second power; that is incorrect
+```{r}
+integrate(function(x)x^2 * dnorm(x),-Inf,Inf)
+```
+The rest is simply using the pnorm and qnorm functions.
+```{r}
+pnorm(1.5)
+1 - pnorm(1.98)
+pnorm(.95) - pnorm(-1.9)
+qnorm(.13)
+```
+<br><br/>
+
+# Question 4
+Question 4 is where things change up a bit. But if we use R, we should be ok. The first part is normal
+```{r}
+1 - pnorm(9.5,10,0.35)
+```
+Parts b-e are where the sd changes a bit using the distribution of the sample mean formula or $\frac{\sigma}{\sqrt{n}}$
+```{r}
+1 - pnorm(9.5,mean =  10,sd = .35/sqrt(4))
+1 - pnorm(9.5,mean = 10,sd = .35/sqrt(16))
+pnorm(9.3,10,sd = .35/sqrt(4)) - pnorm(8.7,10,sd = .35/sqrt(4))
+```
+And the standard deviation/standard error of the mean is simply
+```{r}
+.35/sqrt(16)
+```
