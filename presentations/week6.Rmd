@@ -279,11 +279,17 @@ traffic <- t(tibble(x= c(0,1,2),px = c(.3,.1,.6)))
 traffic
 ```
 a) Determine the pmf of $T_0 = X_1+X_2$
+
 b) Calculate the mean of $X_1$
+
 c) Calculate the mean of $T_0$
+
 d) Calculate the variance of $X_1$
+
 e) Calculate the variance of $T_0$
+
 f) How are the various means and variances related?
+
 ---
 # Application continued
 - Let's note that $T_0$ can take on the values 0,1,2,3,4 (note the mins and maxs of $X_1$ and $X_2$). From this, assuming independence, we can just use the properties of independence to figure things out.
@@ -345,8 +351,8 @@ $V(X1+X2) = V(X_1) + V(X_2)$
 - Evaluating the distribution of a statistic from a sample with an arbitrary joint distribution is often difficult. 
 
 - To counter this, we typically make the simplifying assumption that our data constitute a random sample $X_1,X_2,...X_n$ from a distribution. This means that:
-  - The X_i's are independent.
-  - all the x_i's have the same probability distribution.
+  - The $X_i$'s are independent.
+  - all the $X_i$'s have the same probability distribution.
 ---
 # Simulations (Or what are those r + distribution name functions good for?)
 
@@ -362,12 +368,12 @@ $V(X1+X2) = V(X_1) + V(X_2)$
 Our results will be different because we aren't setting our seed which would affect the operation of the r family of functions. Let's say we wanted to simulate a distribution with a sample size of 30 from a normal distribution such that X~N(65,3)
 ```{r}
 xsim <- rnorm(n = 30,mean = 65,sd = 3)
-xsim
+head(xsim)
 mean(xsim) #note the mean of xsim seems pretty close to the mean of the distribution it was drawn from
 sd(xsim) #and so is the standard deviation.
 ```
 **Try it on your own and see what you get.**
-
+---
 --- 
 # Simulation of the Normal Distribution
 - Remember: the statistic in and of itself is a random variable. So how do you think their means and standard deviations will behave if we sample a lot of them?
@@ -383,7 +389,7 @@ Let's say we wanted to calculate the sample mean of 1000 samples of size 30 with
 
 ```{r}
 emptlist <- c()
-meansimulation <- sapply(1:10000, function(k){
+meansimulation <- sapply(1:1000, function(k){
   emptlist[k] <- mean(rnorm(30,65,3))
 }) #using the apply family of functions in R
 # or using a for loop (up to you for the purposes of this class)
@@ -411,7 +417,7 @@ qplot(meansimulation,geom= "histogram")
 - The simulated standard deviation **does not** equal to the population standard deviation of 3 but is approximately the population standard deviation divided by the square root of n.
 
 - We could continue this experiment with any of the distributions. Would you like to try a simulation?
-
+---
 --- 
 # Properties of the sample mean and sample sum
 - Let $X_1,X_2,X_3,...,X_n$ be a random variable from a distribution with mean value $\mu$ and standard deviation $\sigma$. Then 
@@ -443,5 +449,109 @@ sqrt(n*sigmas) #standard deviation of T0
 # The Central Limit Theorem
 - Let $X_1,X_2,X_n$ be a random sample from a distribution with mean $\mu$ and variance $\sigma^2$. Then for n sufficiently large, $\bar{X}$ has approximately a normal distribution with mean = $\mu$ and variance = $\sigma^2/n$
 
+Formally, the formula for the distribution is: 
+$$\frac{x-\mu}{\sigma/\sqrt{n}} ~ N(0,1) $$
+
 - The larger the value of n, the better the approximation.
+
 - For distributions that are continuous and reasonably close to being symmetric, the convergence to the normal distribution is good for even small values of n.
+
+
+---
+# The example of the uniform distribution:
+Let's examine some code for simulations. In R, to generate random values from the normal distribution is through the runif. Let's start some simulations!
+
+```{r}
+means1 <- means2 <- means3 <- means4 <- c()
+for (i in 1:5000){
+  means1[i] <- mean(runif(1,-1,1))
+  means2[i] <- mean(runif(2,-1,1))
+  means3[i] <- mean(runif(3,-1,1))
+  means4[i] <- mean(runif(4,-1,1))
+  meanslist<- list(means1,means2,means3,means4)
+}
+```
+
+---
+# Visuals
+```{r}
+par(mfrow= c(2,2))
+lapply(meanslist,hist)
+```
+**An Important note! As sample size gets larger, the sampling distribution of the means becomes more bell shaped and more concentrated**
+
+---
+# Looking at the statistics
+- How about the statistics of these distributions?
+```{r}
+data.frame(EX = unlist(lapply(meanslist, mean)),sd = unlist(lapply(meanslist,sd)),
+           trsd = unlist(lapply(1:4,function(x)(sqrt(3)/3)/sqrt(x))))
+```
+
+---
+# Why the normal distribution is the best distribution
+
+- Throughout the course, everyone may have noted my fascination with the normal distribution. Besides the fact that I just like it, it has the following really useful properties.
+
+Let $X_1,X_2,X_n$ be a random sample from a normal distribution with a mean $\mu$ and standard deviation $\sigma$. For any $n>0, \bar{X}$ is normally distributed with mean $\mu$ and standard deviation $\frac{\sigma}{\sqrt{n}}$. Additionally, $T_0 = X_1 + X_2 +...+X_n$ has a normal distribution with mean $n\mu$ and standard deviation $\sqrt{n\sigma}$. If we have a normal distribution and we know the mean and standard deviations, then we can calculate the probabilities (using pnorm or through standardization) and know everything about the distribution.
+
+---
+# The Normal Distribution continued.
+
+- If n is large enough (n > 30) we don't need normality. By the central limit theorem, if n is large enough and $X_1,...,X_n$ is a random sample with mean $\mu$ and standard deviation $\sigma$, then $\bar{X}$ is approximately normally distributed with mean $\mu$ and sd $\frac{\sigma}{\sqrt{n}}$
+
+- $T_0 = X_1+X_2 + ...+ X_n$ has approximately a normal distribution with mean $n\mu$ and standard deviation $\sqrt{n\sigma}$. We can calculate the probabilities as if they were normal.
+
+---
+# Example
+The time it takes a randomly selected rat to find its way through a maze is a normally distributed random variable with $\mu = 1.5$ mins and $\sigma = .37$mins. Suppose 6 rats are selected. 
+Let $X_1...X_6$ denote their times in the maze. Assuming the $X_i's$ to be a random sample from the normal distribution, what is the probability that the total time $T_0 = X_1+...+X_6$ for the six is between 8 and 10 mins
+
+---
+# Example worked out
+- To find the mean of $T_0$ has a normal distribution with $\mu_{T_{0}} = n\mu$ therefore:
+```{r}
+6*1.5
+```
+- To find the variance use $n\sigma^2$:
+```{r}
+6*0.36^2
+```
+
+- To find the standard deviation, simply plug into the formula $\sqrt{n}*\sigma}$
+```{r}
+sqrt(6)*0.36
+sqrt(.7776)
+```
+- With these values, we are ready to start calculating the probability that the time is between 8 and 10 minutes.
+
+---
+# Example worked out continued
+- All we have to do is use pnorm and treat this as a  nonstandard normal distribution
+```{r}
+pnorm(10,9,sqrt(.7776))- pnorm(8,9,sqrt(.7776))
+```
+
+---
+# Linear combinations and their means
+- Given a collection of random variables $X_1,X_2,...,X_n$ andn numerical constants $a_1,a_2,...,a_n$, thus the random variable
+$$Y = a_1X_1 + a_2X_2 +...+ a_nX_n$$
+is a linear combination of $X_is$ whether or not the observations are independent, thus:
+
+$$E[a_1X_1+a_2X_2+,...,+a_nX_n] = a_1E(X_1)+a_2E(X_2)+... + a_nE(X_n)$$
+
+---
+# The Variance of linear combinations
+- If $X_1,X_2,...,X_n$ are independent with variances $\sigma^2_1,\sigma^2_2\,...,\sigma^2_n$, then:
+
+$$V(a_1X_1+a_2X_2 + ... +a_nX_n) = a^2_1\sigma^2_1+a^2_2\sigma^2_2+...+a^2_n\sigma^2_n$$
+
+---
+# The difference between random variables
+- A common special case of linear combinations is the difference of random variables $Y = X_1-X_2$. That is, $n = 2$, $a_1 = 1$ and $a_2 = -1$
+
+- The mean of the difference of Y is $\mu_1-\mu_2$. In other words, the mean of the difference is the difference of the means.
+
+- If $X_1$ and $X_2$ are independent, then the variance of the difference is 
+$$V(Y) = V(X_1) + V(X_2)$$
+This means that the variance of the difference is the sum of the variance. **IMPORTANT: This does not mean standard deviations add!**
