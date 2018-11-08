@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Point Estimation</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Sebastian Hoyos-Torres" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Point Estimation
+### Sebastian Hoyos-Torres
+
+---
+
+
+
+
+
+# What we will talk about in the next two weeks:
+
+- General Concepts 
+
+- Methods of point estimation
+---
+# The Basis of Statistical Inference
+
+- The reason people use statistics is because we often want to know characteristics of a population from the characteristics of a sample.
+
+- Often, this results in us taking samples (for multiple reasons) in order to estimate the population.
+
+- This results in an **estimator** which is a function defined on a sample space. The resulting value is called an **estimate**.
+
+- Since we want our estimator to be a sensible rule and to give estimates which are close in some way to the population characteristic we want to determine. But how do we know if our estimates are sensible?
+
+---
+# The "Sniff Test"
+- A simple way of choosing your estimator is to pick the sample version of the parameter to be estimated:
+  - This means that when we want to find the expected value of a population, we should use the sample mean
+  - Likewise, if we are interested in the population standard deviation, we can use the sample standard deviation to generate estimates of the population.
+  
+---
+# Example
+- Suppose we had the following random sample of observations on coating thickness for low viscosity paint. Assuming the distribution of coating thickness is normal;find the following properties:
+
+```
+##  [1] 0.84 0.88 0.88 1.04 1.10 1.15 1.29 1.31 1.48 1.49 1.60 1.65 1.75 1.71
+## [15] 1.86
+```
+
+- Calculate the point estimate for the mean value of coating thickness.
+- Calculate a point estimate for the median.
+- Calculate a point value for the 95th percentile of coating thickness
+- Estimate P(X &lt; 1.6)
+- **As always we can do this in R**
+---
+# Doing it in R
+
+- For the first problem, we just take the sample mean of the values of the coating thickness (which is done through mean)
+
+```r
+mean(vectors)
+```
+
+```
+## [1] 1.335333
+```
+- The median is simply calculated as follows
+
+```r
+median(vectors)
+```
+
+```
+## [1] 1.31
+```
+- of course to speed up some of the processes, we can simply use summary from base R
+
+```r
+summary(vectors)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##   0.840   1.070   1.310   1.335   1.625   1.860
+```
+
+---
+# Example Solution continued
+
+- the point value for the 95th percentile of coating thickness is simply:
+
+```r
+quantile(vectors,.95)
+```
+
+```
+##   95% 
+## 1.783
+```
+- And finally, for our point estimates regarding the mean, we can do a little R subsetting to speed things up for us
+
+```r
+length(vectors[vectors &lt;= 1.5])/length(vectors)
+```
+
+```
+## [1] 0.6666667
+```
+- **OR** since we have already determined that the population is normal
+
+```r
+pnorm(1.5, mean = mean(vectors), sd = sd(vectors))
+```
+
+```
+## [1] 0.6847211
+```
+
+---
+# General concepts of point estimation
+
+- A point estimate of a parameter `\(\theta\)` is a single number which can be sensibly regarded as a sensible value of `\(\theta\)` which is often written as `\(\hat{\theta}\)`
+
+- The corresponding random variable is called an estimator. This is written as `\(\Theta\)` 
+
+- Often, there is a simple and obvious estimator. 
+  - For binomial data, the parameter is p, the probability of success, and the obvious estimator is `\(\hat{P}= X/n\)`, the proportion of successes.
+  - For a sample of continuous measurements from a distribution with mean `\(\mu\)` and variance `\(\sigma^2\)` we use the estimator `\(\hat{\mu}= \bar{X} = \frac{1}{n}\Sigma{x_i}\)`. The usual estimator for `\(\sigma^2\)` is `\(\hat{\sigma^2} = S^2\)` with value `\(s^2\)`
+
+---
+# Example
+- Let's look at another example on dielectric breakdown voltage for pieces of epoxy resin.
+
+```
+##  [1] 24.46 25.65 26.25 26.50 26.66 27.20 27.30 27.54 27.76 27.94 27.90
+## [12] 28.05 28.29 28.50 28.87 29.11 29.13 29.50 30.90 31.37
+```
+
+- Assuming breakdown voltage has a normal distribution with an unknown mean of `\(\mu\)`
+
+- We have 20 independent, identically distributed (iid) normal random variables `\(X_1,...,X_{20}\)` with mean `\(\mu\)`. 
+
+---
+--- 
+# Example continued:
+- The sample mean
+
+```r
+mean(dielectric)
+```
+
+```
+## [1] 27.944
+```
+- The sample median:
+
+```r
+median(dielectric)
+```
+
+```
+## [1] 27.92
+```
+- the average of the largest and smallest values
+
+```r
+mean(dielectric[c(1,20)])
+```
+
+```
+## [1] 27.915
+```
+- a trimmed mean: 
+
+```r
+mean(dielectric,trim = 0.1)
+```
+
+```
+## [1] 27.90625
+```
+
+---
+# Things to think about:
+- Which of the prior estimates are best for handling a normal distribution?
+
+- Any of these rules could get a value close to the real value in any sample occurrence.
+
+- Ideally, we want our estimator to estimate the correct value on average and not have too much variation around that value.
+
+- Simulation time!
+
+---
+# The Simulation
+- Let's try running 5000 simulations with each simulation having a sample size of 20 with mean 20 and standard deviation 5.
+
+```r
+mn1 &lt;- mn2 &lt;- mn3 &lt;- mn4 &lt;- c()
+for (i in 1:5000) {
+  x &lt;- rnorm(20,20,5)
+  mn1[i] &lt;- mean(x)
+  mn2[i] &lt;- median(x)
+  mn3[i] &lt;- mean(x, trim = .1)
+  mn4[i] &lt;- min(x) + max(x)/2
+  meanlist &lt;- list(sample_mean = mn1,sample_median=  mn2, trimmed_mean = mn3,min_max_mean = mn4)
+}
+par(mfrow = c(2,2))
+lapply(meanlist, hist)
+```
+
+&lt;img src="week7_pres_files/figure-html/unnamed-chunk-13-1.png" width="20%" style="display: block; margin: auto;" /&gt;
+
+```
+## $sample_mean
+## $breaks
+##  [1] 15.5 16.0 16.5 17.0 17.5 18.0 18.5 19.0 19.5 20.0 20.5 21.0 21.5 22.0
+## [15] 22.5 23.0 23.5 24.0
+## 
+## $counts
+##  [1]   2   3  11  55 132 282 452 682 861 836 713 513 298 112  33  12   3
+## 
+## $density
+##  [1] 0.0008 0.0012 0.0044 0.0220 0.0528 0.1128 0.1808 0.2728 0.3444 0.3344
+## [11] 0.2852 0.2052 0.1192 0.0448 0.0132 0.0048 0.0012
+## 
+## $mids
+##  [1] 15.75 16.25 16.75 17.25 17.75 18.25 18.75 19.25 19.75 20.25 20.75
+## [12] 21.25 21.75 22.25 22.75 23.25 23.75
+## 
+## $xname
+## [1] "X[[i]]"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
+## 
+## $sample_median
+## $breaks
+##  [1] 15.0 15.5 16.0 16.5 17.0 17.5 18.0 18.5 19.0 19.5 20.0 20.5 21.0 21.5
+## [15] 22.0 22.5 23.0 23.5 24.0 24.5 25.0
+## 
+## $counts
+##  [1]   2   9  15  48  99 185 285 466 690 703 692 622 489 347 204  69  50
+## [18]  18   6   1
+## 
+## $density
+##  [1] 0.0008 0.0036 0.0060 0.0192 0.0396 0.0740 0.1140 0.1864 0.2760 0.2812
+## [11] 0.2768 0.2488 0.1956 0.1388 0.0816 0.0276 0.0200 0.0072 0.0024 0.0004
+## 
+## $mids
+##  [1] 15.25 15.75 16.25 16.75 17.25 17.75 18.25 18.75 19.25 19.75 20.25
+## [12] 20.75 21.25 21.75 22.25 22.75 23.25 23.75 24.25 24.75
+## 
+## $xname
+## [1] "X[[i]]"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
+## 
+## $trimmed_mean
+## $breaks
+##  [1] 15.0 15.5 16.0 16.5 17.0 17.5 18.0 18.5 19.0 19.5 20.0 20.5 21.0 21.5
+## [15] 22.0 22.5 23.0 23.5 24.0
+## 
+## $counts
+##  [1]   1   0   6  12  65 131 290 461 668 842 830 700 495 296 138  49  12
+## [18]   4
+## 
+## $density
+##  [1] 0.0004 0.0000 0.0024 0.0048 0.0260 0.0524 0.1160 0.1844 0.2672 0.3368
+## [11] 0.3320 0.2800 0.1980 0.1184 0.0552 0.0196 0.0048 0.0016
+## 
+## $mids
+##  [1] 15.25 15.75 16.25 16.75 17.25 17.75 18.25 18.75 19.25 19.75 20.25
+## [12] 20.75 21.25 21.75 22.25 22.75 23.25 23.75
+## 
+## $xname
+## [1] "X[[i]]"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
+## 
+## $min_max_mean
+## $breaks
+##  [1] 10 12 14 16 18 20 22 24 26 28 30 32 34 36
+## 
+## $counts
+##  [1]    1    3   13   38  180  429  904 1321 1212  657  206   34    2
+## 
+## $density
+##  [1] 0.0001 0.0003 0.0013 0.0038 0.0180 0.0429 0.0904 0.1321 0.1212 0.0657
+## [11] 0.0206 0.0034 0.0002
+## 
+## $mids
+##  [1] 11 13 15 17 19 21 23 25 27 29 31 33 35
+## 
+## $xname
+## [1] "X[[i]]"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
+```
+
+---
+# Unbiasedness:
+- An estimator `\(\Theta\)` for the parameter `\(\theta\)` is said to be unbiased if 
+`$$E[\hat{\Theta}] = \theta$$`
+
+- The sample mean `\(\bar{X}\)` is an unbiased estimator for `\(\mu\)` if we can assume that `\(X_1,...,X_n\)` are a random sample (independent and identically distributed)
+
+- The sample median is an unbiased estimator for `\(\mu\)` if we can assume that `\(X_1,...,X_n\)` are a random sample and the distribution of the `\(X_i's\)` is continuous and symmetrical.
+
+- The sample variance `\(S^2 = \frac{(\Sigma{X_i - \bar{X})^2}}{n-1}\)` is an unbiased estimator for `\(\sigma^2\)` with a random sample from a normal population.
+
+- **NOTE** even when `\(S^2\)` is an unbiased estimator for `\(\sigma^2\)`, `\(\sqrt{S^2}\)` is **NOT** an unbiased estimator for `\(\sigma\)`.
+
+---
+# More Notes on Unbiasedness
+- Every time we take a random sample from a population we get different values. We use those to compute an estimate `\(\hat{\Theta_i}\)` of some population parameter `\(\theta\)`. We will almost never know the value of `\(\theta\)`.
+- `\(\hat{\Theta_i}\)` is calculated from DATA so it in turn also has its own probability distribution.
+- Usually, we want as unbiased an estimator as we can get.
+- formally, if our `\(\hat{\Theta_i}\)` is not systematically over or underestimating `\(\theta\)`, then we typically refer to it as an unbiased estimator.
+
+---
+# Variance of estimators:
+- Given two unbiased estimators, we generally prefer the one with the smallest variance.
+
+- Occasionally, it is possible to prove mathematically that an estimator is a minimum variance unbiased estimator. This means it has the minimum variance among the class of unbiased estimators so it should be good to use.
+
+- Generally, the desirability of an estimator depends on the form of the underlying distribution. When working with actual data, we often don't know the distribution though.
+
+- Let's try it out!
+
+---
+# Simulation example:
+
+- Suppose we have multiple populations of interest following the cauchy, normal and uniform distributions as follows (normal is red, cauchy is blue).
+
+
+```
+## ── Attaching packages ─────────────────────────────────────── tidyverse 1.2.1 ──
+```
+
+```
+## ✔ ggplot2 3.1.0     ✔ purrr   0.2.5
+## ✔ tibble  1.4.2     ✔ dplyr   0.7.7
+## ✔ tidyr   0.8.2     ✔ stringr 1.3.1
+## ✔ readr   1.1.1     ✔ forcats 0.3.0
+```
+
+```
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+```
+
+&lt;img src="week7_pres_files/figure-html/unnamed-chunk-14-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# The Simulation continued:
+Let's continue with a for loop
+
+```r
+mns1 &lt;- mns2 &lt;- mns3 &lt;- c()
+for(i in seq_along(1:5000)){
+  mns1[i] &lt;- mean(rnorm(200, 6,1))
+  mns2[i] &lt;- mean(rcauchy(200,6,1))
+  mns3[i] &lt;- mean(runif(200,3,9))
+  meanslist &lt;- list(normal_means = mns1,cauchy_means = mns2,unif_means = mns3)
+}
+par(mfrow = c(1,3))
+lapply(meanslist,hist)
+```
+
+&lt;img src="week7_pres_files/figure-html/unnamed-chunk-15-1.png" style="display: block; margin: auto;" /&gt;
+
+```
+## $normal_means
+## $breaks
+##  [1] 5.70 5.75 5.80 5.85 5.90 5.95 6.00 6.05 6.10 6.15 6.20 6.25 6.30
+## 
+## $counts
+##  [1]    2    6   95  329  793 1259 1330  812  294   69   10    1
+## 
+## $density
+##  [1] 0.008 0.024 0.380 1.316 3.172 5.036 5.320 3.248 1.176 0.276 0.040
+## [12] 0.004
+## 
+## $mids
+##  [1] 5.725 5.775 5.825 5.875 5.925 5.975 6.025 6.075 6.125 6.175 6.225
+## [12] 6.275
+## 
+## $xname
+## [1] "X[[i]]"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
+## 
+## $cauchy_means
+## $breaks
+##  [1] -13000 -12000 -11000 -10000  -9000  -8000  -7000  -6000  -5000  -4000
+## [11]  -3000  -2000  -1000      0   1000   2000
+## 
+## $counts
+##  [1]    1    0    0    0    0    0    0    0    0    0    0    0  253 4744
+## [15]    2
+## 
+## $density
+##  [1] 0.0000002 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000
+##  [8] 0.0000000 0.0000000 0.0000000 0.0000000 0.0000000 0.0000506 0.0009488
+## [15] 0.0000004
+## 
+## $mids
+##  [1] -12500 -11500 -10500  -9500  -8500  -7500  -6500  -5500  -4500  -3500
+## [11]  -2500  -1500   -500    500   1500
+## 
+## $xname
+## [1] "X[[i]]"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
+## 
+## $unif_means
+## $breaks
+##  [1] 5.60 5.65 5.70 5.75 5.80 5.85 5.90 5.95 6.00 6.05 6.10 6.15 6.20 6.25
+## [15] 6.30 6.35 6.40 6.45 6.50
+## 
+## $counts
+##  [1]   6  26  56 157 328 474 634 819 790 611 504 330 162  72  23   6   0
+## [18]   2
+## 
+## $density
+##  [1] 0.024 0.104 0.224 0.628 1.312 1.896 2.536 3.276 3.160 2.444 2.016
+## [12] 1.320 0.648 0.288 0.092 0.024 0.000 0.008
+## 
+## $mids
+##  [1] 5.625 5.675 5.725 5.775 5.825 5.875 5.925 5.975 6.025 6.075 6.125
+## [12] 6.175 6.225 6.275 6.325 6.375 6.425 6.475
+## 
+## $xname
+## [1] "X[[i]]"
+## 
+## $equidist
+## [1] TRUE
+## 
+## attr(,"class")
+## [1] "histogram"
+```
+
+---
+# Further look at the distributions and their estimates:
+
+```r
+fnctlist &lt;- list(sample_mean = mean,sample_sd = sd)
+unlist(lapply(fnctlist,function(f){lapply(meanslist,f)}))
+```
+
+```
+## sample_mean.normal_means sample_mean.cauchy_means   sample_mean.unif_means 
+##               5.99921299               4.52832025               6.00135544 
+##   sample_sd.normal_means   sample_sd.cauchy_means     sample_sd.unif_means 
+##               0.07138412             177.93473370               0.12283140
+```
+From the prior plot, we should begin to notice that the mean is a horrendous estimator for the cauchy distribution.
+
+--- 
+---
+# Standard Error of an Estimator
+- Once we compute a point estimator, often, we are interested in how precise that estimate would be from sample to sample
+
+- The standard deviation of the estimator is a reasonable measure to use as it measures the dispersion surrounding the distribution. The standard deviation is called the standard error or the estimator. 
+  - For a binomial model, the estimator of success probability ,p, `\(\hat{P} = \frac{X}{n}\)` has a standard deviation `\(\sqrt{\frac{p(1-p)}{n}}\)`. This depends on p which we often don't know and are trying to estimate.
+  - For a normal (or near normal model), to estimate `\(\mu\)`, we use estimator `\(\bar{X}\)` whose standard deviation is `\(\frac{\sigma}{\sqrt{n}}\)`
+
+- To address unknown parameters in the population, we often rely on the estimated standard error of the estimator which is calculated by:
+
+For binomially distributed data
+`$$\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$$`
+or for normally distributed data:
+`\(\frac{s}{\sqrt{n}}\)`
+
+---
+# The Formulation of Estimators
+- We have discussed how to compare different estimators based off of a parameter based on their expected values and variances.
+
+- However, knowing how to compare estimators does not help us in formulating an estimator.
+
+- Two methods : maximum likelihood estimate and method of moments
+
+
+---
+# Method of Moments
+- Formal Definition
+Let `\(X_1,...,X_n\)` be a random sample from a pmf or pdf. For k = 1,2,3,...,the kth population moment, is `\(E(X^k)\)`. The sample moment is `\(\frac{1}{n}\Sigma{X_i^k}\)`
+
+Let `\(X_1,...,X_n\)` be a random sample from a pmf/ pdf `\(f(x,\Theta_1,...\Theta_m)\)` are parameters whose values are unknown. Then the moment estimators are obtained by equating the first m sample moments and solving for `\(\Theta_1,...,\Theta_m\)`
+
+---
+# An example from the gamma distribution
+
+```r
+x &lt;- c(152,115,109,94,88,137,152,77,160,165,125,40,128,123,136,101,62,153, 83,69)
+(n &lt;- length(x))
+```
+
+```
+## [1] 20
+```
+
+```r
+(Ex &lt;- sum(x)/n) #1st sample moment
+```
+
+```
+## [1] 113.45
+```
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,270 @@
+---
+title: "Point Estimation"  
+author: "Sebastian Hoyos-Torres"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: 16:9
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+```{r xaringan-themer, include=FALSE}
+library(xaringanthemer)
+solarized_light(
+  code_font_family = "Fira Code",
+  code_font_url    = "https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css"
+)
+```
+# What we will talk about in the next two weeks:
+
+- General Concepts 
+
+- Methods of point estimation
+---
+# The Basis of Statistical Inference
+
+- The reason people use statistics is because we often want to know characteristics of a population from the characteristics of a sample.
+
+- Often, this results in us taking samples (for multiple reasons) in order to estimate the population.
+
+- This results in an **estimator** which is a function defined on a sample space. The resulting value is called an **estimate**.
+
+- Since we want our estimator to be a sensible rule and to give estimates which are close in some way to the population characteristic we want to determine. But how do we know if our estimates are sensible?
+
+---
+# The "Sniff Test"
+- A simple way of choosing your estimator is to pick the sample version of the parameter to be estimated:
+  - This means that when we want to find the expected value of a population, we should use the sample mean
+  - Likewise, if we are interested in the population standard deviation, we can use the sample standard deviation to generate estimates of the population.
+  
+---
+# Example
+- Suppose we had the following random sample of observations on coating thickness for low viscosity paint. Assuming the distribution of coating thickness is normal;find the following properties:
+```{r, echo=FALSE}
+(vectors <- c(.84,.88,.88,1.04,1.1,1.15,1.29,1.31,1.48,1.49,1.6,1.65,1.75,1.71,1.86))
+```
+
+- Calculate the point estimate for the mean value of coating thickness.
+- Calculate a point estimate for the median.
+- Calculate a point value for the 95th percentile of coating thickness
+- Estimate P(X < 1.6)
+- **As always we can do this in R**
+---
+# Doing it in R
+
+- For the first problem, we just take the sample mean of the values of the coating thickness (which is done through mean)
+```{r}
+mean(vectors)
+```
+- The median is simply calculated as follows
+```{r}
+median(vectors)
+```
+- of course to speed up some of the processes, we can simply use summary from base R
+```{r}
+summary(vectors)
+```
+
+---
+# Example Solution continued
+
+- the point value for the 95th percentile of coating thickness is simply:
+```{r}
+quantile(vectors,.95)
+```
+- And finally, for our point estimates regarding the mean, we can do a little R subsetting to speed things up for us
+```{r}
+length(vectors[vectors <= 1.5])/length(vectors)
+```
+- **OR** since we have already determined that the population is normal
+```{r}
+pnorm(1.5, mean = mean(vectors), sd = sd(vectors))
+```
+
+---
+# General concepts of point estimation
+
+- A point estimate of a parameter $\theta$ is a single number which can be sensibly regarded as a sensible value of $\theta$ which is often written as $\hat{\theta}$
+
+- The corresponding random variable is called an estimator. This is written as $\Theta$ 
+
+- Often, there is a simple and obvious estimator. 
+  - For binomial data, the parameter is p, the probability of success, and the obvious estimator is $\hat{P}= X/n$, the proportion of successes.
+  - For a sample of continuous measurements from a distribution with mean $\mu$ and variance $\sigma^2$ we use the estimator $\hat{\mu}= \bar{X} = \frac{1}{n}\Sigma{x_i}$. The usual estimator for $\sigma^2$ is $\hat{\sigma^2} = S^2$ with value $s^2$
+
+---
+# Example
+- Let's look at another example on dielectric breakdown voltage for pieces of epoxy resin.
+```{r, echo=FALSE}
+(dielectric <- c(24.46,25.65,26.25,26.5,26.66,27.2,27.3,27.54,27.76,27.94, 27.9,28.05,28.29,28.5,28.87, 29.11,29.13,29.5,30.9, 31.37)
+)
+```
+
+- Assuming breakdown voltage has a normal distribution with an unknown mean of $\mu$
+
+- We have 20 independent, identically distributed (iid) normal random variables $X_1,...,X_{20}$ with mean $\mu$. 
+
+---
+--- 
+# Example continued:
+- The sample mean
+```{r}
+mean(dielectric)
+```
+- The sample median:
+```{r}
+median(dielectric)
+```
+- the average of the largest and smallest values
+```{r}
+mean(dielectric[c(1,20)])
+```
+- a trimmed mean: 
+```{r}
+mean(dielectric,trim = 0.1)
+```
+
+---
+# Things to think about:
+- Which of the prior estimates are best for handling a normal distribution?
+
+- Any of these rules could get a value close to the real value in any sample occurrence.
+
+- Ideally, we want our estimator to estimate the correct value on average and not have too much variation around that value.
+
+- Simulation time!
+
+---
+# The Simulation
+- Let's try running 5000 simulations with each simulation having a sample size of 20 with mean 20 and standard deviation 5.
+```{r,out.width="20%", fig.align='center'}
+mn1 <- mn2 <- mn3 <- mn4 <- c()
+for (i in 1:5000) {
+  x <- rnorm(20,20,5)
+  mn1[i] <- mean(x)
+  mn2[i] <- median(x)
+  mn3[i] <- mean(x, trim = .1)
+  mn4[i] <- min(x) + max(x)/2
+  meanlist <- list(sample_mean = mn1,sample_median=  mn2, trimmed_mean = mn3,min_max_mean = mn4)
+}
+par(mfrow = c(2,2))
+lapply(meanlist, hist)
+```
+
+---
+# Unbiasedness:
+- An estimator $\Theta$ for the parameter $\theta$ is said to be unbiased if 
+$$E[\hat{\Theta}] = \theta$$
+
+- The sample mean $\bar{X}$ is an unbiased estimator for $\mu$ if we can assume that $X_1,...,X_n$ are a random sample (independent and identically distributed)
+
+- The sample median is an unbiased estimator for $\mu$ if we can assume that $X_1,...,X_n$ are a random sample and the distribution of the $X_i's$ is continuous and symmetrical.
+
+- The sample variance $S^2 = \frac{(\Sigma{X_i - \bar{X})^2}}{n-1}$ is an unbiased estimator for $\sigma^2$ with a random sample from a normal population.
+
+- **NOTE** even when $S^2$ is an unbiased estimator for $\sigma^2$, $\sqrt{S^2}$ is **NOT** an unbiased estimator for $\sigma$.
+
+---
+# More Notes on Unbiasedness
+- Every time we take a random sample from a population we get different values. We use those to compute an estimate $\hat{\Theta_i}$ of some population parameter $\theta$. We will almost never know the value of $\theta$.
+- $\hat{\Theta_i}$ is calculated from DATA so it in turn also has its own probability distribution.
+- Usually, we want as unbiased an estimator as we can get.
+- formally, if our $\hat{\Theta_i}$ is not systematically over or underestimating $\theta$, then we typically refer to it as an unbiased estimator.
+
+---
+# Variance of estimators:
+- Given two unbiased estimators, we generally prefer the one with the smallest variance.
+
+- Occasionally, it is possible to prove mathematically that an estimator is a minimum variance unbiased estimator. This means it has the minimum variance among the class of unbiased estimators so it should be good to use.
+
+- Generally, the desirability of an estimator depends on the form of the underlying distribution. When working with actual data, we often don't know the distribution though.
+
+- Let's try it out!
+
+---
+# Simulation example:
+
+- Suppose we have multiple populations of interest following the cauchy, normal and uniform distributions as follows (normal is red, cauchy is blue).
+
+```{r, fig.align="center",echo=FALSE}
+library(tidyverse)
+ggplot(tibble(x= 0:10), aes(x = x))+
+  stat_function(fun = dnorm, args = list(6,1), col= "red")+
+  stat_function(fun = dcauchy, args = list(6,1), col = "blue")+
+  stat_function(fun = dunif, args = list(min = 3,max = 9))+ 
+  theme_minimal()
+
+```
+
+---
+# The Simulation continued:
+Let's continue with a for loop
+```{r, message=FALSE, fig.height=4,fig.width=12 ,fig.align="center"}
+mns1 <- mns2 <- mns3 <- c()
+for(i in seq_along(1:5000)){
+  mns1[i] <- mean(rnorm(200, 6,1))
+  mns2[i] <- mean(rcauchy(200,6,1))
+  mns3[i] <- mean(runif(200,3,9))
+  meanslist <- list(normal_means = mns1,cauchy_means = mns2,unif_means = mns3)
+}
+par(mfrow = c(1,3))
+lapply(meanslist,hist)
+```
+
+---
+# Further look at the distributions and their estimates:
+```{r,results="markup"}
+fnctlist <- list(sample_mean = mean,sample_sd = sd)
+unlist(lapply(fnctlist,function(f){lapply(meanslist,f)}))
+```
+From the prior plot, we should begin to notice that the mean is a horrendous estimator for the cauchy distribution.
+
+--- 
+---
+# Standard Error of an Estimator
+- Once we compute a point estimator, often, we are interested in how precise that estimate would be from sample to sample
+
+- The standard deviation of the estimator is a reasonable measure to use as it measures the dispersion surrounding the distribution. The standard deviation is called the standard error or the estimator. 
+  - For a binomial model, the estimator of success probability ,p, $\hat{P} = \frac{X}{n}$ has a standard deviation $\sqrt{\frac{p(1-p)}{n}}$. This depends on p which we often don't know and are trying to estimate.
+  - For a normal (or near normal model), to estimate $\mu$, we use estimator $\bar{X}$ whose standard deviation is $\frac{\sigma}{\sqrt{n}}$
+
+- To address unknown parameters in the population, we often rely on the estimated standard error of the estimator which is calculated by:
+
+For binomially distributed data
+$$\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$$
+or for normally distributed data:
+$\frac{s}{\sqrt{n}}$
+
+---
+# The Formulation of Estimators
+- We have discussed how to compare different estimators based off of a parameter based on their expected values and variances.
+
+- However, knowing how to compare estimators does not help us in formulating an estimator.
+
+- Two methods : maximum likelihood estimate and method of moments
+
+
+---
+# Method of Moments
+- Formal Definition
+Let $X_1,...,X_n$ be a random sample from a pmf or pdf. For k = 1,2,3,...,the kth population moment, is $E(X^k)$. The sample moment is $\frac{1}{n}\Sigma{X_i^k}$
+
+Let $X_1,...,X_n$ be a random sample from a pmf/ pdf $f(x,\Theta_1,...\Theta_m)$ are parameters whose values are unknown. Then the moment estimators are obtained by equating the first m sample moments and solving for $\Theta_1,...,\Theta_m$
+
+---
+# An example from the gamma distribution
+```{r}
+x <- c(152,115,109,94,88,137,152,77,160,165,125,40,128,123,136,101,62,153, 83,69)
+(n <- length(x))
+(Ex <- sum(x)/n) #1st sample moment
+
+```
+
