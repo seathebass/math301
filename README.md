@@ -33,3 +33,6 @@ During this week, we will explore continuous random variables and a host of dist
 
 ## Weeks 8 and 10
 During these weeks we will explore joint distributions for both discrete and continuous rvs. Topics such as corvariance, correlation, and simulations will be covered. Slides are [**here**](https://seathebass.github.io/math301/presentations/week6.html)
+
+## Week 11
+During this week we will cover point estimators and estimates as well as briefly cover methods of moments.Slides are [**here**](https://seathebass.github.io/math301/presentations/week7_pres.html)
