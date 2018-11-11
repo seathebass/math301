@@ -12,6 +12,7 @@ Assignment solutions will be found after students turn them in so that students 
 - [week 4 assignment](https://seathebass.github.io/math301/homeworkfiles/week4hw.html)
 - [week 6 assignment](https://seathebass.github.io/math301/homeworkfiles/week6hw.html)
 - [week 7 assignment](https://seathebass.github.io/math301/homeworkfiles/week7hw.html)
+- [Week 10 Assignment](https://seathebass.github.io/math301/homeworkfiles/week10hw.html)
 
 ## Cheatsheet
 - [Quiz 1 Cheatsheet](https://seathebass.github.io/math301/cheatsheets/quiz1cheatsheet.html)
