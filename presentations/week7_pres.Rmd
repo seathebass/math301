@@ -194,14 +194,13 @@ $$E[\hat{\Theta}] = \theta$$
 
 - Suppose we have multiple populations of interest following the cauchy, normal and uniform distributions as follows (normal is red, cauchy is blue).
 
-```{r, fig.align="center",echo=FALSE}
+```{r, fig.align="center",echo=FALSE, message=FALSE}
 library(tidyverse)
 ggplot(tibble(x= 0:10), aes(x = x))+
   stat_function(fun = dnorm, args = list(6,1), col= "red")+
   stat_function(fun = dcauchy, args = list(6,1), col = "blue")+
   stat_function(fun = dunif, args = list(min = 3,max = 9))+ 
   theme_minimal()
-
 ```
 
 ---
@@ -264,7 +263,71 @@ Let $X_1,...,X_n$ be a random sample from a pmf/ pdf $f(x,\Theta_1,...\Theta_m)$
 ```{r}
 x <- c(152,115,109,94,88,137,152,77,160,165,125,40,128,123,136,101,62,153, 83,69)
 (n <- length(x))
-(Ex <- sum(x)/n) #1st sample moment
-
+(EX <- sum(x)/n) #1st sample moment
+(EX2 <- sum(x^2)/n)
+(alphahat <- -(EX^2/(EX^2-EX2)))
+(betahat <- -(-EX2 + EX^2)/EX)
 ```
+
+---
+# Problems with Methods of Moments
+- Problems that arise with Method of moments estimators is the math can get complicated pretty quickly. For example; let's look at the weibull distribution. Starting with the equations
+$$\mu = \beta \Gamma{(1 + \frac{1}{\alpha})}$$
+$$\sigma^2 = \beta^2[\Gamma(1+\frac{2}{\alpha})-[\Gamma(1 + \frac{1}{\alpha})^2]]$$
+- Methods of moments typically use a few quantiles from the distribution and the data to formulate estimators. The values of the estimators do not have to be consistent with the distribution.
+
+---
+# The Maximum Likelihood Estimation:
+- The essence of the maximum likelihood estimate is that we want to find the value of $\theta$ which maximizes the probability/likelihood of getting the data observed.
+
+- R.A. Fisher suggested that to avoid some of the problems involved in maximum likelihood estimation, we can consider the joint density of the responses as a function of the parameters with the data fixed.
+$$L(\theta|y) = f(y|\theta)$$
+where L is the likelihood, f is the probability density, y is the vector of responses, and $\theta$ is the vector of parameters for the distribution.
+
+- Fisher argued that we should choose estimates of parameters which provided the greatest likelihood of seeing the data that we did. In other words
+$$\hat{\theta} = argmaxL(\theta|y)$$
+---
+# Maximum Likelihood
+- Likelihood function: Let f(x,$\theta$) be the probability density function for a discrete or continuous probability distribution for random variable X. Suppose $X_1,...,X_n$ are the actual observed values from a random sample of size n from X. Then the likelihood function is
+$$L(x_1,x_2,...,x_n,\theta) = L(\theta|x_1,x_2,...,x_n) = \Pi_{i = 1}^nf(x_i,\theta)$$
+considered as a function of $\theta$ with the $x_i's$ fixed. $\theta$ can be multidimensional. 
+
+---
+# Example 
+from (https://onlinecourses.science.psu.edu/stat414/node/191/)
+
+Suppose the weights of randomly selected American female college students are normally distributed with unknown mean μ and standard deviation σ. A random sample of 10 American female college students yielded the following weights (in pounds):
+
+```{r}
+weights <- c(115,122,130,127,149,160,152,138,149,180)
+```
+
+Based on the definitions given above, identify the likelihood function and the maximum likelihood estimator of μ, the mean weight of all American female college students. Using the given sample, find a maximum likelihood estimate of μ as well.
+
+---
+# Example worked out
+- In chapter 4 we talked briefly about normal random variables and touched briefly upon their pdfs. 
+
+- If we recall, the probability density function for the normal random variable was simply
+$$f(x;\mu,\sigma) = \frac{1}{\sigma\sqrt{2\pi}}e^{\frac{(x-\mu)^2}{2\sigma^2}}$$
+The Likelihood function then becomes:
+$$L(\theta_1,\theta_2) = \sigma^{-n}2(\pi)^{-n/2}exp[-\frac{1}{2\sigma^2}\Sigma(x_i-\mu)^2]$$
+Which ultimately results in:
+$$\frac{1}{n}\Sigma{x_i}$$
+or 
+```{r}
+sum(weights)/length(weights)
+```
+---
+# Properties of the Maximum Likelihood Estimate:
+
+- The Likelihood or log likelihood measures the suitability of parameters for the probability model applied to the data.
+
+- For distributions with one or two parameters, we can examine the log-likelihood function or the contours of the function to get an idea surrounding the precision of the estimates.
+
+- There is typically a way to associate a confidence level with particular contours of the log-likelihood.
+
+- The invariance principle (see p 260 of the text.)
+
+- MLE's are the best estimators which can be formulated.
 
