@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Confidence Intervals from a Single Sample</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Sebastian Hoyos-Torres" />
+    <meta name="date" content="2018-11-15" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Confidence Intervals from a Single Sample
+### Sebastian Hoyos-Torres
+### 2018-11-15
+
+---
+
+
+
+
+
+
+# What we will cover in this lecture:
+- A brief review of point estimates.
+
+- Properties of the sample mean and sample sum of iid random variables.
+
+- Definition and basic properties of confidence intervals
+
+- Normal confidence intervals with known standard deviation.
+
+- Large sample confidence intervals with unknown standard deviation.
+
+- T- distribution and confidence intervals.
+
+---
+# Point Estimates:
+- What is a point estimate?
+
+--
+  - A point estimate is simply an estimate of a population parameter which is calculated from a sample.
+  
+  - Examples of point estimates include the sample mean or a proportion
+
+- Estimators: the estimator is the random variable whose value will always be a point estimate. 
+
+---
+# Random samples
+- Evaluating the distribution of a statistic calculated from a sample with an arbitrary joint distribution is usually very difficult.
+
+- Often, assumptions are made that our data constitute a random sample from a distribution. This means that 
+  - All `\(X_i\)`'s are independent. 
+  - All `\(X_i\)`'s have the same probability distribution.
+
+---
+# Properties of Sample Mean and Sample Sum
+- Remember, if `\(X_1,...,X_n\)` is a random sample from a distribution with mean value `\(\mu\)` and standard deviation `\(\theta\)` then:
+  - `\(E(X) = \mu_{\bar{X}}\)`
+  - `\(V(X) = \sigma^2_x = \sigma^2/n\)`
+
+- Let `\(T_n = X_1,+X_2+,...,+X_n\)` be the sample total; then 
+  - `\(E(T) = n\mu\)`
+  - `\(V(T_n) = n\sigma^2\)`
+
+- **If the Original Distribution of the `\(X_i\)`'s is normal, then the distribution of `\(\bar{X}\)` and `\(T_n\)` is also normal**
+
+---
+# Why Statisicians are Probably Right: Confidence Intervals
+- When we speak of confidence intervals, what do we mean?
+
+- The formal definition: suppose `\(x_1,x_2,...,x_n\)` is a random sample from a normal population with mean `\(\mu\)` and know standard deviation `\(\sigma\)`. Then :
+`$$Z = \frac{(\bar{X} - \mu)}{\frac{\sigma}{\sqrt{n}}}$$`
+has a standard normal distribution. If we define `\(z_a\)` as the 1-a quantile of a standard normal distribution z~N(0,1) so that `\(P(Z&gt;z_a) = \alpha\)`, then we can manipulate A as follows for any a &lt; 0.5.
+`$$1 - a = P(-z_{a/2}\leq{Z}\leq{z_{a/2}})$$`
+`$$P(\bar{X} - z_{a/2}*\frac{\sigma}{\sqrt{n}}\leq{\mu}\leq{\bar{X}+ z_{a/2}*\frac{\sigma}{\sqrt{n}}})$$`
+the `\(z_{a/2}\)`'s are sometimes referred to as critical values.
+
+---
+--- 
+# Confidence Intervals in R
+- Example borrowed from Penn State:
+A random sample of 126 police officers subjected to constant inhalation of automobile exhaust fumes in downtown Cairo had an average blood lead level concentration of 29.2 μg/dl. Assume X, the blood lead level of a randomly selected policeman, is normally distributed with a standard deviation of σ = 7.5 μg/dl. Historically, it is known that the average blood lead level concentration of humans with no exposure to automobile exhaust is 18.2 μg/dl. Is there convincing evidence that policemen exposed to constant auto exhaust have elevated blood lead level concentrations? (Data source: Kamal, Eldamaty, and Faris, "Blood lead level of Cairo traffic policemen," Science of the Total Environment, 105(1991): 165-170.)
+
+- How do we incorporate what we've talked about so far into R?
+---
+# Confidence Intervals in R continued:
+- Lets look at the formula to calculate the upper and lower bounds of the confidence interval. Namely; these parts
+`$$\bar{X}+z_{a/2}*\frac{\sigma}{\sqrt{n}}$$`
+`$$\bar{X}-z_{a/2}*\frac{\sigma}{\sqrt{n}}$$`
+keeping this in mind, let's just create our own function to compute a confidence interval in R.
+
+```r
+confint &lt;- function(xbar, zstar, sigma, n) {
+    list(upper_bound = xbar + zstar * (sigma/sqrt(n)), lower_bound = xbar - 
+        zstar * (sigma/sqrt(n)))
+}
+```
+With this function, let's now just work on plugging things in.
+---
+# Confidence Interval in R continued:
+
+- Now that we have defined our function in R, doing the computation for the confidence interval gets pretty simple.
+
+- First, let's look at the necessary components:
+  - we have a sample of n = 126
+  - `\(\bar{X}\)` or the sample mean is 29.2
+  - the standard deviation or `\(\sigma\)` = 7.5
+
+
+```r
+zstar &lt;- qnorm(1 - (0.05/2))
+confint(29.2, zstar, 7.5, 126)
+```
+
+```
+## $upper_bound
+## [1] 30.50956
+## 
+## $lower_bound
+## [1] 27.89044
+```
+- If anyone wants to check, here's the URL to the problem : https://onlinecourses.science.psu.edu/stat414/node/196/
+---
+# What does this mean?
+- A lot of well meaning people make the error of saying that the probability that the true mean is between the upper and lower bounds is equivalent to 1-a.
+So what does a confidence interval really mean? And why is this statement wrong?
+
+--
+  - A confidence interval indicates that we'd expect 1-a of the intervals to be correct and to contain the unknown value `\(\mu\)`. Since we'll almost never know the true population mean, we settle for intervals and say we are 95 percent confident that 95 percent of the intervals generated would be correct.
+  - In practice, we often take 1 random sample from the population so all we can really say is that we are confident that the population mean lies in the interval we generated.
+---
+--- 
+# A Simulation:
+- Simulations are useful to illustrate the notion of confidence intervals so let's try our hand at simulating to see exactly what a confidence interval contains. 
+
+- Let's create 100 95 percent confidence intervals from a sample of size 35. The true population mean in our case be 25, with a standard deviation of 4.
+
+---
+# Simulation in R
+- The simulation of the confidence interval.
+
+```r
+counter &lt;- 0
+qnorm(1 - (0.05/2))
+```
+
+```
+## [1] 1.959964
+```
+
+```r
+for (i in 1:1000) {
+    x &lt;- rnorm(35, 25, 4)
+    conf &lt;- confint(mean(x), 1.96, 4, 30)
+    if (conf$lower_bound &lt; 25 &amp;&amp; conf$upper_bound &gt; 25) {
+        counter &lt;- counter + 1
+    }
+}
+counter/1000
+```
+
+```
+## [1] 0.967
+```
+- As the above code illustrates approximately 96.7% of the intervals we generate will have the true population mean within it (which is pretty close to the 95 percent confidence).
+
+---
+# Some Things to Note from Our Simulations:
+
+- Notice that when `\(\sigma\)` is known, the length of our 100*(1-a)% confidence interval only depends on n and is `\(2\dot{}z_{a/2}\dot{}\frac{\sigma}{\sqrt{n}}\)`. If we want the interval to have length w, just solve:
+
+`$$w = 2 \dot{}z_{a/2}\dot{}\frac{\sigma}{\sqrt{n}}$$`
+
+for n giving `\(n\geq{(2\dot{}z_{a/2}\dot{}\frac{\sigma}{w})^2}\)`
+
+---
+# Example:
+How large of a sample do we need to guarantee that the length of the automobile mpg 99 percent confidence interval = 2 and if the standard deviation = 3.5?
+
+```r
+w &lt;- 2
+zstar &lt;- qnorm(1 - 0.01/2)
+### creating our function from the formula
+widthfunct &lt;- function(zstar, sigma, w) {
+    (2 * zstar * sigma/w)^2
+}
+(n &lt;- widthfunct(zstar, sigma = 3.5, w))
+```
+
+```
+## [1] 81.27748
+```
+
+```r
+ceiling(n)  # to determine 1st integer not lower than n
+```
+
+```
+## [1] 82
+```
+---
+# What if we don't know the Population Parameters:
+
+- Very rarely are you going to have information about the population parameters.
+
+- For example, the prior examples have relied on having the population standard deviation, `\(\sigma\)`. What happens when we don't have sigma?
+
+--
+
+- We simply use the point estimators which are appropriate for the parameters of interest. In the population standard deviation case; the answer would simply be the sample standard deviation `\(s\)`
+
+- Further, the law of large numbers says that as a sample size gets larger, each of the above estimates tend to get closer to the real parameter.
+
+---
+# Confidence Intervals continued:
+
+- If the population is normal and the sample size is large, ($\geq{30}$) with mean `\(\mu\)` then:
+
+`$$T = \frac{\bar{X} - \mu}{\frac{s}{\sqrt{n}}}$$`
+has approximately a standard normal distribution and:
+
+`$$\bar{X} - z_{a/2}\dot{}\frac{s}{\sqrt{n}},\bar{X} + z_{a/2}\dot{}\frac{s}{\sqrt{n}}$$`
+is a confidence interval for `\(\mu\)`
+---
+# Example:
+A random sample of 120 lightening flashes resulted in an average radar echo duration of .83 seconds with a sample standard deviation of .4 seconds. Calculate a 99 percent confidence interval for the true average echo duration.
+
+```r
+n &lt;- 120
+xbar &lt;- 0.83
+s &lt;- 0.4
+alpha &lt;- 1 - 0.99
+zstar &lt;- qnorm(1 - alpha/2)
+confint(xbar, zstar, s, n)  # the only thing that changed in the formula was sigma got replaced with s so we can still use the same formula
+```
+
+```
+## $upper_bound
+## [1] 0.924056
+## 
+## $lower_bound
+## [1] 0.735944
+```
+---
+# Prove that sample size matters!
+- Sure, all it takes is to use a for loop and a simulation. With 1000 simulations, things should be ok. Let's take some random samples from the normal distribution of n = 4 and the population mean and standard deviation are 25 and 4 respectively.
+
+```r
+counter &lt;- 0
+for (i in seq(1:1000)) {
+    x &lt;- rnorm(4, 25, 4)
+    conf &lt;- confint(mean(x), qnorm(1 - 0.05/2), sd(x), 4)
+    if (conf$lower_bound &lt; 25 &amp;&amp; 25 &lt; conf$upper_bound) {
+        counter &lt;- counter + 1
+    }
+}
+counter/1000
+```
+
+```
+## [1] 0.848
+```
+From our simulation, we see that if we have a small sample, our confidence interval is far from the confidence interval we wanted to generate. In this case only 84.8% of the intervals contained the true mean.
+
+---
+# T distributions:
+- If the population is normal and `\(\sigma\)` and `\(\mu\)` are unknown, then 
+`$$T = \frac{\bar{X} - \mu}{\frac{s}{\sqrt{n}}}$$`
+has a t distribution with n-1 degrees of freedom. Also:
+`$$[\bar{X} - t_{a/2,n-1}\dot{}\frac{s}{\sqrt{n}},\bar{X} + t_{a/2,n-1}\dot{}\frac{s}{\sqrt{n}}]$$`
+is the 100(1-a) percent confidence interval for `\(\mu\)`. If R is available (It always will be available as long as you have a computer), then `\(t_{a/2,n-1}\)` can be calculated with the function qt and adjusting the appropriate arguments. 
+---
+# Example of using T:
+- Taking the lightening rod problem as before and adjusting it so that we can't use normal approximations, lets see how to apply t
+
+A random sample of 20 lightening flashes resulted in an average radar echo duration of .83 seconds with a sample standard deviation of .4 seconds. Calculate a 99 percent confidence interval for the true average echo duration.
+
+```r
+n &lt;- 20
+xbar &lt;- 0.83
+s &lt;- 0.4
+alpha &lt;- 1 - 0.99
+tstar &lt;- qt(1 - alpha/2, n - 1)
+confint(xbar, tstar, s, n)  # although the formula changes, we can still use the confint function we defined a while back
+```
+
+```
+## $upper_bound
+## [1] 1.08589
+## 
+## $lower_bound
+## [1] 0.5741102
+```
+---
+# Confidence intervals for Bernoulli Trials
+- If we have a sequence of n bernoulli trials with probability of succcess p, then if n is large enough (and p is not near 0 or 1).
+`$$\frac{(\hat{p}-p)}{\sqrt{\frac{p(1-p)}{n}}}$$`
+has approximately a standard normal distribution. If we approximate p by `\(\hat{p}\)` in the denominator, than an appropriate confidence interval for p is:
+`$$\hat{p}- z_{a/2}\dot{}\frac{\sqrt{\hat{p}\dot{}(1-p)}}{\sqrt{n}},\hat{p}+ z_{a/2}\dot{}\frac{\sqrt{\hat{p}\dot{}(1-p)}}{\sqrt{n}}$$`
+Large sample recommendations are np and n(1-p) where both are greater than 10 or both the number of successes and failures in the sample are at least 15 for successes and failures
+
+---
+--- 
+# Example:
+The national sexual pattern survey found that 173 out of 2673 adult heterosexuals had multiple partners. Give a 95 percent classical confidence interval for the true proportion of heterosexuals with multiple partners.
+
+```r
+n &lt;- 2673
+x &lt;- 173
+phat &lt;- x/n
+alpha &lt;- 1 - 0.95
+zstar &lt;- qnorm(1 - alpha/2)
+# Defining our own function
+bconf &lt;- function(phat, zstar, n) {
+    list(upper_bound = phat + zstar * sqrt(phat * (1 - phat))/sqrt(n), lower_bound = phat - 
+        zstar * sqrt(phat * (1 - phat))/sqrt(n))
+}
+bconf(phat, zstar, n)
+```
+
+```
+## $upper_bound
+## [1] 0.0740483
+## 
+## $lower_bound
+## [1] 0.05539427
+```
+
+---
+# Confidence Intervals: Scores for p
+In the bernoulli trial situation, if we start with 
+`$$P[-z_{a/2}\leq{\frac{\hat{p} - p}{\sqrt{\frac{p*(1-p)}{n}}}}\leq{z_{a/2}}]$$`
+is approximately 1-a since the center of the expression is approximately standard normal and then solve for both:
+
+`$$\frac{\hat{p} - p}{\sqrt{\frac{p*(1-p)}{n}}} = -z_{a/2}$$` 
+`$$\frac{\hat{p} - p}{\sqrt{\frac{p*(1-p)}{n}}} = z_{a/2}$$`
+
+---
+# Score confidence Interval:
+- the resulting solutions form the following interval: let z-star = `\(z_{a/2}\)`. Then the (1-a)% confidence interval is:
+`$$-\frac{1}{2} * \frac{-zstar^2 - 2n\hat{p} + \sqrt{zstar^4+ 4zstar^2np - 4n\hat{p}^2zstar^2}}{zstar^2 + n}$$`
+`$$\frac{1}{2} * \frac{zstar^2 + 2n\hat{p} + \sqrt{zstar^4+ 4zstar^2np - 4n\hat{p}^2zstar^2}}{zstar^2 + n}$$`
+
+- The above is known as the score confidence interval for p
+
+---
+# One sided confidence bounds:
+Suppose `\(x_1,...,x_n\)` is a random sample from a normal population with mean `\(\mu\)` and known standard deviation `\(\sigma\)` Then:
+`$$Z = \frac{(\bar{X} - \mu)}{\frac{\sigma}{\sqrt{n}}}$$`
+has a standard normal distribution. If we define `\(z_a\)` as the 1-a quantile of a N(0,1) distribution so that `\(P(Z&gt;z_a) = a\)` then we can manipulate a as follows for any `\(a &lt; 0.5\)`
+`$$1- a = P(Z\leq{z_a}) = P(\mu\leq{\bar{X} + z_a*\frac{\sigma}{\sqrt{n}}}$$`
+
+---
+# Prediction intervals:
+Confidence Intervals and confidence bounds estimate the mean value of the distribution under consideration. If we want a confidence interval for a future single observation then we must take into account the error for estimating the mean and the error for a single observation. This results in a prediction interval.
+`$$\bar{X}-t_{a/2,n-1}*s\sqrt{1+\frac{1}{n}},\bar{X}+t_{a/2,n-1}*s\sqrt{1+\frac{1}{n}}$$`
+
+---
+# Prediction Interval Example:
+A random sample of 20 lightening flashes resulted in an average radar echo duration of .83 seconds with a sample standard deviation of .4 seconds. Calculate a 90 percent prediction interval for the echo duration of the next measurement.
+
+
+```r
+n &lt;- 20
+xbar &lt;- 0.83
+s &lt;- 0.4
+alpha &lt;- 1 - 0.9
+tstar &lt;- qt(1 - alpha/2, n - 1)
+predint &lt;- function(xbar, tstar, s, n) {
+    list(upper_bound = xbar + tstar * s * sqrt(1 + 1/n), lower_bound = xbar - 
+        tstar * s * sqrt(1 + 1/n))
+}
+predint(xbar, tstar, s, n)
+```
+
+```
+## $upper_bound
+## [1] 1.538734
+## 
+## $lower_bound
+## [1] 0.1212664
+```
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
