@@ -37,3 +37,6 @@ During these weeks we will explore joint distributions for both discrete and con
 
 ## Week 11
 During this week we will cover point estimators and estimates as well as briefly cover methods of moments.Slides are [**here**](https://seathebass.github.io/math301/presentations/week7_pres.html)
+
+## Week 12
+Confidence Intervals [here](https://seathebass.github.io/math301/presentations/week8.html
