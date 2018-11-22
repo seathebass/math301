@@ -42,4 +42,4 @@ During this week we will cover point estimators and estimates as well as briefly
 Confidence Intervals [**here**](https://seathebass.github.io/math301/presentations/week8.html
 
 ## Week 13
-This covers hypothesis testing from 1 sample and covers z and t-tests. This will provide most of the material [**here**](https://seathebass.github.io/math301/presentations/week9.html
+This covers hypothesis testing from 1 sample and covers z and t-tests. This will provide most of the material [**here**](https://seathebass.github.io/math301/presentations/week9.html)
