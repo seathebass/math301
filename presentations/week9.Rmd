@@ -1,0 +1,302 @@
+---
+title: "Hypothesis Testing"
+author: "Sebastian Hoyos-Torres"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: xaringan-themer.css
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+library(tidyverse)
+```
+
+```{r xaringan-themer, include=FALSE}
+library(xaringanthemer)
+solarized_dark(
+  code_font_family = "Fira Code",
+  code_font_url    = "https://cdn.rawgit.com/tonsky/FiraCode/1.204/distr/fira_code.css"
+)
+```
+# What is a Statistical Hypothesis?
+- An Example from the United States Criminal Justice System. 
+
+- What does "not guilty" really mean in the Criminal Justice System? 
+
+- Typically, it refers to there is enough evidence to convict someone beyond  a reasonable doubt.
+
+- Reasonable doubt in an ideal world means that there is/isn't enough information to convict an individual. Quantitatively, the demarcation is usually noted as 95 percent confident that a person committed the crime based on a statement. 
+
+- In terms we've covered thus far, the statement would look like :
+$$P(Guilty|Evidence)$$
+---
+# Statistical Hypotheses:
+- Often we are interested in formulating statistical hypotheses about some characteristic of the population
+
+- We will focus on hypotheses being statements relating to a parameter of the distribution.
+
+- Some examples of these hypotheses are:
+  - Average height of female college students equals 63 inches.
+  - Average height of female college students is at least 63 inches.
+  - The percentage of people with type B blood is 30%
+  - The percentage of people with type B blood is not equal to 30%
+
+- The differences between a composite and simple hypothesis.
+
+---
+# Statistical Hypotheses continued:
+- In our application of statistical hypotheses, we specify two claims from the population. 
+  
+  - The null hypothesis indicates that there is no effect, difference, or the sample is drawn from the same population . You will usually see it denoted as:
+  $$H_0 = 0$$
+  - The alternative hypothesis indicates that there is an effect, difference, or that the sample is not drawn from the same population. In this section; we will see this denoted as:
+  $$H_a \neq{0}$$
+
+- To test these hypotheses, we traditionally turn to hypothesis testing. A hypothesis test just indicates whether or not the sample data indicates that the null hypothesis is true.
+
+---
+# Types of errors:
+<img src ="data:image/jpeg;base64,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", width= "800" >
+---
+--- 
+# Type I and II errors example:
+<img src = "http://marginalrevolution.com/wp-content/uploads/2014/05/Type-I-and-II-errors1-625x468.jpg", width = "800">
+
+---
+# Statistical Hypotheses:
+- When conducting a statistical test; we typically pick a certain $a$ value which is referred to the level of significance.
+
+- Levels of significance simply refer to the probability of rejecting the null when it is actually true (This would be referrred to as Type I error).
+
+- When we fail to reject the null hypothesis when it is actually false, then we refer to that as type II error.
+---
+# Rejection regions:
+- Let's take a look at what a rejection region is with an app :
+https://hselab.shinyapps.io/critvalues/
+
+- Important note!!! Just because we do not fail to reject the null does not mean that we accept the null hypothesis!!!
+---
+--- 
+# Statistical Hypotheses: A further look
+- As noted previously, a null hypothesis takes the form of 
+$$H_0: \mu = \mu_0$$
+where $\mu_0$ is referred to as the null value. The alternative hypotheses are as follows:
+
+$$H_a:\mu>\mu_0$$
+$$H_a:\mu\neq\mu_0$$
+$$H_a:\mu<\mu_0$$
+
+---
+# The Z- Test: When we know the population Variance
+- Reminder: in statistics we are always concerned with estimating the values of a certain population parameter. 
+
+- If we were ever in a situation where we knew the population variance but not the population mean, we would use the Z-test
+
+- To conduct a Z - test, we calculate a test statistic, Z
+$$Z = \frac{\bar{X}- \mu}{\sigma/\sqrt{n}}$$
+- In R:
+```{r}
+zstat <- function(xbar, mu, sigma, n){
+  (xbar - mu)/(sigma/sqrt(n))
+}
+```
+
+---
+# The Z- Test continued:
+- So What are we doing in a z-test? 
+
+- We are testing whether we reject a null hypothesis or not. The Z- statistic normalizes the sample mean to a standardized value on the normal distribution.
+
+- Thus, our z-statistic simply indicates how far from 0 our sample mean is.
+
+
+---
+# Example of the Z - Test:
+Adapted from Penn State: Boys of a certain age are known to have a mean weight of μ = 89 pounds. A complaint is made that the boys living in a municipal children's home are underfed. As one bit of evidence, n = 25 boys (of the same age) are weighed and found to have a mean weight of $\bar{x}$ = 80.9 pounds. It is known that the population standard deviation σ is 11.8 pounds.
+- What is the null hypothesis in this case?
+- the alternatives?
+- the Z-statistic?
+
+---
+# Example of Z-Test continued:
+- In our case, we are interested in testing the null hypothesis of 
+$$H_0:\mu = 89 lbs$$
+
+- The alternatives hypotheses are as follows:
+$$H_a > 89 lbs$$
+$$H_a <89 lbs$$
+$$H_a \neq 89 lbs$$
+---
+# Example continued
+In the prior problem, we have identified all of the necessary elements so all it takes is plugging into our function:
+```{r}
+zstat(80.9,89,11.8, 25)
+```
+remember when we were talking about $z_{a/2}$ ?
+
+```{r}
+qnorm(.05/2)
+```
+
+Since our critical value is within our rejection region, we can successfully reject the null hypothesis.If we were interested in 1 side?
+```{r}
+qnorm(.05)
+```
+The first refers to a two tailed versus a 1 tailed Z-test. In both cases, we can reject the null but which alternative hypotheses do we accept?
+
+---
+#Visual of the z-test
+```{r,plot1,echo=FALSE}
+ggplot(tibble(x = -4:4), aes(x = x))+
+  stat_function(fun = dnorm)+
+  geom_vline(xintercept = -1.64, lty = "dashed", color =  "red")+
+  geom_vline(xintercept = c(-1.96,1.96), lty = "dashed", color =  "blue")+
+  geom_vline(xintercept = -3.43,  color =  "red")+
+  theme_minimal()
+```
+
+---
+# T- test: When we don't know the population variance
+- We usually will not know the population variance or any of the characteristics of the population
+
+- Thus, we rely on the t-test and the t- statistic which is calculated as follows:
+
+$$T = \frac{\bar{X}- \mu_0}{S/\sqrt{n}}$$
+- In R:
+```{r}
+tstat <- function(xbar,mu,s,n){
+  (xbar - mu)/(s/sqrt(n))
+}
+```
+---
+# T-test example:
+Adapted from Penn State: It is assumed that the mean systolic blood pressure is μ = 120 mm Hg. In the Honolulu Heart Study, a sample of n = 110 people had an average systolic blood pressure of 130.3 mm Hg with a standard deviation of 21.2 mm Hg. Answer the following:
+
+- What is the null hypothesis?
+- What are the possible alternative hypotheses?
+- What is the t-statistic?
+
+---
+# The t-test example, continued
+- At this point; we should be able to identify the null hypothesis pretty easily. 
+$$H_0:\mu = 120$$
+$$H_a > 120$$
+$$H_a < 120$$
+$$H_a \neq 120$$
+---
+# Example continued:
+Since we defined the t-statistic as a function; why not use it?
+```{r}
+tstat(130.3,120,21.2,110)
+```
+The area of the rejection region is the following:
+```{r}
+qt(.05/2,110-1)
+```
+```{r}
+qt(.05,110-1)
+```
+Therefore, for both the 1 sided and 2 sided t-tests we can reject the null. Note, just make the result positive
+
+---
+# Visual of the t-test
+```{r,plot2,echo=FALSE}
+ggplot(tibble(x= -6:6),aes(x = x))+
+  stat_function(fun = dt, args = list(109))+
+  geom_vline(xintercept = 1.812, lty = "dashed", color =  "red")+
+  geom_vline(xintercept = c(-1.98,1.98), lty = "dashed", color =  "blue")+
+  geom_vline(xintercept = 5.1,  color =  "red")+
+  theme_minimal()
+
+
+```
+
+---
+# P - Values
+- Often, we will hear talk of "p-values". [For example:](https://fivethirtyeight.com/features/not-even-scientists-can-easily-explain-p-values/)
+
+- From the article: "What I learned by asking all these very smart people to explain p-values is that I was on a fool’s errand. Try to distill the p-value down to an intuitive concept and it loses all its nuances and complexity, said science journalist Regina Nuzzo, a statistics professor at Gallaudet University. “Then people get it wrong, and this is why statisticians are upset and scientists are confused.” You can get it right, or you can make it intuitive, but it’s all but impossible to do both."
+
+- So what we are going to get p-values right
+
+---
+# P-values Continued.
+- For the t-test and z-test, we will get a p-value calculated for us if we input a vector. For example:
+```{r}
+x <- rnorm(100, 10,2)
+t.test(x, mu = 0)
+```
+---
+# P- Value Cont.
+- The American Statistical Association's Statement on [p-values](https://amstat.tandfonline.com/doi/pdf/10.1080/00031305.2016.1154108?needAccess=true)
+
+- from the article: "a p-value is the probability under a specified statistical model that a sample summary of the data would be equal to or more extreme than its observed value".
+
+- A p-value is also associated with conducting a type I error.
+---
+--- 
+# P-Values in hypothesis testing:
+- Looking back at the example with the test statistic we computed; we found the following 
+t= 5.095628
+tstar_a/2 =1.981967 
+tstar = 1.658953
+
+- With these values, we can compute the p-value as follows:
+```{r}
+pt(5.095628,df = 109,lower.tail = FALSE)
+```
+where $df = n-1$ and if the test was two sided;
+```{r}
+pt(5.095628,df = 109,lower.tail = FALSE)*2
+```
+
+- If we had the z-statistic, we would be doing something similar with pnorm.
+
+---
+# Type II error
+
+- So far,we've focused in depth about type I error but what about type II error?
+
+- Just a refresher; type II error refers to the probability of not rejecting the null hypothesis when it is false. 
+
+If it is normally distributed where $\sigma$ is known; the probability is computed as:
+$$\beta{(\mu)} = \Phi(z_a + \frac{\mu_0-\mu^1}{\sigma/\sqrt{n}})$$
+
+
+- In R:
+```{r}
+normtype2 <- function(alpha,mu0,mu1,sigma,n){
+  pnorm(qnorm(1-alpha) + (mu0 - mu1)/(sigma/sqrt(n)))
+  }
+```
+
+
+---
+
+# A Simulation of null hypothesis testing:
+- Simulations are fun and illustrative so let's look at an example:
+
+```{r}
+k <- 5000
+n <- 17
+mu <- 413
+sd <- 10
+alpha <- .05
+mns1 <- numeric(k)
+mns2 <- numeric(k)
+for(i in 1:k){
+  x <- mean(rnorm(n,mu,sd))
+  t <- tstat(x,mu,sd,n)
+  if(t < qnorm(alpha))
+    mns1[i] <- 1
+  else
+    mns2[i] <- pt(t,df = n-1,lower.tail = TRUE)
+}
+(rejected <- mean(mns1))
+```
+
