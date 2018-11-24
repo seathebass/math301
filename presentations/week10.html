@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Inferences Based on Two Samples</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Sebastian Hoyos-Torres" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Inferences Based on Two Samples
+### Sebastian Hoyos-Torres
+
+---
+
+
+
+
+
+# What we've covered so far:
+
+- We covered z and t-tests.
+
+- Examined different types of errors
+
+- Examined what different hypotheses we can generate.
+
+---
+# Inferences based on Two Samples
+
+Suppose `\(X_1,...,X_n\)` is a random sample from a normal population with expected value `\(\mu_1\)`, and standard deviation `\(\sigma_1\)`.
+Let `\(Y_1,...,Y_n\)` be a random sample from the normal population with expected value `\(\mu_2\)` and standard deviation `\(\sigma_2\)`
+
+- In this case we have `\(\bar{X}\bar{Y}\)` and sample standard deviations `\(S_x\)` and `\(S_y\)`. Then:
+
+`$$Z = \frac{\bar{X} - \bar{Y}- (\mu_1-\mu_2)}{\sqrt{\frac{\sigma_1^2}{m} + \frac{\sigma_2^2}{n}}}$$`
+The Z statistic in this case is useful for confidence intervals of `\(\mu_1-\mu_2\)`
+
+The 100(1-a)% confidence interval is:
+`$$\bar{X}-\bar{Y} \pm z_{a/2}\sqrt{\frac{\sigma_1^2}{m}+\frac{\sigma_2^2}{m}}$$`
+---
+# The functions in R
+- Here are the formulas translated into R as functions:
+the 2 sample z-statistic
+
+```r
+z2stat &lt;- function(xbar,ybar,mu1,mu2,sigma1,sigma2,m,n){
+  (xbar - ybar - (mu1-mu2))/((sigma1/m)+ (sigma2/n))
+}
+```
+
+The confidence interval
+
+```r
+z2confint &lt;- function(xbar,ybar,zstar,sigma1,sigma2,m,n){
+  list(lower_bound = xbar - ybar - zstar * (sqrt((sigma1/m) + (sigma2/n))),
+       upper_bound = xbar - ybar + zstar * (sqrt((sigma1/m) + (sigma2/n))))
+}
+```
+
+---
+# Inferences based on two samples continued:
+- If the `\(\sigma\)`'s are known, we can test the null that `\(\mu_1 - \mu_2 = \delta_0\)` against the alternatives.
+
+- `\(H_a:\mu_1 - \mu_2 \neq \delta_0\)`
+- `\(H_a:\mu_1 - \mu_2 \gt \delta_0\)`
+- `\(H_a:\mu_1 - \mu_2 \lt \delta_0\)`
+
+which we would reject via the z-statistic which we calculated earlier.
+
+---
+# What if we don't have sigma?
+- If we don't have `\(\sigma\)`, we can use the point estimate to approximate it if our sample is large. The statistic would be calculated as follows:
+
+`$$Z = \frac{\bar{X} - \bar{Y}- (\mu_1-\mu_2)}{\sqrt{\frac{S_1^2}{m} + \frac{S_2^2}{n}}}$$`
+
+The above would also have the same confidence interval as the prior. All we need to do with our function is substitute `\(\sigma\)` with s.
+
+
+---
+# What if the population isn't large?
+- Then we'd still use the prior z-statistic but it would follow a t-distribution with the degrees of freedom, v estimated from the data:
+
+`$$v = \frac{(\frac{s_x^2}{m}+\frac{S_y^2}{n})^2}{\frac{(\frac{s_x^2}{m})^2}{m-1}+\frac{(\frac{s_y^2}{n})^2}{n-1}}$$`
+
+- In R, we can just define a function to do the computing for us and just be careful with the parentheses:
+
+```r
+v_dft_est &lt;- function(s1,s2,m,n){
+  ((s1^2/m) + (s2^2/n))^2/(((s1^2/m)^2/(m-1)) + ((s2^2/n)^2/(n-1)))
+}
+```
+- V indicates Welch's estimate
+
+- The confidence interval of the two sample t: `\(100(1-a)%\)` confidence interval for `\(\mu_1 - \mu_2\)` is given by:
+`$$\bar{X} - \bar{Y} \pm t_{a/2,v}\sqrt{\frac{s_x^2}{m} + \frac{s_y^2}{n}}$$`
+- using the above value of v.
+
+---
+# What if we have no sigma?
+- If we have no `\(\sigma\)`, we can use the t-statistic which is computed as folows:
+`$$t = \frac{\bar{x} - \bar{y} - \delta_0}{\sqrt{\frac{s_x^2}{m} + \frac{s_y^2}{n}}}$$`
+- and use the typical rejection criterion for 1 and 2 tailed tests
+
+- In R:
+
+```r
+tstat2 &lt;- function(xbar,ybar,delta,s1,s2,m,n){
+  (xbar - ybar - delta)/(sqrt((s1^2/m) + (s2^2)/n))
+  }
+```
+
+---
+# An Example:
+Example 1
+Example 1: Suppose that talk-time per battery charge on an iPhone 6s 
+is normally distributed with unknown mean u1 and known standard deviation sigma1 = .7. Likewise, talk-time per battery charge on an iPhone 6c is normally distributed with unknown mean u2 and known standard deviation sigma2 = .9. A random sample of m=81 6s yielded a mean talking time of 7.2 hours, while a random sample of 70 6c's yielded a mean talking time of 6.8 hours. Calculate a 95% confidence interval for u1 - u2.
+
+---
+# Example worked out:
+- We can identify the following from the problem:
+
+
+```r
+# information about the iphone 6s
+sd1 &lt;- .7
+# information about the iphone 6c
+sd2 &lt;- .9
+#sample of iphone 6s
+m1s &lt;- 81
+mu1s &lt;- 7.2
+#sample of iphone 6c
+n1c &lt;- 70
+mu2c &lt;- 6.8
+zstar &lt;- qnorm(1- .05/2)
+zstar
+```
+
+```
+## [1] 1.959964
+```
+
+---
+# Example continued:
+
+
+```r
+z2confint(mu1s,mu2c,zstar = zstar,sigma1 = sd1,sigma2 =sd2 ,m = m1s,n = n1c)
+```
+
+```
+## $lower_bound
+## [1] 0.1126188
+## 
+## $upper_bound
+## [1] 0.6873812
+```
+If you ever need to see the arguments of a user defined function, just omit the parentheses
+
+```r
+z2confint
+```
+
+```
+## function(xbar,ybar,zstar,sigma1,sigma2,m,n){
+##   list(lower_bound = xbar - ybar - zstar * (sqrt((sigma1/m) + (sigma2/n))),
+##        upper_bound = xbar - ybar + zstar * (sqrt((sigma1/m) + (sigma2/n))))
+## }
+## &lt;bytecode: 0x556360d3aa68&gt;
+```
+
+---
+# Example 2:
+A Student wanted to analyze whether there is a difference in average salaries of men and women performing the same task in the same environment. A random sample of 100 men yielded an average salary of \$36,240 with a standard deviation of  1,000. A random sample of 81 women yielded an average salary of  $35,930 with a standard deviation of \$1200. Test for higher male salaries at the 5% level.
+
+
+---
+
+# Example 2 worked out:
+
+```r
+# what we know about the problem
+xbar &lt;- 36240
+sd1 &lt;- 1000
+ybar &lt;- 35930
+sd2 &lt;- 1200
+m &lt;- 100
+n &lt;- 81
+
+(df &lt;- v_dft_est(s1=  sd1,s2 = sd2,m = m,n = n))
+```
+
+```
+## [1] 155.543
+```
+
+```r
+(alpha &lt;- qt(1-.05,df = df))
+```
+
+```
+## [1] 1.654709
+```
+
+```r
+(tstat &lt;- tstat2(xbar,ybar,delta = 0,sd1,sd2,m,n))
+```
+
+```
+## [1] 1.86
+```
+
+
+---
+# When we want to compare two population proportions
+- Let's assume we had two population proportions. Assume `\(p_1\)` is the proportion of successes in population 1. We then take a random sample of size m from population 1 and obtain X successes so that `\(\hat{p} = \frac{X}{M}\)` and X has a binomial distribution `\(Bin(m,p_2)\)`. Suppose `\(p_2\)` is the proportion of successes in population 2. We take a sample of size n from population 2 and obtain y successes such that `\(\hat{p_2} = \frac{Y}{n}\)` and y has a binomial distribution `\(Bin(m,p_1)\)`. Assuming independence, then:
+
+`$$E(\hat{p_1} - \hat{p_2})= p_1 - p_2$$` 
+and
+`$$V(\hat{p_1} - \hat{p_2}) = \frac{p_1(1 - p_1)}{m} + \frac{p_2(1-p_2)}{n}$$`
+thus;
+`$$Z = \frac{\hat{p_1} - \hat{p_2} - (p_1 - p_2)}{\sqrt{\frac{p_1(1-p_1)}{m} + \frac{p_2(1-p_2)}{n}}}$$`
+has an approximately normal distribution.
+
+---
+# Confidence Intervals for two population proportions:
+
+- a large sample 100(1-a)% confidence interval for `\(p_1 - p_2\)` is then
+
+`$$\hat{p_1} - \hat{p_2} \pm z_{a/2} \sqrt{\frac{\hat{p_1}(1 - \hat {p_1})}{m} + \frac{\hat{p_2}(1 - \hat {p_2})}{m}}$$`
+
+---
+# Example:
+From the 2010 General Social Survey 475 out of 631 randomly selected males favor the death penalty compared to 424 out of 677 females. Find a 95% confidence interval for the true difference in proportions, (male -female).
+
+
+```r
+m &lt;- 631
+n &lt;- 677
+X &lt;- 475
+Y &lt;- 424
+phat1 &lt;- X/m
+phat2 &lt;- Y/n
+sediffest &lt;- sqrt((phat1 * (1-phat1))/m + (phat2 * (1 - phat2))/n)
+zstar &lt;- qnorm(1-.05/2)
+c(phat1 - phat2 - zstar * sediffest,phat1 - phat2 + zstar * sediffest)
+```
+
+```
+## [1] 0.07687197 0.17608985
+```
+- Or we could use prop.test
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -43,3 +43,6 @@ Confidence Intervals [**here**](https://seathebass.github.io/math301/presentatio
 
 ## Week 13
 This covers hypothesis testing from 1 sample and covers z and t-tests. This will provide most of the material [**here**](https://seathebass.github.io/math301/presentations/week9.html)
+
+## Week 14
+This is the final week of material for the course. It covers z and t-tests for two samples. The slides can be found [**here**](https://seathebass.github.io/math301/presentations/week10.html)
