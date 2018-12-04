@@ -17,6 +17,7 @@ Assignment solutions will be found after students turn them in so that students 
 ## Cheatsheet
 - [Quiz 1 Cheatsheet](https://seathebass.github.io/math301/cheatsheets/quiz1cheatsheet.html)
 - [Quiz 2 Cheatsheet](https://seathebass.github.io/math301/cheatsheets/quiz2cheatsheet.html)
+- [Quiz 3 Cheatsheet](https://seathebass.github.io/math301/cheatsheets/quiz3cheatsheet.html)
 
 ## Project
 - [R Project 1 Solutions](https://seathebass.github.io/math301/rprojects/rproject1.html)

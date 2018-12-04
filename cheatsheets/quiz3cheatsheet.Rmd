@@ -1,0 +1,111 @@
+---
+title: "MAT 301 Quiz 3 cheatsheet"
+author: "Sebastian Hoyos-Torres"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+For quiz 3, it will cover the following topics:
+
+- Confidence and prediction intervals
+- One sample hypothesis testing 
+- Two sample hypothesis testing
+
+# Confidence and prediction Intervals
+Conceptually, a confidence interval is used to indicate a degree of confidence of where the population mean $\mu$ lies. Remember, we typically use standardization to define our point estimates onto the normal distribution and the inverse is also true. Thus, if we are given a sample mean $\bar{x}$, we can use the standard deviation to determine the upper and lower bounds of the distribution given the sd, sample size, and critical value
+For review, let's look at critical values or the function of purpose of qnorm. qnorm solves for C in the following $\Phi(c) = 0.5$ where phi indicates the cumulative density function of the normal distribution. With our example in mind, we could do the following to solve for C:
+```{r}
+qnorm(0.5)
+```
+Note: this is directly in line with the properties of the standard normal distribution where 50 percent of all possible values are beneath 0, or the population mean.
+
+Keeping this in mind, critical values follow a similar logic as we are finding the value which would yield a certain interval on the distribution. Formally, this looks as follows:
+$$\bar{X} - z_{a/2}*\frac{\sigma}{\sqrt{n}}\leq{\mu}\leq{\bar{X}+ z_{a/2}*\frac{\sigma}{\sqrt{n}}}$$
+would yield an interval for the confidence interval but lets look in depth into what the formula does. 
+Given a sample mean, we add/subtract the critical value of the normal distribution times the standard deviation over the square root of n. The fraction brings back the z-score into a value that is interpretabe in terms of the distribution of the original values. In R, translating this formula into a function looks like:
+```{r}
+confint <- function(xbar, zstar, sigma, n) {
+    list(upper_bound = xbar + zstar * (sigma/sqrt(n)), lower_bound = xbar - 
+        zstar * (sigma/sqrt(n)))
+}
+```
+Using the example from the slides, let's just look closely at the example:
+ A random sample of 126 police officers subjected to constant inhalation of automobile exhaust fumes in downtown Cairo had an average blood lead level concentration of 29.2 μg/dl. Assume X, the blood lead level of a randomly selected policeman, is normally distributed with a standard deviation of σ = 7.5 μg/dl. Historically, it is known that the average blood lead level concentration of humans with no exposure to automobile exhaust is 18.2 μg/dl. Is there convincing evidence that policemen exposed to constant auto exhaust have elevated blood lead level concentrations? (Data source: Kamal, Eldamaty, and Faris, "Blood lead level of Cairo traffic policemen," Science of the Total Environment, 105(1991): 165-170.)
+
+```{r}
+n <- 126
+xbar <- 29.2
+sd <- 7.5
+```
+
+These are the characteristics of the sample given by the problem. Further, to find the critical value:
+```{r}
+qnorm(.05/2) #yields the lower value. Just make this positive given that the distribution is symmetric or
+qnorm(.05/2,lower.tail = FALSE)#yields the positive value
+```
+Why are we dividing the alpha by two? We do so because the distribution has two tails so we are really looking for the sum of the area underneath two tails for confdience intervals.
+
+To find the length of the confidence interval, we can use 
+
+$$w = 2 \dot{}z_{a/2}\dot{}\frac{\sigma}{\sqrt{n}}$$
+in R: 
+
+```{r}
+sizefunct <- function(zstar,sigma,w){
+  (2*zstar*sigma/w)^2
+}
+```
+
+Prediction Intervals: when we want to predict the future next value for a single observation, we could use a prediction interval. The prediction interval will typically be wider than the confidence interval.
+
+$$\bar{X}-t_{a/2,n-1}*s\sqrt{1+\frac{1}{n}},\bar{X}+t_{a/2,n-1}*s\sqrt{1+\frac{1}{n}}$$
+
+In R, this looks like the following function
+```{r}
+predint <- function(xbar,tstar,s,n){
+  list(upper_bound = xbar + tstar*s*sqrt(1 + 1/n),
+       lower_bound = xbar - tstar*s*sqrt(1+1/n))
+}
+
+```
+Note: you have to provide tstar. Be familiar with what tstar indicates.
+
+# One Sample Hypothesis testing
+In Statistics, we frequently test hypotheses. In this section; we have z-statistics and t-statistics. It will be your responsbility to determine which situation is appropriate to use for the quiz but for the computation of a z-statistic, we are computing the probability that we have a certain sample characteristic given a population characteristic. Thus, if we were to randomly sample from a population where the mean is 0 and take a sample and find that the mean was 3, we'd say that the sample was unlikely to be drawn from the same population. 
+To compute a z-statistic , the formula is as follows
+$$Z = \frac{\bar{X}- \mu}{\sigma/\sqrt{n}}$$
+For a t-statistic:
+$$T = \frac{\bar{X}- \mu_0}{S/\sqrt{n}}$$
+In R:
+```{r}
+zstat <- function(xbar, mu, sigma, n){
+  (xbar - mu)/(sigma/sqrt(n))
+}
+tstat <- function(xbar,mu,s,n){
+  (xbar - mu)/(s/sqrt(n))
+}
+```
+respectively.
+
+To find the pvalue, just ensure that you use the appropriate cumulative density function (pnorm or pt) with the associated t or z statistic.
+
+# Two sample tests
+Similar to one sample tests, we compute z and t statistics but the purpose is slightly different. The purpose of a two sample test is to see the differences/similarities in the samples. To compute the two sample z-statistic:
+$$Z = \frac{\bar{X} - \bar{Y}- (\mu_1-\mu_2)}{\sqrt{\frac{\sigma_1^2}{m} + \frac{\sigma_2^2}{n}}}$$
+
+To compute the t-statistic:
+$$t = \frac{\bar{x} - \bar{y} - \delta_0}{\sqrt{\frac{s_x^2}{m} + \frac{s_y^2}{n}}}$$
+
+In R:
+```{r}
+z2stat <- function(xbar,ybar,mu1,mu2,sigma1,sigma2,m,n){
+  (xbar - ybar - (mu1-mu2))/((sigma1/m)+ (sigma2/n))
+}
+tstat2 <- function(xbar,ybar,delta,s1,s2,m,n){
+  (xbar - ybar - delta)/(sqrt((s1^2/m) + (s2^2)/n))
+  }
+```
+respectively.
