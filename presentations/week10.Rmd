@@ -56,10 +56,10 @@ z2stat <- function(xbar,ybar,mu1,mu2,sigma1,sigma2,m,n){
 ```
 
 The confidence interval
-```{r,eval=FALSE}
+```{r}
 z2confint <- function(xbar,ybar,zstar,sigma1,sigma2,m,n){
-  list(lower_bound = xbar - ybar - zstar * (sqrt((sigma1/m) + (sigma2/n))),
-       upper_bound = xbar - ybar + zstar * (sqrt((sigma1/m) + (sigma2/n))))
+  list(lower_bound = xbar - ybar - zstar * (sqrt((sigma1/m) + (sigma2^2/n))),
+       upper_bound = xbar - ybar + zstar * (sqrt((sigma1/m) + (sigma2^2/n))))
 }
 ```
 
@@ -89,7 +89,7 @@ The above would also have the same confidence interval as the prior. All we need
 $$v = \frac{(\frac{s_x^2}{m}+\frac{S_y^2}{n})^2}{\frac{(\frac{s_x^2}{m})^2}{m-1}+\frac{(\frac{s_y^2}{n})^2}{n-1}}$$
 
 - In R, we can just define a function to do the computing for us and just be careful with the parentheses:
-```{r, eval=FALSE}
+```{r}
 v_dft_est <- function(s1,s2,m,n){
   ((s1^2/m) + (s2^2/n))^2/(((s1^2/m)^2/(m-1)) + ((s2^2/n)^2/(n-1)))
 }

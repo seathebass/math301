@@ -55,8 +55,8 @@ The confidence interval
 
 ```r
 z2confint &lt;- function(xbar,ybar,zstar,sigma1,sigma2,m,n){
-  list(lower_bound = xbar - ybar - zstar * (sqrt((sigma1/m) + (sigma2/n))),
-       upper_bound = xbar - ybar + zstar * (sqrt((sigma1/m) + (sigma2/n))))
+  list(lower_bound = xbar - ybar - zstar * (sqrt((sigma1/m) + (sigma2^2/n))),
+       upper_bound = xbar - ybar + zstar * (sqrt((sigma1/m) + (sigma2^2/n))))
 }
 ```
 
@@ -152,10 +152,10 @@ z2confint(mu1s,mu2c,zstar = zstar,sigma1 = sd1,sigma2 =sd2 ,m = m1s,n = n1c)
 
 ```
 ## $lower_bound
-## [1] 0.1126188
+## [1] 0.1213444
 ## 
 ## $upper_bound
-## [1] 0.6873812
+## [1] 0.6786556
 ```
 If you ever need to see the arguments of a user defined function, just omit the parentheses
 
@@ -165,10 +165,9 @@ z2confint
 
 ```
 ## function(xbar,ybar,zstar,sigma1,sigma2,m,n){
-##   list(lower_bound = xbar - ybar - zstar * (sqrt((sigma1/m) + (sigma2/n))),
-##        upper_bound = xbar - ybar + zstar * (sqrt((sigma1/m) + (sigma2/n))))
+##   list(lower_bound = xbar - ybar - zstar * (sqrt((sigma1/m) + (sigma2^2/n))),
+##        upper_bound = xbar - ybar + zstar * (sqrt((sigma1/m) + (sigma2^2/n))))
 ## }
-## &lt;bytecode: 0x556360d3aa68&gt;
 ```
 
 ---

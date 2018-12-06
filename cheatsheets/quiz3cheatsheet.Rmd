@@ -54,8 +54,8 @@ $$w = 2 \dot{}z_{a/2}\dot{}\frac{\sigma}{\sqrt{n}}$$
 in R: 
 
 ```{r}
-sizefunct <- function(zstar,sigma,w){
-  (2*zstar*sigma/w)^2
+sizefunct <- function(zstar,sigma,n){
+  (2*zstar*sigma/sqrt(n))
 }
 ```
 
@@ -101,8 +101,9 @@ $$t = \frac{\bar{x} - \bar{y} - \delta_0}{\sqrt{\frac{s_x^2}{m} + \frac{s_y^2}{n
 
 In R:
 ```{r}
-z2stat <- function(xbar,ybar,mu1,mu2,sigma1,sigma2,m,n){
-  (xbar - ybar - (mu1-mu2))/((sigma1/m)+ (sigma2/n))
+z2stat <- function(xbar,ybar,zstar,sigma1,sigma2,m,n){
+  list(lower_bound = xbar - ybar - zstar * (sqrt((sigma1^2/m) + (sigma2^2/n))),
+       upper_bound = xbar - ybar + zstar * (sqrt((sigma1^2/m) + (sigma2^2/n))))
 }
 tstat2 <- function(xbar,ybar,delta,s1,s2,m,n){
   (xbar - ybar - delta)/(sqrt((s1^2/m) + (s2^2)/n))
