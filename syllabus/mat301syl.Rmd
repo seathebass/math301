@@ -43,7 +43,7 @@ At the end of the course, students are expected to have a strong grasp on the fo
 - Have a grasp on how to use R in order to solve certain probability problems
 
 # Grading Rubric:
-There will be 3 quizzes, homework, R projects, and a final exam. Homeworks will constitute 10% of the grade. The R projects will constitute 25 percent of the final grade altogether. Additionally, the quizzes will constitute 45 percent of the grade with the lowest quiz score being dropped. The final will account for the remainder.
+There will be 3 quizzes, homework, R projects, and a final exam. Homeworks will constitute 10% of the grade. The R projects will constitute 30 percent of the final grade altogether. Additionally, the quizzes will constitute 30 percent of the grade with the lowest quiz score being dropped. The final will account for the remainder.
 
 # Labs:
 Although optional, I will provide students with an opportunity on Tuesdays to come to class or establish a forum online where we will learn more in regards to R and how to use it as a tool for probability. I strongly encourage students who wish to learn more about the functions in R and how to do some basic programming tasks to take advantage of this. Labs will be focused on addressing student concerns in R as well as covering some of the foundations of analysis.
