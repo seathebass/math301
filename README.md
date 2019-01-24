@@ -1,5 +1,5 @@
 # Math301: Probability and Statistics
-## Github for Math 301 (**Currently Under Construction**).
+## Github for Math 301 .
 This Github Page contains powerpoints and other useful materials to assist students with Probability and Statistics.  See syllabus for assignments and [**more**](https://seathebass.github.io/math301/syllabus/mat301syl.html)
 
 ## Quiz Answers:
@@ -7,21 +7,7 @@ Solutions to the quiz will be posted as R scripts within the test answers folder
 
 ## Assignments in R
 Assignment solutions will be found after students turn them in so that students can see examples of how the questions can be done in R. 
-- [week 2 assignment](https://seathebass.github.io/math301/homeworkfiles/week2hw.html)
-- [week 3 assignment](https://seathebass.github.io/math301/homeworkfiles/week3hw.html)
-- [week 4 assignment](https://seathebass.github.io/math301/homeworkfiles/week4hw.html)
-- [week 6 assignment](https://seathebass.github.io/math301/homeworkfiles/week6hw.html)
-- [week 7 assignment](https://seathebass.github.io/math301/homeworkfiles/week7hw.html)
-- [Week 10 Assignment](https://seathebass.github.io/math301/homeworkfiles/week10hw.html)
 
-## Cheatsheet
-- [Quiz 1 Cheatsheet](https://seathebass.github.io/math301/cheatsheets/quiz1cheatsheet.html)
-- [Quiz 2 Cheatsheet](https://seathebass.github.io/math301/cheatsheets/quiz2cheatsheet.html)
-- [Quiz 3 Cheatsheet](https://seathebass.github.io/math301/cheatsheets/quiz3cheatsheet.html)
-
-## Project
-- [R Project 1 Solutions](https://seathebass.github.io/math301/rprojects/rproject1.html)
-- [R Project 2 Solutions] (https://seathebass.github.io/math301/rprojects/rproject2.html)
 ## Week 1
 During this week, we will do a crash course in how to use R and a refresher on Integration. Do **not** worry if you have not encountered an integral before, we will cover the basics which should be all you need to understand what is happening with probability density functions and other material later on. The slides for the week will be found [**here**](https://seathebass.github.io/math301/presentations/week1.html)
 
